@@ -7,7 +7,7 @@ module.exports = {
             const nomePesq = usu_nome ? `%${usu_nome}%` : '%%';
             // instruções SQL
             const sql = `SELECT 
-                emp.emp_cod, usu.usu_nome as usu_nome, exe_cod, emp_data_emp, emp_data_devol, emp_devolvido
+                emp.emp_cod, usu.usu_cod, exe.exe_cod, emp.emp_data_emp, emp.emp_data_devol, emp.emp_devolvido
                 FROM emprestimos emp
                 Inner Join exemplares exe ON exe.exe_cod = emp.exe_cod
                 Inner Join usuarios usu ON usu.usu_cod = emp.usu_cod

@@ -5,7 +5,10 @@ module.exports = {
         try {
             // instruções SQL
             const sql = `SELECT 
-                exe_cod, liv_cod, exe_tombo, exe_data_aquis, exe_data_saida;`;
+                exe.exe_cod, exe.liv_cod, exe.exe_tombo, exe.exe_data_aquis, exe.exe_data_saida
+                FROM exemplares exe
+                INNER JOIN livros liv ON liv.liv_cod = exe.liv_cod
+                Where liv.liv_nome = ?;`;
             // executa instruções SQL e armazena o resultado na variável usuários
             const exemplares = await db.query(sql);
             // armazena em uma variável o número de registros retornados
