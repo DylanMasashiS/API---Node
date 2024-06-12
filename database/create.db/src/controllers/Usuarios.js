@@ -111,7 +111,7 @@ module.exports = {
             });
         }
     }, 
-    async ocultarUsuario(request, response) {
+    async ocultarUsuarios(request, response) {
         try {
             const usu_ativo = false; 
             const { usu_cod } = request.params; 
@@ -133,7 +133,7 @@ module.exports = {
             });
         }
     }, 
-    async login(request, response) {
+    async loginUsuarios(request, response) {
         try {
 
             const { usu_email, usu_senha } = request.body;
