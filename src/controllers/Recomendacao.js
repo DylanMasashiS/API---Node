@@ -1,20 +1,20 @@
-// const db = require('../database/connection');
+const db = require('../config/database/connection');
 
 module.exports = {
-    async listarCursos(request, response) {
+    async listarRecomendacao(request, response) {
         try {
             // instruções SQL
             const sql = `SELECT 
-                cur_cod, cur_nome, cur_ativo;`;
+                rcm_cod, cur_cod, liv_cod, usu_cod, rcm_mod1, rcm_mod2, rcm_mod3, rcm_mod4;`;
             // executa instruções SQL e armazena o resultado na variável usuários
-            const cursos = await db.query(sql);
+            const recomendacao = await db.query(sql);
             // armazena em uma variável o número de registros retornados
-            const nItens = cursos[0].length;
+            const nItens = recomendacao[0].length;
 
             return response.status(200).json({
                 sucesso: true,
-                mensagem: 'Lista de cursos.',
-                dados: cursos[0],
+                mensagem: 'Lista de recomendações.',
+                dados: recomendacao[0],
                 nItens
             });
         } catch (error) {
@@ -25,25 +25,25 @@ module.exports = {
             });
         }
     },
-    async cadastrarCursos(request, response) {
+    async cadastrarRecomendacao(request, response) {
         try {
             // parâmetros recebidos no corpo da requisição
-            const { cur_nome, cur_ativo} = request.body;
+            const {cur_cod, liv_cod, usu_cod, rcm_mod1, rcm_mod2, rcm_mod3, rcm_mod4} = request.body;
             // instrução SQL
-            const sql = `INSERT INTO cursos
-                (cur_cod, cur_nome, cur_ativo) 
-                VALUES (?, ?, ?)`;
+            const sql = `INSERT INTO recomendacao
+                (rcm_cod, cur_cod, liv_cod, usu_cod, rcm_mod1, rcm_mod2, rcm_mod3, rcm_mod4) 
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?)`;
             // definição dos dados a serem inseridos em um array
-            const values = [cur_cod, cur_nome, cur_ativo];
+            const values = [rcm_cod, cur_cod, liv_cod, usu_cod, rcm_mod1, rcm_mod2, rcm_mod3, rcm_mod4];
             // execução da instrução sql passando os parâmetros
             const execSql = await db.query(sql, values);
             // identificação do ID do registro inserido
-            const cur_cod = execSql[0].insertId;
+            const rcm_cod = execSql[0].insertId;
 
             return response.status(200).json({
                 sucesso: true,
-                mensagem: 'Cadastro do curso efetuado com sucesso.',
-                dados: cur_cod
+                mensagem: 'Cadastro da recomendação efetuada com sucesso.',
+                dados: rcm_cod
                 //mensSql: execSql
             });
         } catch (error) {
@@ -54,24 +54,23 @@ module.exports = {
             });
         }
     },
-    async editarCursos(request, response) {
+    async editarRecomendacao(request, response) {
         try {
             // parâmetros recebidos pelo corpo da requisição
-            const { cur_nome, cur_ativo } = request.body;
+            const { cur_cod, liv_cod, usu_cod, rcm_mod1, rcm_mod2, rcm_mod3, rcm_mod4 } = request.body;
             // parâmetro recebido pela URL via params ex: /usuario/1
-            const { cur_cod } = request.params;
+            const { rcm_cod } = request.params;
             // instruções SQL
-            const sql = `UPDATE cursos SET cur_cod = ?, cur_nome = ?, 
-                        cur_ativo = ?
-                        WHERE cur_cod = ?;`;
+            const sql = `UPDATE recomendacao SET rcm_cod = ?, cur_cod = ?, liv_cod = ?,
+             usu_cod = ?, rcm_mod1 = ?, rcm_mod2 = ?, rcm_mod3 = ?, rcm_mod4 = ?`;
             // preparo do array com dados que serão atualizados
-            const values = [cur_nome, cur_ativo, cur_cod];
+            const values = [rcm_cod, cur_cod, liv_cod, usu_cod, rcm_mod1, rcm_mod2, rcm_mod3, rcm_mod4];
             // execução e obtenção de confirmação da atualização realizada
             const atualizaDados = await db.query(sql, values);
 
             return response.status(200).json({
                 sucesso: true,
-                mensagem: `Curso ${cur_cod} atualizado com sucesso!`,
+                mensagem: `Recomendação ${rcm_cod} atualizada com sucesso!`,
                 dados: atualizaDados[0].affectedRows
                 // mensSql: atualizaDados
             });
@@ -83,20 +82,20 @@ module.exports = {
             });
         }
     },
-    async apagarCursos(request, response) {
+    async apagarRecomendacao(request, response) {
         try {
             // parâmetro passado via url na chamada da api pelo front-end
-            const { cur_cod } = request.params;
+            const { rcm_cod } = request.params;
             // comando de exclusão
-            const sql = `DELETE FROM cursos WHERE cur_cod = ?`;
+            const sql = `DELETE FROM recomendacao WHERE rcm_cod = ?`;
             // array com parâmetros da exclusão
-            const values = [cur_cod];
+            const values = [rcm_cod];
             // executa instrução no banco de dados
             const excluir = await db.query(sql, values);
 
             return response.status(200).json({
                 sucesso: true,
-                mensagem: `Curso ${cur_cod} excluído com sucesso`,
+                mensagem: `Recomendação ${rcm_cod} excluída com sucesso`,
                 dados: excluir[0].affectedRows
             });
         } catch (error) {

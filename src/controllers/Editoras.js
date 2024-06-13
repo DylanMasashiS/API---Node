@@ -1,20 +1,21 @@
-// const db = require('../database/connection');
+const db = require('../config/database/connection');
 
 module.exports = {
-    async listarLivros_Autores(request, response) {
+    async listarEditoras(request, response) {
         try {
             // instruções SQL
             const sql = `SELECT 
-                lau_cod, aut_cod, liv_cod;`;
+                edt_cod, edt_nome, edt_foto from editoras
+                where edt_nome = ?;`;
             // executa instruções SQL e armazena o resultado na variável usuários
-            const livros_autores = await db.query(sql);
+            const editoras = await db.query(sql);
             // armazena em uma variável o número de registros retornados
-            const nItens = livros_autores[0].length;
+            const nItens = editoras[0].length;
 
             return response.status(200).json({
                 sucesso: true,
-                mensagem: 'Lista dos Livros e seus Autores.',
-                dados: livros_autores[0],
+                mensagem: 'Lista de editoras.',
+                dados: editoras[0],
                 nItens
             });
         } catch (error) {
@@ -25,25 +26,25 @@ module.exports = {
             });
         }
     },
-    async cadastrarLivros_Autores(request, response) {
+    async cadastrarEditoras(request, response) {
         try {
             // parâmetros recebidos no corpo da requisição
-            const {aut_cod, liv_cod} = request.body;
+            const { edt_nome, edt_foto} = request.body;
             // instrução SQL
-            const sql = `INSERT INTO livros_autores
-                (lau_cod, aut_cod, liv_cod) 
+            const sql = `INSERT INTO editoras
+                (edt_cod, edt_nome, edt_foto) 
                 VALUES (?, ?, ?)`;
             // definição dos dados a serem inseridos em um array
-            const values = [lau_cod, aut_cod, liv_cod];
+            const values = [edt_cod, edt_nome, edt_foto];
             // execução da instrução sql passando os parâmetros
             const execSql = await db.query(sql, values);
             // identificação do ID do registro inserido
-            const lau_cod = execSql[0].insertId;
+            const edt_cod = execSql[0].insertId;
 
             return response.status(200).json({
                 sucesso: true,
-                mensagem: 'Cadastro de Livros e seus Autores efetuado com sucesso.',
-                dados: lau_cod
+                mensagem: 'Cadastro da editora efetuado com sucesso.',
+                dados: edt_cod
                 //mensSql: execSql
             });
         } catch (error) {
@@ -54,24 +55,24 @@ module.exports = {
             });
         }
     },
-    async editarLivros_Autores(request, response) {
+    async editarEditoras(request, response) {
         try {
             // parâmetros recebidos pelo corpo da requisição
-            const { aut_cod, liv_cod } = request.body;
+            const { edt_nome, edt_foto } = request.body;
             // parâmetro recebido pela URL via params ex: /usuario/1
-            const { lau_cod } = request.params;
+            const { edt_cod } = request.params;
             // instruções SQL
-            const sql = `UPDATE livros_autores SET lau_cod = ?, usu_cod = ?, 
-                        lau_cod = ?, aut_cod = ?, liv_cod = ?
-                        WHERE lau_cod = ?;`;
+            const sql = `UPDATE editoras SET edt_cod = ?, edt_nome = ?, 
+                        edt_foto = ?
+                        WHERE edt_cod = ?;`;
             // preparo do array com dados que serão atualizados
-            const values = [aut_cod, liv_cod, lau_cod];
+            const values = [edt_nome, edt_foto, edt_cod];
             // execução e obtenção de confirmação da atualização realizada
             const atualizaDados = await db.query(sql, values);
 
             return response.status(200).json({
                 sucesso: true,
-                mensagem: `Livro e Autor ${lau_cod} atualizado com sucesso!`,
+                mensagem: `Editora ${edt_cod} atualizada com sucesso!`,
                 dados: atualizaDados[0].affectedRows
                 // mensSql: atualizaDados
             });
@@ -83,20 +84,20 @@ module.exports = {
             });
         }
     },
-    async apagarLivros_Autores(request, response) {
+    async apagarEditoras(request, response) {
         try {
             // parâmetro passado via url na chamada da api pelo front-end
-            const { lau_cod } = request.params;
+            const { edt_cod } = request.params;
             // comando de exclusão
-            const sql = `DELETE FROM livros_autores WHERE lau_cod = ?`;
+            const sql = `DELETE FROM editoras WHERE edt_cod = ?`;
             // array com parâmetros da exclusão
-            const values = [lau_cod];
+            const values = [edt_cod];
             // executa instrução no banco de dados
             const excluir = await db.query(sql, values);
 
             return response.status(200).json({
                 sucesso: true,
-                mensagem: `Livro e Autor ${lau_cod} excluído com sucesso`,
+                mensagem: `Editora ${edt_cod} excluída com sucesso`,
                 dados: excluir[0].affectedRows
             });
         } catch (error) {

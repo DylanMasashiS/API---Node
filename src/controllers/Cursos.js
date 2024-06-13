@@ -1,20 +1,21 @@
-// const db = require('../database/connection');
+const db = require('../config/database/connection');
 
 module.exports = {
-    async listarEditoras(request, response) {
+    async listarCursos(request, response) {
         try {
             // instruções SQL
             const sql = `SELECT 
-                edt_cod, edt_nome, edt_foto;`;
+                cur_cod, cur_nome, cur_ativo from cursos
+                where = cur_nome = ? and cur_ativo = 1;`;
             // executa instruções SQL e armazena o resultado na variável usuários
-            const editoras = await db.query(sql);
+            const cursos = await db.query(sql);
             // armazena em uma variável o número de registros retornados
-            const nItens = editoras[0].length;
+            const nItens = cursos[0].length;
 
             return response.status(200).json({
                 sucesso: true,
-                mensagem: 'Lista de editoras.',
-                dados: editoras[0],
+                mensagem: 'Lista de cursos.',
+                dados: cursos[0],
                 nItens
             });
         } catch (error) {
@@ -25,25 +26,25 @@ module.exports = {
             });
         }
     },
-    async cadastrarEditoras(request, response) {
+    async cadastrarCursos(request, response) {
         try {
             // parâmetros recebidos no corpo da requisição
-            const { edt_nome, edt_foto} = request.body;
+            const { cur_nome, cur_ativo} = request.body;
             // instrução SQL
-            const sql = `INSERT INTO editoras
-                (edt_cod, edt_nome, edt_foto) 
+            const sql = `INSERT INTO cursos
+                (cur_cod, cur_nome, cur_ativo) 
                 VALUES (?, ?, ?)`;
             // definição dos dados a serem inseridos em um array
-            const values = [edt_cod, edt_nome, edt_foto];
+            const values = [cur_cod, cur_nome, cur_ativo];
             // execução da instrução sql passando os parâmetros
             const execSql = await db.query(sql, values);
             // identificação do ID do registro inserido
-            const edt_cod = execSql[0].insertId;
+            const cur_cod = execSql[0].insertId;
 
             return response.status(200).json({
                 sucesso: true,
-                mensagem: 'Cadastro da editora efetuado com sucesso.',
-                dados: edt_cod
+                mensagem: 'Cadastro do curso efetuado com sucesso.',
+                dados: cur_cod
                 //mensSql: execSql
             });
         } catch (error) {
@@ -54,24 +55,24 @@ module.exports = {
             });
         }
     },
-    async editarEditoras(request, response) {
+    async editarCursos(request, response) {
         try {
             // parâmetros recebidos pelo corpo da requisição
-            const { edt_nome, edt_foto } = request.body;
+            const { cur_nome, cur_ativo } = request.body;
             // parâmetro recebido pela URL via params ex: /usuario/1
-            const { edt_cod } = request.params;
+            const { cur_cod } = request.params;
             // instruções SQL
-            const sql = `UPDATE editoras SET edt_cod = ?, edt_nome = ?, 
-                        edt_foto = ?
-                        WHERE edt_cod = ?;`;
+            const sql = `UPDATE cursos SET cur_cod = ?, cur_nome = ?, 
+                        cur_ativo = ?
+                        WHERE cur_cod = ?;`;
             // preparo do array com dados que serão atualizados
-            const values = [edt_nome, edt_foto, edt_cod];
+            const values = [cur_nome, cur_ativo, cur_cod];
             // execução e obtenção de confirmação da atualização realizada
             const atualizaDados = await db.query(sql, values);
 
             return response.status(200).json({
                 sucesso: true,
-                mensagem: `Editora ${edt_cod} atualizada com sucesso!`,
+                mensagem: `Curso ${cur_cod} atualizado com sucesso!`,
                 dados: atualizaDados[0].affectedRows
                 // mensSql: atualizaDados
             });
@@ -83,20 +84,20 @@ module.exports = {
             });
         }
     },
-    async apagarEditoras(request, response) {
+    async apagarCursos(request, response) {
         try {
             // parâmetro passado via url na chamada da api pelo front-end
-            const { edt_cod } = request.params;
+            const { cur_cod } = request.params;
             // comando de exclusão
-            const sql = `DELETE FROM editoras WHERE edt_cod = ?`;
+            const sql = `DELETE FROM cursos WHERE cur_cod = ?`;
             // array com parâmetros da exclusão
-            const values = [edt_cod];
+            const values = [cur_cod];
             // executa instrução no banco de dados
             const excluir = await db.query(sql, values);
 
             return response.status(200).json({
                 sucesso: true,
-                mensagem: `Editora ${edt_cod} excluída com sucesso`,
+                mensagem: `Curso ${cur_cod} excluído com sucesso`,
                 dados: excluir[0].affectedRows
             });
         } catch (error) {

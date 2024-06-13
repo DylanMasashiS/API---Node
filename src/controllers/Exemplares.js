@@ -1,20 +1,23 @@
-// const db = require('../database/connection');
+const db = require('../config/database/connection');
 
 module.exports = {
-    async listarAutores(request, response) {
+    async listarExemplares(request, response) {
         try {
             // instruções SQL
             const sql = `SELECT 
-                aut_cod, aut_nome, aut_foto;`;
+                exe.exe_cod, liv.liv_nome, exe.exe_tombo, exe.exe_data_aquis, exe.exe_data_saida
+                FROM exemplares exe
+                INNER JOIN livros liv ON liv.liv_cod = exe.liv_cod
+                Where liv.liv_nome = ?;`;
             // executa instruções SQL e armazena o resultado na variável usuários
-            const autores = await db.query(sql);
+            const exemplares = await db.query(sql);
             // armazena em uma variável o número de registros retornados
-            const nItens = autores[0].length;
+            const nItens = exemplares[0].length;
 
             return response.status(200).json({
                 sucesso: true,
-                mensagem: 'Lista de autores.',
-                dados: autores[0],
+                mensagem: 'Lista de exemplares.',
+                dados: exemplares[0],
                 nItens
             });
         } catch (error) {
@@ -25,25 +28,25 @@ module.exports = {
             });
         }
     },
-    async cadastrarAutores(request, response) {
+    async cadastrarExemplares(request, response) {
         try {
             // parâmetros recebidos no corpo da requisição
-            const { aut_nome, aut_foto} = request.body;
+            const { liv_cod, exe_tombo, exe_data_aquis, exe_data_saida} = request.body;
             // instrução SQL
-            const sql = `INSERT INTO autores
-                (aut_cod, aut_nome, aut_foto) 
-                VALUES (?, ?, ?)`;
+            const sql = `INSERT INTO exemplares
+                (exe_cod, liv_cod, exe_tombo, exe_data_aquis, exe_data_saida) 
+                VALUES (?, ?, ?, ?, ?, ?)`;
             // definição dos dados a serem inseridos em um array
-            const values = [aut_cod, aut_nome, aut_foto];
+            const values = [exe_cod, liv_cod, exe_tombo, exe_data_aquis, exe_data_saida];
             // execução da instrução sql passando os parâmetros
             const execSql = await db.query(sql, values);
             // identificação do ID do registro inserido
-            const aut_cod = execSql[0].insertId;
+            const exe_cod = execSql[0].insertId;
 
             return response.status(200).json({
                 sucesso: true,
-                mensagem: 'Cadastro do autor efetuado com sucesso.',
-                dados: aut_cod
+                mensagem: 'Cadastro do exemplar efetuado com sucesso.',
+                dados: exe_cod
                 //mensSql: execSql
             });
         } catch (error) {
@@ -54,24 +57,24 @@ module.exports = {
             });
         }
     },
-    async editarAutores(request, response) {
+    async editarexemplares(request, response) {
         try {
             // parâmetros recebidos pelo corpo da requisição
-            const { aut_nome, aut_foto } = request.body;
+            const { liv_cod, exe_tombo, exe_data_aquis, exe_data_saida} = request.body;
             // parâmetro recebido pela URL via params ex: /usuario/1
-            const { aut_cod } = request.params;
+            const { exe_cod } = request.params;
             // instruções SQL
-            const sql = `UPDATE autores SET aut_cod = ?, aut_nome = ?, 
-                        aut_foto = ?
-                        WHERE aut_cod = ?;`;
+            const sql = `UPDATE exemplares SET exe_cod = ?, liv_cod = ?, 
+                        exe_tombo = ?, exe_data_aquis = ?, exe_data_saida = ?,
+                        WHERE exe_cod = ?;`;
             // preparo do array com dados que serão atualizados
-            const values = [aut_nome, aut_foto, aut_cod];
+            const values = [ liv_cod, exe_tombo, exe_data_aquis, exe_data_saida, exe_cod];
             // execução e obtenção de confirmação da atualização realizada
             const atualizaDados = await db.query(sql, values);
 
             return response.status(200).json({
                 sucesso: true,
-                mensagem: `Autor ${aut_cod} atualizado com sucesso!`,
+                mensagem: `Exemplar ${exe_cod} atualizado com sucesso!`,
                 dados: atualizaDados[0].affectedRows
                 // mensSql: atualizaDados
             });
@@ -83,20 +86,20 @@ module.exports = {
             });
         }
     },
-    async apagarAutores(request, response) {
+    async apagarExemplares(request, response) {
         try {
             // parâmetro passado via url na chamada da api pelo front-end
-            const { aut_cod } = request.params;
+            const { exe_cod } = request.params;
             // comando de exclusão
-            const sql = `DELETE FROM autores WHERE aut_cod = ?`;
+            const sql = `DELETE FROM exemplares WHERE exe_cod = ?`;
             // array com parâmetros da exclusão
-            const values = [aut_cod];
+            const values = [exe_cod];
             // executa instrução no banco de dados
             const excluir = await db.query(sql, values);
 
             return response.status(200).json({
                 sucesso: true,
-                mensagem: `Autor ${aut_cod} excluído com sucesso`,
+                mensagem: `Exemplar ${exe_cod} excluído com sucesso`,
                 dados: excluir[0].affectedRows
             });
         } catch (error) {
