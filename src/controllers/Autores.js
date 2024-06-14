@@ -4,12 +4,13 @@ module.exports = {
     async listarAutores(request, response) {
         try {
             const {aut_nome} = request.query;
-            const nomePesq = aut_nome ? `%${aut_nome}%` : '%%';
+            const autPesq = aut_nome ? `%${aut_nome}%` : `%%`;
             // instruções SQL
-            const sql = `SELECT aut_cod, aut_nome, aut_foto from autores
-                        where aut_nome = ?;`;
+            const sql = `SELECT aut_cod, aut_nome, aut_foto 
+                        from autores
+                        where aut_nome like ?;`;
 
-            const values = [nomePesq];
+            const values = [autPesq];
             // executa instruções SQL e armazena o resultado na variável usuários
             const [autores] = await db.query(sql, values);
             // armazena em uma variável o número de registros retornados

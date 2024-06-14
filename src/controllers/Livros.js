@@ -3,6 +3,8 @@ const db = require('../config/database/connection');
 module.exports = {
     async listarLivros(request, response) {
         try {
+            const {liv_cod} = request.body;
+            const livPesq = liv_cod ? `%${liv_cod}%` : `%%`; 
             // instruções SQL
             const sql = `liv.liv_cod, liv.liv_desc, 
             liv.liv_categ_cod, liv.liv_foto_capa, 
@@ -10,8 +12,10 @@ module.exports = {
             from livros liv 
             inner join editora edt on edt.edt_cod = liv.edt_cod 
             where liv.liv_cod = ?;`;
+
+            const values = [livPesq];
             // executa instruções SQL e armazena o resultado na variável usuários
-            const livros = await db.query(sql);
+            const livros = await db.query(sql, values);
             // armazena em uma variável o número de registros retornados
             const nItens = livros[0].length;
 

@@ -5,7 +5,7 @@ module.exports = {
         try {
             // instruções SQL
             const sql = `SELECT 
-                lau_cod, aut_cod, liv_cod;`;
+                lau_cod, aut_cod, liv_cod from livros_autores;`;
             // executa instruções SQL e armazena o resultado na variável usuários
             const livros_autores = await db.query(sql);
             // armazena em uma variável o número de registros retornados

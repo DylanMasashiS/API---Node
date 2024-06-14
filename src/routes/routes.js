@@ -14,7 +14,6 @@ const livros_autoresController = require ('../controllers/Livros_Autores');
 const livros_generosController = require ('../controllers/Livros_Generos');
 
 router.get ('/usuarios', (usuariosController.listarUsuarios));
-router.get ('/login_usuarios/:usu_cod', (usuariosController.loginUsuarios));
 router.get ('/livros', (livrosController.listarLivros));
 router.get ('/autores', (autoresController.listarAutores));
 router.get ('/editoras/:edt_nome', (editorasController.listarEditoras));
@@ -27,6 +26,7 @@ router.get ('/livros_autores', (livros_autoresController.listarLivros_Autores));
 router.get ('/livros_generos', (livros_generosController.listarLivros_Generos));
 
 // router.post ('/usuarios', (usuariosController.cadastrarUsuarios));
+//router.post ('/login_usuarios/:usu_cod', (usuariosController.loginUsuarios));
 // router.post ('/livros', (livrosController.cadastrarLivros));
 // router.post ('/autores', (autoresController.cadastrarAutores));
 // router.post ('/editoras', (editorasController.cadastrarEditoras));
@@ -39,7 +39,6 @@ router.get ('/livros_generos', (livros_generosController.listarLivros_Generos));
 // router.post ('/livros_generos', (livros_generosController.cadastrarLivros_Generos));    
 
 // router.put ('/usuarios', (usuariosController.editarUsuarios));
-// router.put ('/ocultar_usuarios/:usu_cod', (usuariosController.ocultarUsuarios));
 // router.put ('/livros', (livrosController.editarLivros));
 // router.put ('/autores', (autoresController.editarAutores));
 // router.put ('/editoras', (editorasController.editarEditoras));
@@ -52,6 +51,7 @@ router.get ('/livros_generos', (livros_generosController.listarLivros_Generos));
 // router.put ('/livros_generos', (livros_generosController.editarLivros_Generos));
 
 // router.delete ('/usuarios', (usuariosController.apagarUsuarios));
+// router.delete ('/ocultar_usuarios/:usu_cod', (usuariosController.ocultarUsuarios));
 // router.delete ('/livros', (livrosController.apagarLivros));
 // router.delete ('/autores', (autoresController.apagarAutores));
 // router.delete ('/editoras', (editorasController.apagarEditoras));

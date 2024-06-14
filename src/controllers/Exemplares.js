@@ -3,14 +3,18 @@ const db = require('../config/database/connection');
 module.exports = {
     async listarExemplares(request, response) {
         try {
+            const {liv_nome} = request.body;
+            const livPesq = liv_nome ? `%${liv_nome}%` : `%%`;
             // instruções SQL
             const sql = `SELECT 
                 exe.exe_cod, liv.liv_nome, exe.exe_tombo, exe.exe_data_aquis, exe.exe_data_saida
                 FROM exemplares exe
                 INNER JOIN livros liv ON liv.liv_cod = exe.liv_cod
                 Where liv.liv_nome = ?;`;
+
+            const values = [livPesq];
             // executa instruções SQL e armazena o resultado na variável usuários
-            const exemplares = await db.query(sql);
+            const exemplares = await db.query(sql, values);
             // armazena em uma variável o número de registros retornados
             const nItens = exemplares[0].length;
 

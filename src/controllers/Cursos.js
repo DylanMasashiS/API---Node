@@ -3,12 +3,16 @@ const db = require('../config/database/connection');
 module.exports = {
     async listarCursos(request, response) {
         try {
+            const {cur_nome} = request.body;
+            const curPesq = cur_nome ? `%${cur_nome}%` : `%%`;
             // instruções SQL
             const sql = `SELECT 
                 cur_cod, cur_nome, cur_ativo from cursos
-                where = cur_nome = ? and cur_ativo = 1;`;
+                where cur_nome = ? and cur_ativo = 1;`;
+
+            const values = [curPesq];
             // executa instruções SQL e armazena o resultado na variável usuários
-            const cursos = await db.query(sql);
+            const cursos = await db.query(sql, values);
             // armazena em uma variável o número de registros retornados
             const nItens = cursos[0].length;
 

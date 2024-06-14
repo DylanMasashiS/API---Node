@@ -3,12 +3,17 @@ const db = require('../config/database/connection');
 module.exports = {
     async listarEditoras(request, response) {
         try {
+
+            const {edt_nome} = request.body;
+            const edtPesq = edt_nome ? `%${edt_nome}%` : `%%`;
             // instruções SQL
             const sql = `SELECT 
                 edt_cod, edt_nome, edt_foto from editoras
                 where edt_nome = ?;`;
+
+            const values = [edtPesq];
             // executa instruções SQL e armazena o resultado na variável usuários
-            const editoras = await db.query(sql);
+            const editoras = await db.query(sql, values);
             // armazena em uma variável o número de registros retornados
             const nItens = editoras[0].length;
 
