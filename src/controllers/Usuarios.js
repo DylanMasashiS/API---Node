@@ -3,12 +3,15 @@ const db = require('../config/database/connection');
 module.exports = {
     async listarUsuarios(request, response) {
         try {
+
+            const {usu_nome} = request.body;
+            const usuPesq = usu_nome ? `%${usu_nome}%` : `%%`;
             // instruções SQL
             const sql = `SELECT 
                 usu_rm, usu_nome, usu_email, usu_tipo, 
                 usu_foto, usu_ativo
                 FROM usuarios 
-                WHERE usu_ativo = 1;`;
+                WHERE usu_nome = ? and usu_ativo = 1;`;
             // executa instruções SQL e armazena o resultado na variável usuários
             const usuarios = await db.query(sql);
             // armazena em uma variável o número de registros retornados

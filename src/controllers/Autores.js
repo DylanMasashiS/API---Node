@@ -3,12 +3,12 @@ const db = require('../config/database/connection');
 module.exports = {
     async listarAutores(request, response) {
         try {
-            const {aut_nome} = request.query;
+            const {aut_nome} = request.body;
             const autPesq = aut_nome ? `%${aut_nome}%` : `%%`;
             // instruções SQL
             const sql = `SELECT aut_cod, aut_nome, aut_foto 
                         from autores
-                        where aut_nome like ?;`;
+                        where aut_nome = ?;`;
 
             const values = [autPesq];
             // executa instruções SQL e armazena o resultado na variável usuários

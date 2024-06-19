@@ -3,7 +3,7 @@ const db = require('../config/database/connection');
 module.exports = {
     async listarEditoras(request, response) {
         try {
-
+        
             const {edt_nome} = request.body;
             const edtPesq = edt_nome ? `%${edt_nome}%` : `%%`;
             // instruções SQL

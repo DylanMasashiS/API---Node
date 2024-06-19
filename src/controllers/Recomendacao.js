@@ -3,11 +3,20 @@ const db = require('../config/database/connection');
 module.exports = {
     async listarRecomendacao(request, response) {
         try {
+            const {usu_nome} = request.body;
+            const usuPesq = usu_nome ? `%${usu_nome}%` : `%%`;
             // instruções SQL
             const sql = `SELECT 
-                rcm_cod, cur_cod, liv_cod, usu_cod, rcm_mod1, rcm_mod2, rcm_mod3, rcm_mod4;`;
+                rec.rcm_cod, cur.cur_cod, liv.liv_cod, usu.usu_nome, rec.rcm_mod1, rec.rcm_mod2, rec.rcm_mod3, rec.rcm_mod4
+                from recomendacao rec
+                inner join usuarios usu on usu.usu_cod = rec.usu_cod
+                inner join cursos cur on cur.cur_cod = rec.cur_cod
+                inner join livros liv on liv.liv_cod = rec.liv_cod
+                where usu.usu_nome = ?;`;
+
+            const values = [usuPesq];
             // executa instruções SQL e armazena o resultado na variável usuários
-            const recomendacao = await db.query(sql);
+            const recomendacao = await db.query(sql, values);
             // armazena em uma variável o número de registros retornados
             const nItens = recomendacao[0].length;
 
