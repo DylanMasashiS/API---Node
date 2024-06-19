@@ -8,7 +8,7 @@ module.exports = {
             // instruções SQL
             const sql = `SELECT 
                 cur_cod, cur_nome, cur_ativo from cursos
-                where cur_nome = ? and cur_ativo = 1;`;
+                where cur_nome = ?`;
 
             const values = [curPesq];
             // executa instruções SQL e armazena o resultado na variável usuários

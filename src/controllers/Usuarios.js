@@ -11,7 +11,7 @@ module.exports = {
                 usu_rm, usu_nome, usu_email, usu_tipo, 
                 usu_foto, usu_ativo
                 FROM usuarios 
-                WHERE usu_nome = ? and usu_ativo = 1;`;
+                WHERE usu_nome = ?`;
             // executa instruções SQL e armazena o resultado na variável usuários
             const usuarios = await db.query(sql);
             // armazena em uma variável o número de registros retornados
@@ -117,7 +117,7 @@ module.exports = {
     async ocultarUsuarios(request, response) {
         try {
             const usu_ativo = false; 
-            const { usu_cod } = request.params; 
+            const { usu_cod } = request.body; 
             const sql = `UPDATE usuarios SET usu_ativo = ? 
                 WHERE usu_cod = ?;`;
             const values = [usu_ativo, usu_cod]; 
@@ -140,11 +140,13 @@ module.exports = {
         try {
 
             const { usu_email, usu_senha } = request.body;
+            const usuEmail = usu_email ? `%${usu_email}%` : `%%`;
+            const usuSenha = usu_senha ? `%${usu_senha}%` : `%%`;
 
-            const sql = `SELECT usu_cod, usu_nome, usu_tipo FROM usuarios 
-                WHERE usu_email = ? AND usu_senha = ? AND usu_ativo = 1;`;
+            const sql = `SELECT usu_cod, usu_nome, usu_tipo, usu_ativo FROM usuarios 
+                WHERE usu_email = ? AND usu_senha = ?;`;
 
-            const values = [usu_email, usu_senha];
+            const values = [usuEmail, usuSenha];
 
             const usuarios = await db.query(sql, values);
             const nItens = usuarios[0].length; 
