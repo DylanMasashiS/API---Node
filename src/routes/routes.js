@@ -14,7 +14,6 @@ const livros_autoresController = require ('../controllers/Livros_autores');
 const livros_generosController = require ('../controllers/Livros_generos');
 
 router.get ('/usuarios/:usu_nome', (usuariosController.listarUsuarios));
-router.get ('/login_usuarios/:usu_email,:usu_senha', (usuariosController.loginUsuarios));
 router.get ('/livros/:liv_nome', (livrosController.listarLivros));
 router.get ('/autores/:aut_nome', (autoresController.listarAutores));
 router.get ('/editoras/:edt_nome', (editorasController.listarEditoras));
@@ -27,6 +26,7 @@ router.get ('/livros_autores', (livros_autoresController.listarLivros_Autores));
 router.get ('/livros_generos', (livros_generosController.listarLivros_Generos));
 
 router.post ('/usuarios', (usuariosController.cadastrarUsuarios));
+router.post ('/login_usuarios/:usu_email,:usu_senha', (usuariosController.loginUsuarios));
 router.post ('/livros', (livrosController.cadastrarLivros));
 router.post ('/autores', (autoresController.cadastrarAutores));
 router.post ('/editoras', (editorasController.cadastrarEditoras));
