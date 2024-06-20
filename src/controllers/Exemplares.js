@@ -61,7 +61,7 @@ module.exports = {
             });
         }
     },
-    async editarexemplares(request, response) {
+    async editarExemplares(request, response) {
         try {
             // parâmetros recebidos pelo corpo da requisição
             const { liv_cod, exe_tombo, exe_data_aquis, exe_data_saida} = request.body;

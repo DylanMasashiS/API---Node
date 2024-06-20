@@ -38,18 +38,18 @@ router.post ('/usuarios_cursos', (usuarios_cursosController.cadastrarUsuarios_Cu
 router.post ('/livros_autores', (livros_autoresController.cadastrarLivros_Autores));
 router.post ('/livros_generos', (livros_generosController.cadastrarLivros_Generos));    
 
-router.put ('/usuarios', (usuariosController.editarUsuarios));
-router.put ('/ocultar_usuarios/:usu_cod', (usuariosController.ocultarUsuarios));
-router.put ('/livros', (livrosController.editarLivros));
-router.put ('/autores', (autoresController.editarAutores));
-router.put ('/editoras', (editorasController.editarEditoras));
-router.put ('/cursos', (cursosController.editarCursos));
-router.put ('/exemplares', (exemplaresController.editarExemplares));
-router.put ('/emprestimos/:emp_cod', (emprestimosController.editarEmprestimos));
-router.put ('/recomendacao', (recomendacaoController.editarRecomendacao));
-router.put ('/usuarios_cursos', (usuarios_cursosController.editarUsuarios_Cursos));
-router.put ('/livros_autores', (livros_autoresController.editarLivros_Autores));
-router.put ('/livros_generos', (livros_generosController.editarLivros_Generos));
+router.patch ('/usuarios', (usuariosController.editarUsuarios));
+// router.put ('/ocultar_usuarios/:usu_cod', (usuariosController.ocultarUsuarios));
+router.patch ('/livros', (livrosController.editarLivros));
+router.patch ('/autores', (autoresController.editarAutores));
+router.patch ('/editoras', (editorasController.editarEditoras));
+router.patch ('/cursos', (cursosController.editarCursos));
+router.patch ('/exemplares', (exemplaresController.editarExemplares));
+router.patch ('/emprestimos/:emp_cod', (emprestimosController.editarEmprestimos));
+router.patch ('/recomendacao', (recomendacaoController.editarRecomendacao));
+router.patch ('/usuarios_cursos', (usuarios_cursosController.editarUsuarios_Cursos));
+router.patch ('/livros_autores', (livros_autoresController.editarLivros_Autores));
+router.patch ('/livros_generos', (livros_generosController.editarLivros_Generos));
 
 router.delete ('/usuarios', (usuariosController.apagarUsuarios));
 router.delete ('/livros', (livrosController.apagarLivros));
