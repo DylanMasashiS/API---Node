@@ -8,11 +8,11 @@ module.exports = {
             // instruções SQL
             const sql = `SELECT aut_cod, aut_nome, aut_foto 
                         from autores
-                        where aut_nome = ?;`;
+                        where aut_nome like ?;`;
 
             const values = [autPesq];
             // executa instruções SQL e armazena o resultado na variável usuários
-            const [autores] = await db.query(sql, values);
+            const autores = await db.query(sql, values);
             // armazena em uma variável o número de registros retornados
             const nItens = autores[0].length;
 
@@ -36,10 +36,10 @@ module.exports = {
             const { aut_nome, aut_foto} = request.body;
             // instrução SQL
             const sql = `INSERT INTO autores
-                (aut_cod, aut_nome, aut_foto) 
-                VALUES (?, ?, ?)`;
+                (aut_nome, aut_foto) 
+                VALUES (?, ?)`;
             // definição dos dados a serem inseridos em um array
-            const values = [aut_cod, aut_nome, aut_foto];
+            const values = [aut_nome, aut_foto];
             // execução da instrução sql passando os parâmetros
             const execSql = await db.query(sql, values);
             // identificação do ID do registro inserido
@@ -66,7 +66,7 @@ module.exports = {
             // parâmetro recebido pela URL via params ex: /usuario/1
             const { aut_cod } = request.params;
             // instruções SQL
-            const sql = `UPDATE autores SET aut_cod = ?, aut_nome = ?, 
+            const sql = `UPDATE autores SET aut_nome = ?, 
                         aut_foto = ?
                         WHERE aut_cod = ?;`;
             // preparo do array com dados que serão atualizados
@@ -91,7 +91,7 @@ module.exports = {
     async apagarAutores(request, response) {
         try {
             // parâmetro passado via url na chamada da api pelo front-end
-            const { aut_cod } = request.params;
+            const { aut_cod } = request.body;
             // comando de exclusão
             const sql = `DELETE FROM autores WHERE aut_cod = ?`;
             // array com parâmetros da exclusão

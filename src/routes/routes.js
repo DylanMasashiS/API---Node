@@ -13,20 +13,22 @@ const usuarios_cursosController = require ('../controllers/Usuario_Curso');
 const livros_autoresController = require ('../controllers/Livros_autores');
 const livros_generosController = require ('../controllers/Livros_generos');
 
-router.get ('/usuarios/:usu_nome', (usuariosController.listarUsuarios));
-router.get ('/livros/:liv_nome', (livrosController.listarLivros));
-router.get ('/autores/:aut_nome', (autoresController.listarAutores));
-router.get ('/editoras/:edt_nome', (editorasController.listarEditoras));
-router.get ('/cursos/:cur_nome', (cursosController.listarCursos));
-router.get ('/exemplares/:liv_nome', (exemplaresController.listarExemplares));
-router.get ('/emprestimos/:usu_nome', (emprestimosController.listarEmprestimos));
+//LISTAR 
+router.get ('/usuarios', (usuariosController.listarUsuarios));
+router.get ('/livros', (livrosController.listarLivros));
+router.get ('/autores', (autoresController.listarAutores));
+router.get ('/editoras', (editorasController.listarEditoras));
+router.get ('/cursos', (cursosController.listarCursos));
+router.get ('/exemplares', (exemplaresController.listarExemplares));
+router.get ('/emprestimos', (emprestimosController.listarEmprestimos));
 router.get ('/recomendacao/: usu_nome', (recomendacaoController.listarRecomendacao));
 router.get ('/usuarios_cursos', (usuarios_cursosController.listarUsuarios_Cursos));
 router.get ('/livros_autores', (livros_autoresController.listarLivros_Autores));
 router.get ('/livros_generos', (livros_generosController.listarLivros_Generos));
 
+//CADASTRAR ou INSERIR
 router.post ('/usuarios', (usuariosController.cadastrarUsuarios));
-router.post ('/login_usuarios/:usu_email,:usu_senha', (usuariosController.loginUsuarios));
+router.post ('/login_usuarios', (usuariosController.loginUsuarios));
 router.post ('/livros', (livrosController.cadastrarLivros));
 router.post ('/autores', (autoresController.cadastrarAutores));
 router.post ('/editoras', (editorasController.cadastrarEditoras));
@@ -38,29 +40,31 @@ router.post ('/usuarios_cursos', (usuarios_cursosController.cadastrarUsuarios_Cu
 router.post ('/livros_autores', (livros_autoresController.cadastrarLivros_Autores));
 router.post ('/livros_generos', (livros_generosController.cadastrarLivros_Generos));    
 
-router.patch ('/usuarios', (usuariosController.editarUsuarios));
-// router.put ('/ocultar_usuarios/:usu_cod', (usuariosController.ocultarUsuarios));
-router.patch ('/livros', (livrosController.editarLivros));
-router.patch ('/autores', (autoresController.editarAutores));
-router.patch ('/editoras', (editorasController.editarEditoras));
-router.patch ('/cursos', (cursosController.editarCursos));
-router.patch ('/exemplares', (exemplaresController.editarExemplares));
+//UPDATE ou EDITAR
+router.patch ('/usuarios/:usu_cod', (usuariosController.editarUsuarios));
+router.patch ('/ocultar_usuarios/:usu_cod', (usuariosController.ocultarUsuarios));
+router.patch ('/livros/:liv_cod', (livrosController.editarLivros));
+router.patch ('/autores/:aut_cod', (autoresController.editarAutores));
+router.patch ('/editoras/:edt_cod', (editorasController.editarEditoras));
+router.patch ('/cursos/:cur_cod', (cursosController.editarCursos));
+router.patch ('/exemplares/:exe_cod', (exemplaresController.editarExemplares));
 router.patch ('/emprestimos/:emp_cod', (emprestimosController.editarEmprestimos));
-router.patch ('/recomendacao', (recomendacaoController.editarRecomendacao));
-router.patch ('/usuarios_cursos', (usuarios_cursosController.editarUsuarios_Cursos));
-router.patch ('/livros_autores', (livros_autoresController.editarLivros_Autores));
-router.patch ('/livros_generos', (livros_generosController.editarLivros_Generos));
+router.patch ('/recomendacao/:rcm_cod', (recomendacaoController.editarRecomendacao));
+router.patch ('/usuarios_cursos/:ucu_cod', (usuarios_cursosController.editarUsuarios_Cursos));
+router.patch ('/livros_autores/:lau_cod', (livros_autoresController.editarLivros_Autores));
+router.patch ('/livros_generos/:lge_cod', (livros_generosController.editarLivros_Generos));
 
-router.delete ('/usuarios', (usuariosController.apagarUsuarios));
-router.delete ('/livros', (livrosController.apagarLivros));
-router.delete ('/autores', (autoresController.apagarAutores));
-router.delete ('/editoras', (editorasController.apagarEditoras));
-router.delete ('/cursos', (cursosController.apagarCursos));
-router.delete ('/exemplares', (exemplaresController.apagarExemplares));
-router.delete ('/emprestimos', (emprestimosController.apagarEmprestimos));
-router.delete ('/recomendacao', (recomendacaoController.apagarRecomendacao));
-router.delete ('/usuarios_cursos', (usuarios_cursosController.apagarUsuarios_Cursos));
-router.delete ('/livros_autores', (livros_autoresController.apagarLivros_Autores));
-router.delete ('/livros_generos', (livros_generosController.apagarLivros_Generos));
+//DELETE ou EXCLUIR
+router.delete ('/usuarios/:usu_cod', (usuariosController.apagarUsuarios));
+router.delete ('/livros/:liv_cod', (livrosController.apagarLivros));
+router.delete ('/autores/:aut_cod', (autoresController.apagarAutores));
+router.delete ('/editoras/:edt_cod', (editorasController.apagarEditoras));
+router.delete ('/cursos/:cur_cod', (cursosController.apagarCursos));
+router.delete ('/exemplares/:exe_cod', (exemplaresController.apagarExemplares));
+router.delete ('/emprestimos/:emp_cod', (emprestimosController.apagarEmprestimos));
+router.delete ('/recomendacao/:rcm_cod', (recomendacaoController.apagarRecomendacao));
+router.delete ('/usuarios_cursos/:ucu_cod', (usuarios_cursosController.apagarUsuarios_Cursos));
+router.delete ('/livros_autores/:lau_cod', (livros_autoresController.apagarLivros_Autores));
+router.delete ('/livros_generos/:lge_cod', (livros_generosController.apagarLivros_Generos));
 
 module.exports = router;

@@ -9,11 +9,13 @@ module.exports = {
             // instruções SQL
             const sql = `SELECT 
                 usu_rm, usu_nome, usu_email, usu_tipo, 
-                usu_foto, usu_ativo
+                usu_foto, usu_ativo = 1 as usu_ativo
                 FROM usuarios 
-                WHERE usu_nome = ?`;
+                WHERE usu_nome like ?`;
+
+            const values = [usuPesq];
             // executa instruções SQL e armazena o resultado na variável usuários
-            const usuarios = await db.query(sql);
+            const usuarios = await db.query(sql, values);
             // armazena em uma variável o número de registros retornados
             const nItens = usuarios[0].length;
 
@@ -140,13 +142,11 @@ module.exports = {
         try {
 
             const { usu_email, usu_senha } = request.body;
-            const usuEmail = usu_email ? `%${usu_email}%` : `%%`;
-            const usuSenha = usu_senha ? `%${usu_senha}%` : `%%`;
 
-            const sql = `SELECT usu_cod, usu_nome, usu_tipo, usu_ativo FROM usuarios 
+            const sql = `SELECT usu_cod, usu_nome, usu_tipo, usu_ativo = 1 AS usu_ativo FROM usuarios 
                 WHERE usu_email = ? AND usu_senha = ?;`;
 
-            const values = [usuEmail, usuSenha];
+            const values = [usu_email, usu_senha];
 
             const usuarios = await db.query(sql, values);
             const nItens = usuarios[0].length; 
