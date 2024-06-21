@@ -42,7 +42,7 @@ router.post ('/livros_generos', (livros_generosController.cadastrarLivros_Genero
 
 //UPDATE ou EDITAR
 router.patch ('/usuarios/:usu_cod', (usuariosController.editarUsuarios));
-router.patch ('/ocultar_usuarios', (usuariosController.ocultarUsuarios));
+router.patch ('/usuarios_ocultar', (usuariosController.ocultarUsuarios));
 router.patch ('/livros/:liv_cod', (livrosController.editarLivros));
 router.patch ('/autores/:aut_cod', (autoresController.editarAutores));
 router.patch ('/editoras/:edt_cod', (editorasController.editarEditoras));
@@ -55,7 +55,7 @@ router.patch ('/livros_autores/:lau_cod', (livros_autoresController.editarLivros
 router.patch ('/livros_generos/:lge_cod', (livros_generosController.editarLivros_Generos));
 
 //DELETE ou EXCLUIR
-router.delete ('/usuarios/:usu_cod', (usuariosController.apagarUsuarios));
+router.delete ('/usuarios', (usuariosController.apagarUsuarios));
 router.delete ('/livros/:liv_cod', (livrosController.apagarLivros));
 router.delete ('/autores/:aut_cod', (autoresController.apagarAutores));
 router.delete ('/editoras/:edt_cod', (editorasController.apagarEditoras));

@@ -9,7 +9,7 @@ module.exports = {
             // instruções SQL
             const sql = `SELECT 
                 edt_cod, edt_nome, edt_foto from editoras
-                where edt_nome = ?;`;
+                where edt_nome like ?;`;
 
             const values = [edtPesq];
             // executa instruções SQL e armazena o resultado na variável usuários
@@ -34,13 +34,13 @@ module.exports = {
     async cadastrarEditoras(request, response) {
         try {
             // parâmetros recebidos no corpo da requisição
-            const { edt_nome, edt_foto} = request.body;
+            const {edt_nome, edt_foto} = request.body;
             // instrução SQL
             const sql = `INSERT INTO editoras
-                (edt_cod, edt_nome, edt_foto) 
-                VALUES (?, ?, ?)`;
+                (edt_nome, edt_foto) 
+                VALUES (?, ?)`;
             // definição dos dados a serem inseridos em um array
-            const values = [edt_cod, edt_nome, edt_foto];
+            const values = [edt_nome, edt_foto];
             // execução da instrução sql passando os parâmetros
             const execSql = await db.query(sql, values);
             // identificação do ID do registro inserido
@@ -67,7 +67,7 @@ module.exports = {
             // parâmetro recebido pela URL via params ex: /usuario/1
             const { edt_cod } = request.params;
             // instruções SQL
-            const sql = `UPDATE editoras SET edt_cod = ?, edt_nome = ?, 
+            const sql = `UPDATE editoras SET edt_nome = ?, 
                         edt_foto = ?
                         WHERE edt_cod = ?;`;
             // preparo do array com dados que serão atualizados

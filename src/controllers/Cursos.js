@@ -7,8 +7,8 @@ module.exports = {
             const curPesq = cur_nome ? `%${cur_nome}%` : `%%`;
             // instruções SQL
             const sql = `SELECT 
-                cur_cod, cur_nome, cur_ativo from cursos
-                where cur_nome = ?`;
+                cur_cod, cur_nome, cur_ativo = 1 as cur_ativo from cursos
+                where cur_nome like ?`;
 
             const values = [curPesq];
             // executa instruções SQL e armazena o resultado na variável usuários
@@ -33,13 +33,13 @@ module.exports = {
     async cadastrarCursos(request, response) {
         try {
             // parâmetros recebidos no corpo da requisição
-            const { cur_nome, cur_ativo} = request.body;
+            const {cur_nome, cur_ativo} = request.body;
             // instrução SQL
             const sql = `INSERT INTO cursos
-                (cur_cod, cur_nome, cur_ativo) 
-                VALUES (?, ?, ?)`;
+                (cur_nome, cur_ativo) 
+                VALUES (?, ?)`;
             // definição dos dados a serem inseridos em um array
-            const values = [cur_cod, cur_nome, cur_ativo];
+            const values = [cur_nome, cur_ativo];
             // execução da instrução sql passando os parâmetros
             const execSql = await db.query(sql, values);
             // identificação do ID do registro inserido
@@ -66,7 +66,7 @@ module.exports = {
             // parâmetro recebido pela URL via params ex: /usuario/1
             const { cur_cod } = request.params;
             // instruções SQL
-            const sql = `UPDATE cursos SET cur_cod = ?, cur_nome = ?, 
+            const sql = `UPDATE cursos SET cur_nome = ?, 
                         cur_ativo = ?
                         WHERE cur_cod = ?;`;
             // preparo do array com dados que serão atualizados

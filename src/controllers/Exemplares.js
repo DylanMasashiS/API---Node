@@ -10,7 +10,7 @@ module.exports = {
                 exe.exe_cod, liv.liv_nome, exe.exe_tombo, exe.exe_data_aquis, exe.exe_data_saida
                 FROM exemplares exe
                 INNER JOIN livros liv ON liv.liv_cod = exe.liv_cod
-                Where liv.liv_nome = ?;`;
+                Where liv.liv_nome like ?;`;
 
             const values = [livPesq];
             // executa instruções SQL e armazena o resultado na variável usuários
@@ -38,10 +38,10 @@ module.exports = {
             const { liv_cod, exe_tombo, exe_data_aquis, exe_data_saida} = request.body;
             // instrução SQL
             const sql = `INSERT INTO exemplares
-                (exe_cod, liv_cod, exe_tombo, exe_data_aquis, exe_data_saida) 
-                VALUES (?, ?, ?, ?, ?, ?)`;
+                (liv_cod, exe_tombo, exe_data_aquis, exe_data_saida) 
+                VALUES (?, ?, ?, ?)`;
             // definição dos dados a serem inseridos em um array
-            const values = [exe_cod, liv_cod, exe_tombo, exe_data_aquis, exe_data_saida];
+            const values = [liv_cod, exe_tombo, exe_data_aquis, exe_data_saida];
             // execução da instrução sql passando os parâmetros
             const execSql = await db.query(sql, values);
             // identificação do ID do registro inserido
@@ -68,8 +68,8 @@ module.exports = {
             // parâmetro recebido pela URL via params ex: /usuario/1
             const { exe_cod } = request.params;
             // instruções SQL
-            const sql = `UPDATE exemplares SET exe_cod = ?, liv_cod = ?, 
-                        exe_tombo = ?, exe_data_aquis = ?, exe_data_saida = ?,
+            const sql = `UPDATE exemplares SET liv_cod = ?, 
+                        exe_tombo = ?, exe_data_aquis = ?, exe_data_saida = ?
                         WHERE exe_cod = ?;`;
             // preparo do array com dados que serão atualizados
             const values = [ liv_cod, exe_tombo, exe_data_aquis, exe_data_saida, exe_cod];
