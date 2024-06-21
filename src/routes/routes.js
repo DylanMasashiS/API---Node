@@ -42,7 +42,7 @@ router.post ('/livros_generos', (livros_generosController.cadastrarLivros_Genero
 
 //UPDATE ou EDITAR
 router.patch ('/usuarios/:usu_cod', (usuariosController.editarUsuarios));
-router.patch ('/ocultar_usuarios/:usu_cod', (usuariosController.ocultarUsuarios));
+router.patch ('/ocultar_usuarios', (usuariosController.ocultarUsuarios));
 router.patch ('/livros/:liv_cod', (livrosController.editarLivros));
 router.patch ('/autores/:aut_cod', (autoresController.editarAutores));
 router.patch ('/editoras/:edt_cod', (editorasController.editarEditoras));

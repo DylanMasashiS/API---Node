@@ -127,7 +127,7 @@ module.exports = {
             
             return response.status(200).json({
                 sucesso: true,
-                mensagem: `Usuário ${usu_cod} excluído com sucesso`,
+                mensagem: `Usuário ${usu_cod} ocultado com sucesso`,
                 dados: atualizacao[0].affectedRows
             });
         } catch (error) {
