@@ -3,12 +3,17 @@ const db = require('../config/database/connection');
 module.exports = {
     async listarUsuarios_Cursos(request, response) {
         try {
+
+            const {ucu_cod} = request.body;
             // instruções SQL
             const sql = `SELECT 
                 ucu_cod, usu_cod, cur_cod
-                from usuarios_cursos;`;
+                from usuarios_cursos
+                where ucu_cod = ?;`;
+
+            const values = [ucu_cod];
             // executa instruções SQL e armazena o resultado na variável usuários
-            const usuarios_cursos = await db.query(sql);
+            const usuarios_cursos = await db.query(sql, values);
             // armazena em uma variável o número de registros retornados
             const nItens = usuarios_cursos[0].length;
 
@@ -32,10 +37,10 @@ module.exports = {
             const {usu_cod, cur_cod} = request.body;
             // instrução SQL
             const sql = `INSERT INTO usuarios_cursos
-                (ucu_cod, usu_cod, cur_cod) 
-                VALUES (?, ?, ?)`;
+                (usu_cod, cur_cod) 
+                VALUES (?, ?)`;
             // definição dos dados a serem inseridos em um array
-            const values = [ucu_cod, usu_cod, cur_cod];
+            const values = [usu_cod, cur_cod];
             // execução da instrução sql passando os parâmetros
             const execSql = await db.query(sql, values);
             // identificação do ID do registro inserido
@@ -62,7 +67,7 @@ module.exports = {
             // parâmetro recebido pela URL via params ex: /usuario/1
             const { ucu_cod } = request.params;
             // instruções SQL
-            const sql = `UPDATE usuarios_cursos SET ucu_cod = ?, usu_cod = ?, 
+            const sql = `UPDATE usuarios_cursos SET usu_cod = ?, 
                         cur_cod = ?
                         WHERE ucu_cod = ?;`;
             // preparo do array com dados que serão atualizados

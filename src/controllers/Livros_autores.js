@@ -3,11 +3,16 @@ const db = require('../config/database/connection');
 module.exports = {
     async listarLivros_Autores(request, response) {
         try {
+
+            const {lau_cod} = request.body;
             // instruções SQL
             const sql = `SELECT 
-                lau_cod, aut_cod, liv_cod from livros_autores;`;
+                lau_cod, aut_cod, liv_cod FROM livros_autores
+                where lau_cod = ?;`;
+
+            const values = [lau_cod];
             // executa instruções SQL e armazena o resultado na variável usuários
-            const livros_autores = await db.query(sql);
+            const livros_autores = await db.query(sql, values);
             // armazena em uma variável o número de registros retornados
             const nItens = livros_autores[0].length;
 
@@ -31,10 +36,10 @@ module.exports = {
             const {aut_cod, liv_cod} = request.body;
             // instrução SQL
             const sql = `INSERT INTO livros_autores
-                (lau_cod, aut_cod, liv_cod) 
-                VALUES (?, ?, ?)`;
+                (aut_cod, liv_cod) 
+                VALUES (?, ?)`;
             // definição dos dados a serem inseridos em um array
-            const values = [lau_cod, aut_cod, liv_cod];
+            const values = [aut_cod, liv_cod];
             // execução da instrução sql passando os parâmetros
             const execSql = await db.query(sql, values);
             // identificação do ID do registro inserido
@@ -61,8 +66,7 @@ module.exports = {
             // parâmetro recebido pela URL via params ex: /usuario/1
             const { lau_cod } = request.params;
             // instruções SQL
-            const sql = `UPDATE livros_autores SET lau_cod = ?, usu_cod = ?, 
-                        lau_cod = ?, aut_cod = ?, liv_cod = ?
+            const sql = `UPDATE livros_autores SET aut_cod = ?, liv_cod = ?
                         WHERE lau_cod = ?;`;
             // preparo do array com dados que serão atualizados
             const values = [aut_cod, liv_cod, lau_cod];

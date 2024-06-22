@@ -9,7 +9,7 @@ const cursosController = require ('../controllers/Cursos');
 const exemplaresController = require ('../controllers/Exemplares');
 const emprestimosController = require ('../controllers/Emprestimos');
 const recomendacaoController = require ('../controllers/Recomendacao');
-const usuarios_cursosController = require ('../controllers/Usuario_Curso');
+const usuarios_cursosController = require ('../controllers/Usuario_Cursos');
 const livros_autoresController = require ('../controllers/Livros_autores');
 const livros_generosController = require ('../controllers/Livros_generos');
 

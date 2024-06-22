@@ -3,11 +3,16 @@ const db = require('../config/database/connection');
 module.exports = {
     async listarLivros_Generos(request, response) {
         try {
+
+            const {lge_cod} = request.body;
             // instruções SQL
             const sql = `SELECT 
-                lge_cod, gen_cod, liv_cod from livros_generos;`;
+                lge_cod, gen_cod, liv_cod from livros_generos
+                where lge_cod = ?;`;
+
+            const values = [lge_cod];
             // executa instruções SQL e armazena o resultado na variável usuários
-            const livros_generos = await db.query(sql);
+            const livros_generos = await db.query(sql, values);
             // armazena em uma variável o número de registros retornados
             const nItens = livros_generos[0].length;
 
@@ -31,10 +36,10 @@ module.exports = {
             const {gen_cod, liv_cod} = request.body;
             // instrução SQL
             const sql = `INSERT INTO livros_generos
-                (lge_cod, gen_cod, liv_cod) 
-                VALUES (?, ?, ?)`;
+                (gen_cod, liv_cod) 
+                VALUES (?, ?)`;
             // definição dos dados a serem inseridos em um array
-            const values = [lge_cod, gen_cod, liv_cod];
+            const values = [gen_cod, liv_cod];
             // execução da instrução sql passando os parâmetros
             const execSql = await db.query(sql, values);
             // identificação do ID do registro inserido
@@ -61,7 +66,7 @@ module.exports = {
             // parâmetro recebido pela URL via params ex: /usuario/1
             const { lge_cod } = request.params;
             // instruções SQL
-            const sql = `UPDATE livros_generos SET lge_cod = ?, gen_cod = ?, 
+            const sql = `UPDATE livros_generos SET gen_cod = ?, 
                         liv_cod = ?
                         WHERE lge_cod = ?;`;
             // preparo do array com dados que serão atualizados
