@@ -1,6 +1,6 @@
 const express = require ('express');
 const router = express.Router();
-const upload = require ('../middlewares/uploadImages');
+const upload = require ('../middlewares/upImgAutores');
 
 const usuariosController = require ('../controllers/Usuarios');
 const livrosController = require ('../controllers/Livros');
@@ -30,11 +30,11 @@ router.get ('/livros_autores', (livros_autoresController.listarLivros_Autores));
 router.get ('/livros_generos', (livros_generosController.listarLivros_Generos));
 
 //CADASTRAR ou INSERIR
-router.post ('/upload/ Capa Livros', upload.single ('img'), (livrosController.cadastrarLivros));
+// router.post ('/upload/CapaAutores', upload.single ('img'), (autoresController.cadastrarAutores));
 router.post ('/usuarios', (usuariosController.cadastrarUsuarios));
 router.post ('/login_usuarios', (usuariosController.loginUsuarios));
 router.post ('/livros', (livrosController.cadastrarLivros));
-router.post ('/autores', (autoresController.cadastrarAutores));
+router.post ('/autores', upload.single('img'), autoresController.cadastrarAutores);
 router.post ('/editoras', (editorasController.cadastrarEditoras));
 router.post ('/cursos', (cursosController.cadastrarCursos));
 router.post ('/generos', (generosController.cadastrarGeneros));

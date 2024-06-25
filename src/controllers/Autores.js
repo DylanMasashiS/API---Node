@@ -3,14 +3,14 @@ var fs = require('fs-extra');
 
 function geralUrl (e) {
     let img = e.aut_foto ? e.aut_foto : 'default.jpg';
-    if ('fs.existsSync' in ('./public/uploads/Autores/' + img)) {
-        img = 'default.jpg';
+    if (!fs.existsSync('./public/upload/CapaAutores/' + img)) {
+        img = 'autor.png';
     }
 
     const autores = {
         aut_cod: e.aut_cod,
         aut_nome: e.aut_nome,
-        aut_foto: 'http://10.67.22.216:3333/public/uploads/Autores/' + img
+        aut_foto: 'http://10.67.23.27:3333/public/upload/CapaAutores/' + img
     }   
 
     return autores;
@@ -54,16 +54,12 @@ module.exports = {
             const { aut_nome } = request.body;
 
             //insert com imagem
-            const foto = 0;
-            const aut_foto = null;
             const img = request.file.filename;
 
             // instrução SQL
-            const sql = `INSERT INTO autores
-                (aut_nome, aut_foto) 
-                VALUES (?, ?)`;
+            const sql = `INSERT INTO autores (aut_nome, aut_foto) VALUES (?, ?);`;
             // definição dos dados a serem inseridos em um array com o insert de foto pela API
-            const values = [aut_nome, img, foto, aut_foto];
+            const values = [aut_nome, img];
             // execução da instrução sql passando os parâmetros
             const execSql = await db.query(sql, values);
             // identificação do ID do registro inserido
@@ -72,7 +68,7 @@ module.exports = {
             const dados = {
                 aut_cod: aut_cod,
                 aut_nome: aut_nome,
-                aut_foto: 'http://10.67.22.216:3333/public/uploads/Autores/' + img
+                aut_foto: 'http://10.67.23.27:3333/public/upload/CapaAutores/' + img
             }
 
             return response.status(200).json({
