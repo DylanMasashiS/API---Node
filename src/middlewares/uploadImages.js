@@ -8,7 +8,7 @@ const storage = multer.diskStorage ({
 
         const uniqueSuffix = Date.now () + '-' + Math.round (Math.random () * 1E9);
 
-        const ext = file.mimetype ==== 'image/jpeg' ? '.jpg' : file.mimetype.slice 
+        const ext = file.mimetype === 'image/jpg' ? '.jpg' : file.mimetype.slice 
         (file.mimetype.length - 3); 
 
         cb (null, file.fieldname + '-' + uniqueSuffix + ext);

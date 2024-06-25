@@ -51,13 +51,19 @@ module.exports = {
     async cadastrarAutores(request, response) {
         try {
             // parâmetros recebidos no corpo da requisição
-            const { aut_nome, aut_foto} = request.body;
+            const { aut_nome } = request.body;
+
+            //insert com imagem
+            const foto = 0;
+            const aut_foto = null;
+            const img = request.file.filename;
+
             // instrução SQL
             const sql = `INSERT INTO autores
                 (aut_nome, aut_foto) 
                 VALUES (?, ?)`;
-            // definição dos dados a serem inseridos em um array
-            const values = [aut_nome, aut_foto];
+            // definição dos dados a serem inseridos em um array com o insert de foto pela API
+            const values = [aut_nome, img, foto, aut_foto];
             // execução da instrução sql passando os parâmetros
             const execSql = await db.query(sql, values);
             // identificação do ID do registro inserido

@@ -12,9 +12,9 @@ function geralUrl (e) {
         liv_nome: e.liv_nome,
         liv_pha_cod: e.liv_pha_cod,
         liv_categ_cod: e.liv_categ_cod,
-        liv_foto: 'http://10.67.22.216:3333/public/uploads/Livros/' + img
         liv_desc: e.liv_desc,
         edt_nome: e.edt_nome,
+        liv_foto: 'http://10.67.22.216:3333/public/uploads/Livros/' + img,
         edt_foto: 'http://10.67.22.216:3333/public/uploads/Editoras/' + img
     }   
 
