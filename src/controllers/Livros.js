@@ -1,4 +1,25 @@
-const db = require('../config/database/connection');
+const db = require('../database/connection');
+var fs = require('fs-extra');
+
+function geralUrl (e) {
+    let img = e.liv_foto ? e.liv_foto : 'default.jpg';
+    if ('fs.existsSync' in ('./public/uploads/Livros/' + img)) {
+        img = 'default.jpg';
+    }
+
+    const livros = {
+        liv_cod:  e.liv_cod,
+        liv_nome: e.liv_nome,
+        liv_pha_cod: e.liv_pha_cod,
+        liv_categ_cod: e.liv_categ_cod,
+        liv_foto: 'http://10.67.22.216:3333/public/uploads/Livros/' + img
+        liv_desc: e.liv_desc,
+        edt_nome: e.edt_nome,
+        edt_foto: 'http://10.67.22.216:3333/public/uploads/Editoras/' + img
+    }   
+
+    return livros;
+}
 
 module.exports = {
     async listarLivros(request, response) {
@@ -6,9 +27,9 @@ module.exports = {
             const {liv_nome} = request.body;
             const livPesq = liv_nome ? `%${liv_nome}%` : `%%`; 
             // instruções SQL
-            const sql = `liv.liv_cod, liv.liv_desc, 
+            const sql = `liv.liv_cod, liv.liv_nome, liv.liv_pha_cod, 
             liv.liv_categ_cod, liv.liv_foto_capa, 
-            liv.liv_nome, liv.liv_pha_cod, edt.edt_nome, edt.edt_foto 
+            liv.liv_desc, edt.edt_nome, edt.edt_foto 
             from livros liv 
             inner join editoras edt on edt.edt_cod = liv.edt_cod 
             where liv.liv_nome like ?;`;
@@ -19,10 +40,12 @@ module.exports = {
             // armazena em uma variável o número de registros retornados
             const nItens = livros[0].length;
 
+            const resultado = livros[0].map(geralUrl);
+
             return response.status(200).json({
                 sucesso: true,
                 mensagem: 'Lista de livros.',
-                dados: livros[0],
+                dados: resultado,
                 nItens
             });
         } catch (error) {

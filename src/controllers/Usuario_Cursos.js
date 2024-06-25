@@ -1,4 +1,4 @@
-const db = require('../config/database/connection');
+const db = require('../database/connection');
 
 module.exports = {
     async listarUsuarios_Cursos(request, response) {

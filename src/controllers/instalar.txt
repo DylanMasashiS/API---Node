@@ -1,0 +1,4 @@
+npm i multer
+npm i fs-extra
+
+Testar se o livros vai puxar a foto da editora, genero e autor junto

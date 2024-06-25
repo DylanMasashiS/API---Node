@@ -1,4 +1,20 @@
-const db = require('../config/database/connection');
+const db = require('../database/connection');
+var fs = require('fs-extra');
+
+function geralUrl (e) {
+    let img = e.edt_foto ? e.edt_foto : 'default.jpg';
+    if ('fs.existsSync' in ('./public/uploads/Editoras/' + img)) {
+        img = 'default.jpg';
+    }
+
+    const editoras = {
+        edt_cod:  e.edt_cod,
+        edt_nome: e.edt_nome,
+        edt_foto: 'http://10.67.22.216:3333/public/uploads/Editoras/' + img
+    }   
+
+    return editoras;
+}
 
 module.exports = {
     async listarEditoras(request, response) {
@@ -17,10 +33,12 @@ module.exports = {
             // armazena em uma variável o número de registros retornados
             const nItens = editoras[0].length;
 
+            const resultado = editoras[0].map(geralUrl);
+
             return response.status(200).json({
                 sucesso: true,
                 mensagem: 'Lista de editoras.',
-                dados: editoras[0],
+                dados: resultado,
                 nItens
             });
         } catch (error) {

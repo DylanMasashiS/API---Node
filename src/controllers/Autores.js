@@ -1,4 +1,20 @@
-const db = require('../config/database/connection');
+const db = require('../database/connection');
+var fs = require('fs-extra');
+
+function geralUrl (e) {
+    let img = e.aut_foto ? e.aut_foto : 'default.jpg';
+    if ('fs.existsSync' in ('./public/uploads/Autores/' + img)) {
+        img = 'default.jpg';
+    }
+
+    const autores = {
+        aut_cod: e.aut_cod,
+        aut_nome: e.aut_nome,
+        aut_foto: 'http://10.67.22.216:3333/public/uploads/Autores/' + img
+    }   
+
+    return autores;
+}
 
 module.exports = {
     async listarAutores(request, response) {
@@ -16,10 +32,12 @@ module.exports = {
             // armazena em uma variável o número de registros retornados
             const nItens = autores[0].length;
 
+            const resultado = autores[0].map(geralUrl);
+
             return response.status(200).json({
                 sucesso: true,
                 mensagem: 'Lista de autores.',
-                dados: autores[0],
+                dados: resultado,
                 nItens
             });
         } catch (error) {
