@@ -11,7 +11,7 @@ module.exports = {
             liv.liv_nome, liv.liv_pha_cod, edt.edt_nome, edt.edt_foto 
             from livros liv 
             inner join editoras edt on edt.edt_cod = liv.edt_cod 
-            where liv.liv_nome = ?;`;
+            where liv.liv_nome like ?;`;
 
             const values = [livPesq];
             // executa instruções SQL e armazena o resultado na variável usuários
@@ -39,8 +39,8 @@ module.exports = {
             const { liv_pha_cod, liv_categ_cod, liv_nome, liv_desc, edt_cod, liv_foto_capa} = request.body;
             // instrução SQL
             const sql = `INSERT INTO livros
-                (liv_cod, liv_pha_cod, liv_categ_cod, liv_nome, liv_desc, edt_cod, liv_foto_capa) 
-                VALUES (?, ?, ?, ?, ?, ?, ?)`;
+                (liv_pha_cod, liv_categ_cod, liv_nome, liv_desc, edt_cod, liv_foto_capa) 
+                VALUES (?, ?, ?, ?, ?, ?)`;
             // definição dos dados a serem inseridos em um array
             const values = [liv_pha_cod, liv_categ_cod, liv_nome, liv_desc, edt_cod, liv_foto_capa];
             // execução da instrução sql passando os parâmetros

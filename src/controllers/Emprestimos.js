@@ -11,7 +11,7 @@ module.exports = {
                 FROM emprestimos emp
                 Inner Join exemplares exe ON exe.exe_cod = emp.exe_cod
                 Inner Join usuarios usu ON usu.usu_cod = emp.usu_cod
-                Where usu.usu_nome = ?;`;
+                Where usu.usu_nome like ?;`;
             // executa instruções SQL e armazena o resultado na variável usuários
             const values = [nomePesq];
             const emprestimos = await db.query(sql, values);
@@ -38,10 +38,10 @@ module.exports = {
             const { usu_cod, exe_cod, emp_data_emp, emp_data_devol, emp_devolvido} = request.body;
             // instrução SQL
             const sql = `INSERT INTO emprestimos
-                (emp_cod, usu_cod, exe_cod, emp_data_emp, emp_data_devol, emp_devolvido) 
-                VALUES (?, ?, ?, ?, ?, ?)`;
+                (usu_cod, exe_cod, emp_data_emp, emp_data_devol, emp_devolvido) 
+                VALUES (?, ?, ?, ?, ?)`;
             // definição dos dados a serem inseridos em um array
-            const values = [emp_cod, usu_cod, exe_cod, emp_data_emp, emp_data_devol, emp_devolvido];
+            const values = [usu_cod, exe_cod, emp_data_emp, emp_data_devol, emp_devolvido];
             // execução da instrução sql passando os parâmetros
             const execSql = await db.query(sql, values);
             // identificação do ID do registro inserido
@@ -68,11 +68,11 @@ module.exports = {
             // parâmetro recebido pela URL via params ex: /usuario/1
             const { emp_cod } = request.params;
             // instruções SQL
-            const sql = `UPDATE emprestimos SET emp_cod = ?, usu_cod = ?, 
+            const sql = `UPDATE emprestimos SET usu_cod = ?, 
                         exe_cod = ?, emp_data_emp = ?, emp_data_devol = ?, emp_devolvido = ?
                         WHERE emp_cod = ?;`;
             // preparo do array com dados que serão atualizados
-            const values = [usu_cod, exe_cod, emp_cod, emp_data_emp, emp_data_devol, emp_devolvido, emp_cod];
+            const values = [usu_cod, exe_cod,emp_data_emp, emp_data_devol, emp_devolvido, emp_cod];
             // execução e obtenção de confirmação da atualização realizada
             const atualizaDados = await db.query(sql, values);
 

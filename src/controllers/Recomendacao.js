@@ -12,7 +12,7 @@ module.exports = {
                 inner join usuarios usu on usu.usu_cod = rec.usu_cod
                 inner join cursos cur on cur.cur_cod = rec.cur_cod
                 inner join livros liv on liv.liv_cod = rec.liv_cod
-                where usu.usu_nome = ?;`;
+                where usu.usu_nome like ?;`;
 
             const values = [usuPesq];
             // executa instruções SQL e armazena o resultado na variável usuários
@@ -40,10 +40,10 @@ module.exports = {
             const {cur_cod, liv_cod, usu_cod, rcm_mod1, rcm_mod2, rcm_mod3, rcm_mod4} = request.body;
             // instrução SQL
             const sql = `INSERT INTO recomendacao
-                (rcm_cod, cur_cod, liv_cod, usu_cod, rcm_mod1, rcm_mod2, rcm_mod3, rcm_mod4) 
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?)`;
+                (cur_cod, liv_cod, usu_cod, rcm_mod1, rcm_mod2, rcm_mod3, rcm_mod4) 
+                VALUES (?, ?, ?, ?, ?, ?, ?)`;
             // definição dos dados a serem inseridos em um array
-            const values = [rcm_cod, cur_cod, liv_cod, usu_cod, rcm_mod1, rcm_mod2, rcm_mod3, rcm_mod4];
+            const values = [cur_cod, liv_cod, usu_cod, rcm_mod1, rcm_mod2, rcm_mod3, rcm_mod4];
             // execução da instrução sql passando os parâmetros
             const execSql = await db.query(sql, values);
             // identificação do ID do registro inserido
@@ -70,10 +70,11 @@ module.exports = {
             // parâmetro recebido pela URL via params ex: /usuario/1
             const { rcm_cod } = request.params;
             // instruções SQL
-            const sql = `UPDATE recomendacao SET rcm_cod = ?, cur_cod = ?, liv_cod = ?,
-             usu_cod = ?, rcm_mod1 = ?, rcm_mod2 = ?, rcm_mod3 = ?, rcm_mod4 = ?`;
+            const sql = `UPDATE recomendacao SET cur_cod = ?, liv_cod = ?,
+             usu_cod = ?, rcm_mod1 = ?, rcm_mod2 = ?, rcm_mod3 = ?, rcm_mod4 = ?
+             Where rcm_cod = ?;`;
             // preparo do array com dados que serão atualizados
-            const values = [rcm_cod, cur_cod, liv_cod, usu_cod, rcm_mod1, rcm_mod2, rcm_mod3, rcm_mod4];
+            const values = [cur_cod, liv_cod, usu_cod, rcm_mod1, rcm_mod2, rcm_mod3, rcm_mod4];
             // execução e obtenção de confirmação da atualização realizada
             const atualizaDados = await db.query(sql, values);
 
