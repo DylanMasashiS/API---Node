@@ -23,7 +23,7 @@ router.get ('/cursos', (cursosController.listarCursos));
 router.get ('/generos', (generosController.listarGeneros));
 router.get ('/exemplares', (exemplaresController.listarExemplares));
 router.get ('/emprestimos', (emprestimosController.listarEmprestimos));
-router.get ('/recomendacao/: usu_nome', (recomendacaoController.listarRecomendacao));
+router.get ('/recomendacao', (recomendacaoController.listarRecomendacao));
 router.get ('/usuarios_cursos', (usuarios_cursosController.listarUsuarios_Cursos));
 router.get ('/livros_autores', (livros_autoresController.listarLivros_Autores));
 router.get ('/livros_generos', (livros_generosController.listarLivros_Generos));
