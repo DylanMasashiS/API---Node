@@ -1,6 +1,0 @@
-Testar se o livros vai puxar a foto da editora, genero e autor junto
-
-perguntar se precisa dos models
-perguntar se precisa do insert com imagens msm tendo ja um campo de foto,
-pq no exemplo do slide nao havia foto e sim a inserção da foto do produto
-em destaque.
