@@ -3,8 +3,8 @@ var fs = require('fs-extra');
 
 function geralUrl (e) {
     let img = e.liv_foto ? e.liv_foto : 'default.jpg';
-    if ('fs.existsSync' in ('./public/uploads/Livros/' + img)) {
-        img = 'default.jpg';
+    if (!fs.existsSync ('./public/uploads/CapaLivros/' + img)) {
+        img = 'livros.jpg';
     }
 
     const livros = {
@@ -14,8 +14,7 @@ function geralUrl (e) {
         liv_categ_cod: e.liv_categ_cod,
         liv_desc: e.liv_desc,
         edt_nome: e.edt_nome,
-        liv_foto: 'http://10.67.22.216:3333/public/uploads/Livros/' + img,
-        edt_foto: 'http://10.67.22.216:3333/public/uploads/Editoras/' + img
+        liv_foto: 'http://10.67.23.44:3333/public/uploads/CapaLivros/' + img
     }   
 
     return livros;
@@ -27,7 +26,7 @@ module.exports = {
             const {liv_nome} = request.body;
             const livPesq = liv_nome ? `%${liv_nome}%` : `%%`; 
             // instruções SQL
-            const sql = `liv.liv_cod, liv.liv_nome, liv.liv_pha_cod, 
+            const sql = `SELECT liv.liv_cod, liv.liv_nome, liv.liv_pha_cod, 
             liv.liv_categ_cod, liv.liv_foto_capa, 
             liv.liv_desc, edt.edt_nome, edt.edt_foto 
             from livros liv 

@@ -4,14 +4,14 @@ var fs = require('fs-extra');
 
 function geralUrl (e) {
     let img = e.usu_foto ? e.usu_foto : 'default.jpg';
-    if ('fs.existsSync' in ('./public/uploads/Usuarios/' + img)) {
-        img = 'default.jpg';
+    if (!fs.existsSync ('./public/uploads/FotoUsuarios/' + img)) {
+        img = 'usuario.jpg';
     }
 
     const usuarios = {
         usu_cod:  e.usu_cod,
         usu_nome: e.usu_nome,
-        usu_foto: 'http://10.67.22.216:3333/public/uploads/Usuarios/' + img
+        usu_foto: 'http://10.67.23.44:3333/public/uploads/FotoUsuarios/' + img
     }   
 
     return usuarios;

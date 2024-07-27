@@ -3,14 +3,14 @@ var fs = require('fs-extra');
 
 function geralUrl (e) {
     let img = e.aut_foto ? e.aut_foto : 'default.jpg';
-    if (!fs.existsSync('./public/upload/CapaAutores/' + img)) {
-        img = 'autor.png';
+    if (!fs.existsSync ('./public/uploads/CapaAutores/' + img)) {
+        img = 'autor.jpg';
     }
 
     const autores = {
         aut_cod: e.aut_cod,
         aut_nome: e.aut_nome,
-        aut_foto: 'http://10.67.23.27:3333/public/upload/CapaAutores/' + img
+        aut_foto: 'http://10.67.23.44:3333/public/uploads/CapaAutores/' + img
     }   
 
     return autores;
