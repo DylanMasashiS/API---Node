@@ -68,13 +68,13 @@ module.exports = {
             const dados = {
                 aut_cod: aut_cod,
                 aut_nome: aut_nome,
-                aut_foto: 'http://10.67.23.27:3333/public/upload/CapaAutores/' + img
+                aut_foto: 'http://10.67.23.44:3333/public/upload/CapaAutores/' + img
             }
 
             return response.status(200).json({
                 sucesso: true,
                 mensagem: 'Cadastro do autor efetuado com sucesso.',
-                dados
+                dados: aut_cod
                 //mensSql: execSql
             });
         } catch (error) {

@@ -1,6 +1,9 @@
 const express = require ('express');
 const router = express.Router();
 const upload = require ('../middlewares/upImgAutores');
+const upload = require ('../middlewares/upImgLivros');
+const upload = require ('../middlewares/upImgEditoras');
+const upload = require ('../middlewares/upImgE');
 
 const usuariosController = require ('../controllers/Usuarios');
 const livrosController = require ('../controllers/Livros');
