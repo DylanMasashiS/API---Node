@@ -1,5 +1,4 @@
 const db = require('../database/connection');
-
 var fs = require('fs-extra');
 
 function geralUrl (e) {
@@ -56,21 +55,33 @@ module.exports = {
         try {
             // parâmetros recebidos no corpo da requisição
             const { usu_rm, usu_nome, usu_email, usu_senha, usu_tipo, usu_sexo, usu_ativo } = request.body;
+
+            //insert com imagem
+            const img = request.file.filename;
             // instrução SQL
             const sql = `INSERT INTO usuarios 
                 (usu_rm, usu_nome, usu_email, usu_senha, usu_tipo, usu_sexo, usu_ativo) 
                 VALUES (?, ?, ?, ?, ?, ?, ?)`;
             // definição dos dados a serem inseridos em um array
-            const values = [usu_rm, usu_nome, usu_email, usu_senha, usu_tipo, usu_sexo, usu_ativo];
+            const values = [usu_rm, usu_nome, usu_email, usu_senha, img, usu_tipo, usu_sexo, usu_ativo];
             // execução da instrução sql passando os parâmetros
             const execSql = await db.query(sql, values);
             // identificação do ID do registro inserido
             const usu_cod = execSql[0].insertId;
 
+            const dados = {
+                usu_cod,
+                usu_rm,
+                usu_nome,
+                usu_email,
+                usu_senha,
+                usu_foto: 'http://10.67.23.44:3333/public/uploads/FotoUsuarios/' + img
+            };
+
             return response.status(200).json({
                 sucesso: true,
                 mensagem: 'Cadastro do usuário efetuado com sucesso.',
-                dados: usu_cod
+                dados
                 //mensSql: execSql
             });
         } catch (error) {

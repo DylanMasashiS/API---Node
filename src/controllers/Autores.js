@@ -1,5 +1,5 @@
 const db = require('../database/connection');
-var fs = require('fs-extra');
+var fs = require('fs-extra');   
 
 function geralUrl (e) {
     let img = e.aut_foto ? e.aut_foto : 'default.jpg';
@@ -10,7 +10,7 @@ function geralUrl (e) {
     const autores = {
         aut_cod: e.aut_cod,
         aut_nome: e.aut_nome,
-        aut_foto: 'http://10.67.23.44:3333/public/uploads/CapaAutores/' + img
+        aut_foto: 'http://10.67.23.27:3333/public/uploads/CapaAutores/' + img
     }   
 
     return autores;
@@ -66,15 +66,15 @@ module.exports = {
             const aut_cod = execSql[0].insertId;
 
             const dados = {
-                aut_cod: aut_cod,
-                aut_nome: aut_nome,
-                aut_foto: 'http://10.67.23.44:3333/public/upload/CapaAutores/' + img
-            }
+                aut_cod,
+                aut_nome,
+                img: 'http://10.67.23.27:3333/public/uploads/CapaAutores/' + img
+            };
 
             return response.status(200).json({
                 sucesso: true,
                 mensagem: 'Cadastro do autor efetuado com sucesso.',
-                dados: aut_cod
+                dados 
                 //mensSql: execSql
             });
         } catch (error) {
