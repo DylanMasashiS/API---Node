@@ -10,7 +10,7 @@ function geralUrl (e) {
     const editoras = {
         edt_cod:  e.edt_cod,
         edt_nome: e.edt_nome,
-        edt_foto: 'http://10.67.23.44:3333/public/uploads/CapaEditoras/' + img
+        edt_foto: 'http://10.67.23.27:3333/public/uploads/CapaEditoras/' + img
     }   
 
     return editoras;
@@ -52,22 +52,30 @@ module.exports = {
     async cadastrarEditoras(request, response) {
         try {
             // parâmetros recebidos no corpo da requisição
-            const {edt_nome, edt_foto} = request.body;
+            const {edt_nome} = request.body;
+
+            const img = request.file.filename;
             // instrução SQL
             const sql = `INSERT INTO editoras
                 (edt_nome, edt_foto) 
                 VALUES (?, ?)`;
             // definição dos dados a serem inseridos em um array
-            const values = [edt_nome, edt_foto];
+            const values = [edt_nome, img];
             // execução da instrução sql passando os parâmetros
             const execSql = await db.query(sql, values);
             // identificação do ID do registro inserido
             const edt_cod = execSql[0].insertId;
 
+            const dados = {
+                edt_cod,
+                edt_nome,
+                edt_foto: 'http://10.67.23.27:3333/public/uploads/CapaEditoras/' + img
+            };
+
             return response.status(200).json({
                 sucesso: true,
                 mensagem: 'Cadastro da editora efetuado com sucesso.',
-                dados: edt_cod
+                dados
                 //mensSql: execSql
             });
         } catch (error) {

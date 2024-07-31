@@ -2,7 +2,7 @@ const express = require ('express');
 const router = express.Router();
 const uploads = require ('../middlewares/upImgAutores');
 // const uploads = require ('../middlewares/upImgGeneros');
-// const uploads = require ('../middlewares/upImgEditoras');
+const uploads = require ('../middlewares/upImgEditoras');
 // const uploads = require ('../middlewares/upImgUsuarios');
 // const uploads = require ('../middlewares/upImgLivros');
 
@@ -39,7 +39,7 @@ router.post ('/usuarios', (usuariosController.cadastrarUsuarios));
 router.post ('/login_usuarios', (usuariosController.loginUsuarios));
 router.post ('/livros', (livrosController.cadastrarLivros));
 router.post ('/autores', uploads.single('img'), autoresController.cadastrarAutores);
-router.post ('/editoras', (editorasController.cadastrarEditoras));
+router.post ('/editoras', uploads.single('img'), editorasController.cadastrarEditoras);
 router.post ('/cursos', (cursosController.cadastrarCursos));
 router.post ('/generos', (generosController.cadastrarGeneros));
 router.post ('/exemplares', (exemplaresController.cadastrarExemplares));
