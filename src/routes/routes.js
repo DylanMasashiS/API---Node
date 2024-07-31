@@ -1,10 +1,10 @@
 const express = require ('express');
 const router = express.Router();
-const uploads = require ('../middlewares/upImgAutores');
-// const uploads = require ('../middlewares/upImgGeneros');
-const uploads = require ('../middlewares/upImgEditoras');
-// const uploads = require ('../middlewares/upImgUsuarios');
-// const uploads = require ('../middlewares/upImgLivros');
+const uploadsA = require ('../middlewares/upImgAutores');
+const uploadsG = require ('../middlewares/upImgGeneros');
+const uploadsE = require ('../middlewares/upImgEditoras');
+const uploadsU = require ('../middlewares/upImgUsuarios');
+const uploadsL = require ('../middlewares/upImgLivros');
 
 const usuariosController = require ('../controllers/Usuarios');
 const livrosController = require ('../controllers/Livros');
@@ -35,13 +35,13 @@ router.get ('/livros_generos', (livros_generosController.listarLivros_Generos));
 
 //CADASTRAR ou INSERIR
 // router.post ('/uploads/CapaAutores', uploads.single ('img'), (autoresController.cadastrarAutores));
-router.post ('/usuarios', (usuariosController.cadastrarUsuarios));
+router.post ('/usuarios', uploadsU.single('img'), usuariosController.cadastrarUsuarios);
 router.post ('/login_usuarios', (usuariosController.loginUsuarios));
-router.post ('/livros', (livrosController.cadastrarLivros));
-router.post ('/autores', uploads.single('img'), autoresController.cadastrarAutores);
-router.post ('/editoras', uploads.single('img'), editorasController.cadastrarEditoras);
+router.post ('/livros', uploadsL.single('img'), livrosController.cadastrarLivros);
+router.post ('/autores', uploadsA.single('img'), autoresController.cadastrarAutores);
+router.post ('/editoras', uploadsE.single('img'), editorasController.cadastrarEditoras);
 router.post ('/cursos', (cursosController.cadastrarCursos));
-router.post ('/generos', (generosController.cadastrarGeneros));
+router.post ('/generos', uploadsG.single('img'), generosController.cadastrarGeneros);
 router.post ('/exemplares', (exemplaresController.cadastrarExemplares));
 router.post ('/emprestimos', (emprestimosController.cadastrarEmprestimos));
 router.post ('/recomendacao', (recomendacaoController.cadastrarRecomendacao));

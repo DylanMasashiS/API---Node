@@ -23,9 +23,8 @@ module.exports = {
             const {edt_nome} = request.body;
             const edtPesq = edt_nome ? `%${edt_nome}%` : `%%`;
             // instruções SQL
-            const sql = `SELECT 
-                edt_cod, edt_nome, edt_foto from editoras
-                where edt_nome like ?;`;
+            const sql = `SELECT edt_cod, edt_nome, edt_foto from editoras
+                        where edt_nome like ?;`;
 
             const values = [edtPesq];
             // executa instruções SQL e armazena o resultado na variável usuários
@@ -56,9 +55,7 @@ module.exports = {
 
             const img = request.file.filename;
             // instrução SQL
-            const sql = `INSERT INTO editoras
-                (edt_nome, edt_foto) 
-                VALUES (?, ?)`;
+            const sql = `INSERT INTO editoras (edt_nome, edt_foto) VALUES (?, ?)`;
             // definição dos dados a serem inseridos em um array
             const values = [edt_nome, img];
             // execução da instrução sql passando os parâmetros

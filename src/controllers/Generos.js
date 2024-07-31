@@ -10,7 +10,7 @@ function geralUrl (e) {
     const generos = {
         gen_cod:  e.gen_cod,
         gen_nome: e.gen_nome,
-        gen_foto: 'http://10.67.23.44:3333/public/uploads/CapaGeneros/' + img
+        gen_foto: 'http://10.67.23.27:3333/public/uploads/CapaGeneros/' + img
     }   
 
     return generos;
@@ -51,22 +51,30 @@ module.exports = {
     async cadastrarGeneros(request, response) {
         try {
             // parâmetros recebidos no corpo da requisição
-            const { gen_nome, gen_foto} = request.body;
+            const { gen_nome } = request.body;
+
+            const img = request.file.filename;
             // instrução SQL
             const sql = `INSERT INTO generos
                 (gen_nome, gen_foto) 
                 VALUES (?, ?)`;
             // definição dos dados a serem inseridos em um array
-            const values = [gen_nome, gen_foto];
+            const values = [gen_nome, img];
             // execução da instrução sql passando os parâmetros
             const execSql = await db.query(sql, values);
             // identificação do ID do registro inserido
             const gen_cod = execSql[0].insertId;
 
+            const dados = {
+                gen_cod,
+                gen_nome,
+                gen_foto: 'http://10.67.23.27:3333/public/uploads/CapaGeneros/' + img
+            };
+
             return response.status(200).json({
                 sucesso: true,
                 mensagem: 'Cadastro do gênero efetuado com sucesso.',
-                dados: gen_cod
+                dados
                 //mensSql: execSql
             });
         } catch (error) {
