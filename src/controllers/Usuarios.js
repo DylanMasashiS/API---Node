@@ -10,6 +10,11 @@ function geralUrl (e) {
     const usuarios = {
         usu_cod:  e.usu_cod,
         usu_nome: e.usu_nome,
+        usu_email: e.usu_email,
+        usu_senha: e.usu_senha,
+        usu_tipo: e.usu_tipo,
+        usu_sexo: e.usu_sexo,
+        usu_ativo: e.usu_ativo,
         usu_foto: 'http://10.67.23.44:3333/public/uploads/FotoUsuarios/' + img
     }   
 
@@ -63,7 +68,7 @@ module.exports = {
                 (usu_rm, usu_nome, usu_email, usu_senha, usu_tipo, usu_sexo, usu_ativo) 
                 VALUES (?, ?, ?, ?, ?, ?, ?)`;
             // definição dos dados a serem inseridos em um array
-            const values = [usu_rm, usu_nome, usu_email, usu_senha, img, usu_tipo, usu_sexo, usu_ativo];
+            const values = [usu_rm, usu_nome, usu_email, usu_senha, usu_tipo, usu_sexo, usu_ativo, img];
             // execução da instrução sql passando os parâmetros
             const execSql = await db.query(sql, values);
             // identificação do ID do registro inserido
@@ -75,6 +80,9 @@ module.exports = {
                 usu_nome,
                 usu_email,
                 usu_senha,
+                usu_tipo,
+                usu_sexo,
+                usu_ativo,
                 usu_foto: 'http://10.67.23.44:3333/public/uploads/FotoUsuarios/' + img
             };
 
