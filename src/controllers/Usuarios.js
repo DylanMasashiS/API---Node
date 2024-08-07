@@ -9,12 +9,12 @@ function geralUrl (e) {
 
     const usuarios = {
         usu_cod:  e.usu_cod,
+        usu_rm:  e.usu_rm,
         usu_nome: e.usu_nome,
         usu_email: e.usu_email,
         usu_senha: e.usu_senha,
         usu_tipo: e.usu_tipo,
         usu_sexo: e.usu_sexo,
-        usu_ativo: e.usu_ativo,
         usu_foto: 'http://10.67.23.44:3333/public/uploads/FotoUsuarios/' + img
     }   
 
@@ -29,7 +29,7 @@ module.exports = {
             const usuPesq = usu_nome ? `%${usu_nome}%` : `%%`;
             // instruções SQL
             const sql = `SELECT 
-                usu_rm, usu_nome, usu_email, usu_tipo, 
+                usu_rm, usu_nome, usu_email, usu_senha, usu_sexo,
                 usu_foto, usu_ativo = 1 as usu_ativo
                 FROM usuarios 
                 WHERE usu_nome like ?`;
