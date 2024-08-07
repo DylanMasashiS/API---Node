@@ -31,36 +31,56 @@ module.exports = {
                 dados: error.message
             });
         }
-    },
+    },  
+
+
     async cadastrarExemplares(request, response) {
         try {
-            // parâmetros recebidos no corpo da requisição
-            const { liv_cod, exe_tombo, exe_data_aquis, exe_data_saida} = request.body;
-            // instrução SQL
-            const sql = `INSERT INTO exemplares
-                (liv_cod, exe_tombo, exe_data_aquis, exe_data_saida) 
-                VALUES (?, ?, ?, ?)`;
-            // definição dos dados a serem inseridos em um array
-            const values = [liv_cod, exe_tombo, exe_data_aquis, exe_data_saida];
-            // execução da instrução sql passando os parâmetros
+            // Parâmetros recebidos no corpo da requisição
+            const { liv_cod, exe_tombo, exe_data_aquis, exe_data_saida } = request.body;
+
+            // Validação dos dados recebidos
+            if (liv_cod === undefined || liv_cod === null) {
+                return response.status(400).json({
+                    sucesso: false,
+                    mensagem: 'liv_cod é obrigatório e não pode ser nulo.',
+                });
+            }
+
+            // Corrigir formato da data, se necessário
+            // Dependendo da configuração do banco de dados, você pode precisar converter a data para o formato adequado
+            const formatDate = (dateStr) => {
+                const [day, month, year] = dateStr.split('/');
+                return `${year}-${month}-${day}`; // Formato YYYY-MM-DD
+            };
+
+            const dataAquis = formatDate(exe_data_aquis);
+            const dataSaida = formatDate(exe_data_saida);
+
+            // Instrução SQL para inserção
+            const sql = `INSERT INTO exemplares (liv_cod, exe_tombo, exe_data_aquis, exe_data_saida) VALUES (?, ?, ?, ?)`;
+            const values = [liv_cod, exe_tombo, dataAquis, dataSaida];
+
+            // Execução da instrução SQL
             const execSql = await db.query(sql, values);
-            // identificação do ID do registro inserido
             const exe_cod = execSql[0].insertId;
 
             return response.status(200).json({
                 sucesso: true,
                 mensagem: 'Cadastro do exemplar efetuado com sucesso.',
-                dados: exe_cod
-                //mensSql: execSql
+                dados: exe_cod,
             });
         } catch (error) {
+            console.error('Erro ao cadastrar exemplar:', error.message); // Log do erro para depuração
             return response.status(500).json({
                 sucesso: false,
                 mensagem: 'Erro na requisição.',
-                dados: error.message
+                dados: error.message,
             });
         }
     },
+
+
     async editarExemplares(request, response) {
         try {
             // parâmetros recebidos pelo corpo da requisição
