@@ -58,22 +58,34 @@ module.exports = {
     async cadastrarLivros(request, response) {
         try {
             // parâmetros recebidos no corpo da requisição
-            const { liv_pha_cod, liv_categ_cod, liv_nome, liv_desc, edt_cod, liv_foto_capa} = request.body;
+            const { liv_pha_cod, liv_categ_cod, liv_nome, liv_desc, edt_cod} = request.body;
+
+            const img = request.file.filename;
             // instrução SQL
             const sql = `INSERT INTO livros
                 (liv_pha_cod, liv_categ_cod, liv_nome, liv_desc, edt_cod, liv_foto_capa) 
                 VALUES (?, ?, ?, ?, ?, ?)`;
             // definição dos dados a serem inseridos em um array
-            const values = [liv_pha_cod, liv_categ_cod, liv_nome, liv_desc, edt_cod, liv_foto_capa];
+            const values = [liv_pha_cod, liv_categ_cod, liv_nome, liv_desc, edt_cod, img];
             // execução da instrução sql passando os parâmetros
             const execSql = await db.query(sql, values);
             // identificação do ID do registro inserido
             const liv_cod = execSql[0].insertId;
 
+            const dados = {
+                liv_cod,
+                liv_pha_cod,
+                liv_categ_cod,
+                liv_nome,
+                liv_desc,
+                edt_cod,
+                liv_foto_capa: 'http://10.67.23.44:3333/public/uploads/CapaLivros/' + img
+            }
+
             return response.status(200).json({
                 sucesso: true,
                 mensagem: 'Cadastro do livro efetuado com sucesso.',
-                dados: liv_cod
+                dados
                 //mensSql: execSql
             });
         } catch (error) {
@@ -92,7 +104,7 @@ module.exports = {
             const { liv_cod } = request.params;
             // instruções SQL
             const sql = `UPDATE livros SET liv_pha_cod = ?, liv_categ_cod = ?, liv_nome = ?, 
-                        liv_desc, edt_cod, liv_foto_capa
+                        liv_desc = ?, edt_cod = ?, liv_foto_capa = ?
                         WHERE liv_cod = ?;`;
             // preparo do array com dados que serão atualizados
             const values = [liv_pha_cod, liv_categ_cod, liv_nome, liv_desc, edt_cod, liv_foto_capa, liv_cod];

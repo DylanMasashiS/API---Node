@@ -28,7 +28,7 @@ module.exports = {
             const {usu_nome} = request.body;
             const usuPesq = usu_nome ? `%${usu_nome}%` : `%%`;
             // instruções SQL
-            const sql = `SELECT 
+            const sql = `SELECT usu_cod,
                 usu_rm, usu_nome, usu_email, usu_senha, usu_sexo,
                 usu_foto, usu_ativo = 1 as usu_ativo
                 FROM usuarios 
@@ -83,7 +83,7 @@ module.exports = {
                 usu_tipo,
                 usu_sexo,
                 usu_ativo,
-                usu_foto: 'http://10.67.23.44:3333/public/uploads/FotoUsuarios/' + img
+                usu_foto: 'http://10.67.23.27:3333/public/uploads/FotoUsuarios/' + img
             };
 
             return response.status(200).json({
