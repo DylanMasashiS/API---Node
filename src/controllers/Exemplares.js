@@ -39,27 +39,30 @@ module.exports = {
             // Parâmetros recebidos no corpo da requisição
             const { liv_cod, exe_tombo, exe_data_aquis, exe_data_saida } = request.body;
 
-            // Validação dos dados recebidos
-            if (liv_cod === undefined || liv_cod === null) {
-                return response.status(400).json({
-                    sucesso: false,
-                    mensagem: 'liv_cod é obrigatório e não pode ser nulo.',
-                });
-            }
+            // // Validação dos dados recebidos
+            // if (liv_cod === undefined || liv_cod === null) {
+            //     return response.status(400).json({
+            //         sucesso: false,
+            //         mensagem: 'liv_cod é obrigatório e não pode ser nulo.',
+            //     });
+            // }
 
-            // Corrigir formato da data, se necessário
-            // Dependendo da configuração do banco de dados, você pode precisar converter a data para o formato adequado
-            const formatDate = (dateStr) => {
-                const [day, month, year] = dateStr.split('/');
-                return `${year}-${month}-${day}`; // Formato YYYY-MM-DD
-            };
+            // // Corrigir formato da data, se necessário
+            // // Dependendo da configuração do banco de dados, você pode precisar converter a data para o formato adequado
+            // const formatDate = (dateStr) => {
+            //     const [day, month, year] = dateStr.split('/');
+            //     return `${year}-${month}-${day}`; // Formato YYYY-MM-DD
+            // };
 
-            const dataAquis = formatDate(exe_data_aquis);
-            const dataSaida = formatDate(exe_data_saida);
+            // const dataAquis = formatDate(exe_data_aquis);
+            // const dataSaida = formatDate(exe_data_saida);
 
             // Instrução SQL para inserção
-            const sql = `INSERT INTO exemplares (liv_cod, exe_tombo, exe_data_aquis, exe_data_saida) VALUES (?, ?, ?, ?)`;
-            const values = [liv_cod, exe_tombo, dataAquis, dataSaida];
+            const sql = `INSERT INTO exemplares 
+            (liv_cod, exe_tombo, exe_data_aquis, exe_data_saida) 
+            VALUES (?, ?, ?, ?)`;
+
+            const values = [liv_cod, exe_tombo, exe_data_aquis, exe_data_saida];
 
             // Execução da instrução SQL
             const execSql = await db.query(sql, values);
@@ -71,7 +74,7 @@ module.exports = {
                 dados: exe_cod,
             });
         } catch (error) {
-            console.error('Erro ao cadastrar exemplar:', error.message); // Log do erro para depuração
+            // console.error('Erro ao cadastrar exemplar:', error.message); // Log do erro para depuração
             return response.status(500).json({
                 sucesso: false,
                 mensagem: 'Erro na requisição.',
