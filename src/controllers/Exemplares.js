@@ -4,15 +4,14 @@ module.exports = {
     async listarExemplares(request, response) {
         try {
             const {liv_nome} = request.body;
-            const livPesq = liv_nome ? `%${liv_nome}%` : `%%`;
+            const exePesq = liv_nome ? `%${liv_nome}%` : `%%`;
             // instruções SQL
-            const sql = `SELECT 
-                exe.exe_cod, liv.liv_nome, exe.exe_tombo, exe.exe_data_aquis, exe.exe_data_saida
+            const sql = `SELECT exe.exe_cod, liv.liv_cod, liv.liv_nome, exe.exe_tombo, exe.exe_data_aquis, exe.exe_data_saida
                 FROM exemplares exe
                 INNER JOIN livros liv ON exe.liv_cod = liv.liv_cod
                 Where liv.liv_nome like ?;`;
 
-            const values = [livPesq];
+            const values = [exePesq];
             // executa instruções SQL e armazena o resultado na variável usuários
             const exemplares = await db.query(sql, values);
             // armazena em uma variável o número de registros retornados

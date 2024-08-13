@@ -4,6 +4,7 @@ module.exports = {
     async listarEmprestimos(request, response) {
         try {
             const {usu_nome} = request.body
+
             const nomePesq = usu_nome ? `%${usu_nome}%` : '%%';
             // instruções SQL
             const sql = `SELECT 
@@ -14,6 +15,7 @@ module.exports = {
                 Where usu.usu_nome like ?;`;
             // executa instruções SQL e armazena o resultado na variável usuários
             const values = [nomePesq];
+
             const emprestimos = await db.query(sql, values);
             // armazena em uma variável o número de registros retornados
             const nItens = emprestimos[0].length;
