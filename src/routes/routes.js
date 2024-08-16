@@ -59,6 +59,7 @@ router.patch ('/cursos/:cur_cod', (cursosController.editarCursos));
 router.patch ('/generos/:gen_cod', (generosController.editarGeneros));
 router.patch ('/exemplares/:exe_cod', (exemplaresController.editarExemplares));
 router.patch ('/emprestimos/:emp_cod', (emprestimosController.editarEmprestimos));
+router.patch ('/emp_renovar/:emp_cod', (emprestimosController.renovarEmprestimos));
 router.patch ('/recomendacao/:rcm_cod', (recomendacaoController.editarRecomendacao));
 router.patch ('/usuarios_cursos/:ucu_cod', (usuarios_cursosController.editarUsuarios_Cursos));
 router.patch ('/livros_autores/:lau_cod', (livros_autoresController.editarLivros_Autores));

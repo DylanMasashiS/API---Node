@@ -8,11 +8,13 @@ module.exports = {
             const nomePesq = usu_nome ? `%${usu_nome}%` : '%%';
             // instruções SQL
             const sql = `SELECT 
-                emp.emp_cod, usu.usu_cod, exe.exe_cod, emp.emp_data_emp, emp.emp_data_devol, emp.emp_devolvido
+                emp.emp_cod, usu1.usu_nome, exe.exe_cod, emp.emp_data_emp, emp.emp_data_devol, emp.emp_devolvido,
+                emp.emp_renovacao, emp.emp_data_renov, emp.func_cod
                 FROM emprestimos emp
                 Inner Join exemplares exe ON exe.exe_cod = emp.exe_cod
-                Inner Join usuarios usu ON usu.usu_cod = emp.usu_cod
-                Where usu.usu_nome like ?;`;
+                Inner Join usuarios usu1 ON usu1.usu_cod = emp.usu_cod
+                Inner Join usuarios usu2 ON usu2.usu_cod = emp.func_cod
+                Where usu1.usu_nome like ?;`;
             // executa instruções SQL e armazena o resultado na variável usuários
             const values = [nomePesq];
 
@@ -37,13 +39,13 @@ module.exports = {
     async cadastrarEmprestimos(request, response) {
         try {
             // parâmetros recebidos no corpo da requisição
-            const { usu_cod, exe_cod, emp_data_emp, emp_data_devol, emp_devolvido} = request.body;
+            const { usu_cod, exe_cod, emp_data_emp, emp_data_devol, emp_devolvido, emp_renovacao, emp_data_renov, func_cod} = request.body;
             // instrução SQL
             const sql = `INSERT INTO emprestimos
-                (usu_cod, exe_cod, emp_data_emp, emp_data_devol, emp_devolvido) 
-                VALUES (?, ?, ?, ?, ?)`;
+                (usu_cod, exe_cod, emp_data_emp, emp_data_devol, emp_devolvido, emp_renovacao, emp_data_renov, func_cod) 
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?);`;
             // definição dos dados a serem inseridos em um array
-            const values = [usu_cod, exe_cod, emp_data_emp, emp_data_devol, emp_devolvido];
+            const values = [usu_cod, exe_cod, emp_data_emp, emp_data_devol, emp_devolvido, emp_renovacao, emp_data_renov, func_cod];
             // execução da instrução sql passando os parâmetros
             const execSql = await db.query(sql, values);
             // identificação do ID do registro inserido
@@ -66,15 +68,16 @@ module.exports = {
     async editarEmprestimos(request, response) {
         try {
             // parâmetros recebidos pelo corpo da requisição
-            const { usu_cod, exe_cod, emp_data_emp, emp_data_devol, emp_devolvido } = request.body;
+            const { usu_cod, exe_cod, emp_data_emp, emp_data_devol, emp_devolvido, emp_renovacao, emp_data_renov, func_cod } = request.body;
             // parâmetro recebido pela URL via params ex: /usuario/1
             const { emp_cod } = request.params;
             // instruções SQL
             const sql = `UPDATE emprestimos SET usu_cod = ?, 
-                        exe_cod = ?, emp_data_emp = ?, emp_data_devol = ?, emp_devolvido = ?
+                        exe_cod = ?, emp_data_emp = ?, emp_data_devol = ?, emp_devolvido = ?,
+                        emp_renovacao = ?, emp_data_renov = ?, func_cod = ?
                         WHERE emp_cod = ?;`;
             // preparo do array com dados que serão atualizados
-            const values = [usu_cod, exe_cod,emp_data_emp, emp_data_devol, emp_devolvido, emp_cod];
+            const values = [usu_cod, exe_cod,emp_data_emp, emp_data_devol, emp_devolvido, emp_renovacao, emp_data_renov, func_cod, emp_cod];
             // execução e obtenção de confirmação da atualização realizada
             const atualizaDados = await db.query(sql, values);
 
@@ -115,5 +118,36 @@ module.exports = {
                 dados: error.message
             });
         }    
+    },
+    async renovarEmprestimos(request, response) {
+        try {
+            // parâmetros recebidos pelo corpo da requisição
+            const { usu_cod, exe_cod, emp_data_emp, emp_data_devol, emp_devolvido, emp_renovacao, emp_data_renov, func_cod } = request.body;
+            // parâmetro recebido pela URL via params ex: /usuario/1
+            const { emp_cod } = request.params;
+            // instruções SQL
+            const sql = `UPDATE emprestimos SET usu_cod = ?, 
+                        exe_cod = ?, emp_data_emp = ?, emp_data_devol = ?, emp_devolvido = ?,
+                        emp_renovacao = ?, emp_data_renov = ?, func_cod = ?
+                        WHERE emp_cod = ? and emp_devolvido = 1;`;
+            // preparo do array com dados que serão atualizados
+            const values = [usu_cod, exe_cod,emp_data_emp, emp_data_devol, emp_devolvido, emp_renovacao, emp_data_renov, func_cod, emp_cod];
+            // execução e obtenção de confirmação da atualização realizada
+            const atualizaDados = await db.query(sql, values);
+
+            return response.status(200).json({
+                sucesso: true,
+                mensagem: `Renovação do empréstimo ${emp_cod} atualizado com sucesso!`,
+                dados: atualizaDados[0].affectedRows
+                // mensSql: atualizaDados
+            });
+        } catch (error) {
+            return response.status(500).json({
+                sucesso: false,
+                mensagem: 'Erro na requisição.',
+                dados: error.message
+            });
+        }
     }
 }
+
