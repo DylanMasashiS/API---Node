@@ -69,6 +69,8 @@ module.exports = {
                 VALUES (?, ?, ?, ?, ?, ?, ?)`;
             // definição dos dados a serem inseridos em um array
             const values = [usu_rm, usu_nome, usu_email, usu_senha, usu_tipo, usu_sexo, usu_ativo, img];
+
+            
             // execução da instrução sql passando os parâmetros
             const execSql = await db.query(sql, values);
             // identificação do ID do registro inserido

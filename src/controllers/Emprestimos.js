@@ -122,16 +122,15 @@ module.exports = {
     async renovarEmprestimos(request, response) {
         try {
             // parâmetros recebidos pelo corpo da requisição
-            const { usu_cod, exe_cod, emp_data_emp, emp_data_devol, emp_devolvido, emp_renovacao, emp_data_renov, func_cod } = request.body;
+            const {emp_data_devol, emp_renovacao, emp_data_renov, func_cod } = request.body;
             // parâmetro recebido pela URL via params ex: /usuario/1
             const { emp_cod } = request.params;
             // instruções SQL
-            const sql = `UPDATE emprestimos SET usu_cod = ?, 
-                        exe_cod = ?, emp_data_emp = ?, emp_data_devol = ?, emp_devolvido = ?,
+            const sql = `UPDATE emprestimos SET emp_data_devol = ?,
                         emp_renovacao = ?, emp_data_renov = ?, func_cod = ?
-                        WHERE emp_cod = ? and emp_devolvido = 1;`;
+                        WHERE emp_cod = ?;`;
             // preparo do array com dados que serão atualizados
-            const values = [usu_cod, exe_cod,emp_data_emp, emp_data_devol, emp_devolvido, emp_renovacao, emp_data_renov, func_cod, emp_cod];
+            const values = [emp_data_devol, emp_renovacao, emp_data_renov, func_cod, emp_cod];
             // execução e obtenção de confirmação da atualização realizada
             const atualizaDados = await db.query(sql, values);
 
