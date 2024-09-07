@@ -21,7 +21,7 @@ const livros_generosController = require ('../controllers/Livros_generos');
 
 //LISTAR 
 router.get ('/usuarios', (usuariosController.listarUsuarios));
-router.get ('/livros', (livrosController.listarLivros));
+router.post ('/livros', (livrosController.listarLivros));
 router.get ('/autores', (autoresController.listarAutores));
 router.get ('/editoras', (editorasController.listarEditoras));
 router.get ('/cursos', (cursosController.listarCursos));
