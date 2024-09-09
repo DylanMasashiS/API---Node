@@ -1,19 +1,12 @@
 const db = require('../database/connection');
 var fs = require('fs-extra');   
 
-function geralUrl (e) {
-    let img = e.aut_foto ? e.aut_foto : 'default.jpg';
+function geralUrl (aut_foto) {
+    let img = aut_foto ? aut_foto : 'default.jpg';
     if (!fs.existsSync ('./public/uploads/CapaAutores/' + img)) {
         img = 'autor.jpg';
     }
-
-    const autores = {
-        aut_cod: e.aut_cod,
-        aut_nome: e.aut_nome,
-        aut_foto: 'http://10.67.23.27:3333/public/uploads/CapaAutores/' + img
-    }   
-
-    return autores;
+    return '/public/uploads/CapaAutores/' + img;
 }
 
 module.exports = {
@@ -32,7 +25,11 @@ module.exports = {
             // armazena em uma variável o número de registros retornados
             const nItens = autores[0].length;
 
-            const resultado = autores[0].map(geralUrl);
+            const resultado = autores[0].map(autores => ({
+                ...autores,
+                aut_foto: geraUrl(autores.aut_foto)
+
+            }));
 
             return response.status(200).json({
                 sucesso: true,
@@ -68,7 +65,7 @@ module.exports = {
             const dados = {
                 aut_cod,
                 aut_nome,
-                img: 'http://10.67.23.27:3333/public/uploads/CapaAutores/' + img
+                img: '/public/uploads/CapaAutores/' + img
             };
 
             return response.status(200).json({

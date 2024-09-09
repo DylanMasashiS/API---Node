@@ -23,14 +23,16 @@ function geralUrl (e) {
 module.exports = {
     async listarLivros(request, response) {
         try {
-            const {liv_nome} = request.body;
-            const livPesq = liv_nome ? `%${liv_nome}%` : `%%`; 
+            const {liv_nome, edt} = request.body;
+
             // instruções SQL
             const sql = `SELECT liv.liv_cod, liv.liv_nome, liv.liv_pha_cod, 
             liv.liv_categ_cod, liv.liv_foto_capa, 
             liv.liv_desc, edt.edt_nome, edt.edt_foto 
             from livros liv 
-            inner join editoras edt on edt.edt_cod = liv.edt_cod 
+            inner join editoras edt on edt.edt_cod = liv.edt_cod
+            inner join autores aut on aut.aut_cod = liv.aut_cod
+            inner join generos gen on gen.gen_cod = liv.gen_cod
             where liv.liv_nome like ?;`;
 
             const values = [livPesq];

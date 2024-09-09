@@ -1,19 +1,13 @@
 const db = require('../database/connection');
 var fs = require('fs-extra');
 
-function geralUrl (e) {
-    let img = e.gen_foto ? e.gen_foto : 'default.jpg';
+function geralUrl (gen_foto) {
+    let img = gen_foto ? gen_foto : 'default.jpg';
     if (!fs.existsSync ('./public/uploads/CapaGeneros/' + img)) {
         img = 'genero.jpg';
     }
 
-    const generos = {
-        gen_cod:  e.gen_cod,
-        gen_nome: e.gen_nome,
-        gen_foto: 'http://10.67.23.27:3333/public/uploads/CapaGeneros/' + img
-    }   
-
-    return generos;
+    return '/public/uploads/CapaGeneros/' + img;
 }
 
 module.exports = {
@@ -32,7 +26,10 @@ module.exports = {
             // armazena em uma variável o número de registros retornados
             const nItens = generos[0].length;
 
-            const resultado = generos[0].map(geralUrl);
+            const resultado = generos[0].map(generos => ({
+                ...generos,
+                gen_foto: geraUrl(generos.gen_foto), 
+            }));
 
             return response.status(200).json({
                 sucesso: true,

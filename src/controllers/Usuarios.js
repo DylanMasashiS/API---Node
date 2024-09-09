@@ -1,24 +1,12 @@
 const db = require('../database/connection');
 var fs = require('fs-extra');
 
-function geralUrl (e) {
-    let img = e.usu_foto ? e.usu_foto : 'default.jpg';
+function geralUrl (usu_foto) {
+    let img = usu_foto ? usu_foto : 'default.jpg';
     if (!fs.existsSync ('./public/uploads/FotoUsuarios/' + img)) {
         img = 'usuario.jpg';
     }
-
-    const usuarios = {
-        usu_cod:  e.usu_cod,
-        usu_rm:  e.usu_rm,
-        usu_nome: e.usu_nome,
-        usu_email: e.usu_email,
-        usu_senha: e.usu_senha,
-        usu_tipo: e.usu_tipo,
-        usu_sexo: e.usu_sexo,
-        usu_foto: 'http://10.67.23.44:3333/public/uploads/FotoUsuarios/' + img
-    }   
-
-    return usuarios;
+    return '/public/uploads/FotoUsuarios/' + img;
 }
 
 module.exports = {
@@ -40,7 +28,10 @@ module.exports = {
             // armazena em uma variável o número de registros retornados
             const nItens = usuarios[0].length;
 
-            const resultado = usuarios[0].map(geralUrl);
+            const resultado = usuarios[0].map(usuarios => ({
+                ...usuarios,
+                usu_foto: geraUrl(usuarios.usu_foto), 
+            }));
 
             return response.status(200).json({
                 sucesso: true,
