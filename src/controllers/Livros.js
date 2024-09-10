@@ -42,16 +42,17 @@ module.exports = {
                     SELECT liv.liv_cod, liv.liv_nome, liv.liv_foto_capa, liv.liv_desc, 
                            edt.edt_nome, edt.edt_foto, 
                            aut.aut_nome, aut.aut_foto, 
-                           GROUP_CONCAT(DISTINCT gen.gen_nome) AS generos
+                    GROUP_CONCAT(DISTINCT gen.gen_nome) AS generos
                     FROM livros liv
                     INNER JOIN editoras edt ON edt.edt_cod = liv.edt_cod
-                    INNER JOIN livros_autores la ON la.liv_cod = liv.liv_cod
+                    INNER JOIN livros_autores lau ON lau.liv_cod = liv.liv_cod
                     INNER JOIN autores aut ON aut.aut_cod = la.aut_cod
-                    LEFT JOIN livros_generos lg ON lg.liv_cod = liv.liv_cod
-                    LEFT JOIN generos gen ON gen.gen_cod = lg.gen_cod
+                    INNER JOIN livros_generos lge ON lge.liv_cod = liv.liv_cod
+                    INNER JOIN generos gen ON gen.gen_cod = lg.gen_cod
                     ${whereClauses.length > 0 ? 'WHERE ' + whereClauses.join(' AND ') : ''}
-                    GROUP BY liv.liv_cod, edt.edt_nome, edt.edt_foto, aut.aut_nome, aut.aut_foto
-                `;
+                    GROUP BY liv.liv_cod, liv.liv_nome, liv.liv_foto_capa, 
+                    edt.edt_nome, edt.edt_foto, aut.aut_nome, aut.aut_foto
+                    HAVING GROUP_CONCAT(DISTINCT gen.gen_nome) LIKE ?`;
 
             // Executa a consulta SQL
             const livros = await db.query(sql, params);
