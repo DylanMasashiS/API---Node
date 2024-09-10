@@ -1,4 +1,8 @@
-const db = require('../database/connection');
+// const db = require('../database/connection');
+
+
+const express = require('express'); 
+const router = express.Router(); 
 
 module.exports = {
     async listarRecomendacao(request, response) {

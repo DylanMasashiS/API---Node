@@ -1,5 +1,9 @@
-const db = require('../database/connection');
-var fs = require('fs-extra');
+// const db = require('../database/connection');
+// var fs = require('fs-extra');
+
+
+const express = require('express'); 
+const router = express.Router(); 
 
 function geraUrl (edt_foto) {
     let img = edt_foto ? edt_foto : 'default.jpg';
