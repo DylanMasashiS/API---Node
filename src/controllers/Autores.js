@@ -1,12 +1,12 @@
 const db = require('../database/connection');
 var fs = require('fs-extra');   
 
-function geralUrl (aut_foto) {
+function geraUrl (aut_foto) {
     let img = aut_foto ? aut_foto : 'default.jpg';
     if (!fs.existsSync ('./public/uploads/CapaAutores/' + img)) {
         img = 'autor.jpg';
     }
-    return '/public/uploads/CapaAutores/' + img;
+    return '/uploads/CapaAutores/' + img;
 }
 
 module.exports = {

@@ -1,13 +1,13 @@
 const db = require('../database/connection');
 var fs = require('fs-extra');
 
-function geralUrl (edt_foto) {
+function geraUrl (edt_foto) {
     let img = edt_foto ? edt_foto : 'default.jpg';
     if (!fs.existsSync ('./public/uploads/CapaEditoras/' + img)) {
         img = 'editora.jpg';
     }
 
-    return '/public/uploads/CapaEditoras/' + img;
+    return '/uploads/CapaEditoras/' + img;
 }
 
 module.exports = {
