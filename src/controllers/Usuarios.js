@@ -9,7 +9,7 @@ function geralUrl (usu_foto) {
     if (!fs.existsSync ('./public/uploads/FotoUsuarios/' + img)) {
         img = 'usuario.jpg';
     }
-    return '/public/uploads/FotoUsuarios/' + img;
+    return '/uploads/FotoUsuarios/' + img;
 }
 
 module.exports = {
