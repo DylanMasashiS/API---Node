@@ -1,5 +1,10 @@
-const db = require('../database/connection');
-var fs = require('fs-extra');
+// const db = require('../database/connection');
+ var fs = require('fs-extra');
+
+
+const express = require('express'); 
+const router = express.Router(); 
+const db = require('../database/connection'); 
 
 function geraUrl(liv_foto_capa) {
     let img = liv_foto_capa ? liv_foto_capa : 'default.jpg';
