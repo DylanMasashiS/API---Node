@@ -37,25 +37,29 @@ module.exports = {
                 params.push(`%${gen_nome}%`);
             }
 
+            const livPesq = liv_nome ? `%${liv_nome}%` : `%%`;
+            const autPesq = aut_nome ? `%${aut_nome}%` : `%%`;
+            const edtPesq = edt_nome ? `%${edt_nome}%` : `%%`;
+            const genPesq = gen_nome ? `%${gen_nome}%` : `%%`;
+
             // Monta a consulta SQL dinamicamente com base nos critérios
-            const sql = `
-                    SELECT liv.liv_cod, liv.liv_nome, liv.liv_foto_capa, liv.liv_desc, 
-                           edt.edt_nome, edt.edt_foto, 
-                           aut.aut_nome, aut.aut_foto, 
+            const sql = `SELECT liv.liv_cod, liv.liv_nome, liv.liv_foto_capa, liv.liv_desc, 
+                                edt.edt_nome, edt.edt_foto, 
+                                aut.aut_nome, aut.aut_foto ,
                     GROUP_CONCAT(DISTINCT gen.gen_nome) AS generos
                     FROM livros liv
                     INNER JOIN editoras edt ON edt.edt_cod = liv.edt_cod
                     INNER JOIN livros_autores lau ON lau.liv_cod = liv.liv_cod
-                    INNER JOIN autores aut ON aut.aut_cod = la.aut_cod
+                    INNER JOIN autores aut ON aut.aut_cod = lau.aut_cod
                     INNER JOIN livros_generos lge ON lge.liv_cod = liv.liv_cod
-                    INNER JOIN generos gen ON gen.gen_cod = lg.gen_cod
-                    ${whereClauses.length > 0 ? 'WHERE ' + whereClauses.join(' AND ') : ''}
+                    INNER JOIN generos gen ON gen.gen_cod = lge.gen_cod                   
                     GROUP BY liv.liv_cod, liv.liv_nome, liv.liv_foto_capa, 
                     edt.edt_nome, edt.edt_foto, aut.aut_nome, aut.aut_foto
                     HAVING GROUP_CONCAT(DISTINCT gen.gen_nome) LIKE ?`;
 
+            const values = [livPesq, autPesq, edtPesq, genPesq];
             // Executa a consulta SQL
-            const livros = await db.query(sql, params);
+            const livros = await db.query(sql, values, params);
             const nItens = livros[0].length;
 
             const resultado = livros[0].map(livro => ({
