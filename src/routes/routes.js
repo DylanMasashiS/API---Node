@@ -18,6 +18,7 @@ const recomendacaoController = require ('../controllers/Recomendacao');
 const usuarios_cursosController = require ('../controllers/Usuario_Cursos');
 const livros_autoresController = require ('../controllers/Livros_autores');
 const livros_generosController = require ('../controllers/Livros_generos');
+const solicitacoesController = require ('../controllers/Solicitacoes');
 
 //LISTAR 
 router.get ('/usuarios', (usuariosController.listarUsuarios));
@@ -32,6 +33,7 @@ router.post ('/recomendacao', (recomendacaoController.listarRecomendacao));
 router.get ('/usuarios_cursos', (usuarios_cursosController.listarUsuarios_Cursos));
 router.get ('/livros_autores', (livros_autoresController.listarLivros_Autores));
 router.get ('/livros_generos', (livros_generosController.listarLivros_Generos));
+router.get ('/solicitacoes', (solicitacoesController.listarSolicitacoes));
 
 //CADASTRAR ou INSERIR
 // router.post ('/uploads/CapaAutores', uploads.single ('img'), (autoresController.cadastrarAutores));
@@ -47,7 +49,9 @@ router.post ('/emprestimos', (emprestimosController.cadastrarEmprestimos));
 router.post ('/recomendacao', (recomendacaoController.cadastrarRecomendacao));
 router.post ('/usuarios_cursos', (usuarios_cursosController.cadastrarUsuarios_Cursos));
 router.post ('/livros_autores', (livros_autoresController.cadastrarLivros_Autores));
-router.post ('/livros_generos', (livros_generosController.cadastrarLivros_Generos));    
+router.post ('/livros_generos', (livros_generosController.cadastrarLivros_Generos));
+router.post('/solicitacoes/:sol_cod/confirmar', (solicitacoesController.confirmarSolicitacao));
+router.post('/solicitacoes/:sol_cod/cancelar', (solicitacoesController.cancelarSolicitacao)); 
 
 //UPDATE ou EDITAR
 router.patch ('/usuarios/:usu_cod', (usuariosController.editarUsuarios));
@@ -78,5 +82,6 @@ router.delete ('/recomendacao/:rcm_cod', (recomendacaoController.apagarRecomenda
 router.delete ('/usuarios_cursos/:ucu_cod', (usuarios_cursosController.apagarUsuarios_Cursos));
 router.delete ('/livros_autores/:lau_cod', (livros_autoresController.apagarLivros_Autores));
 router.delete ('/livros_generos/:lge_cod', (livros_generosController.apagarLivros_Generos));
+router.delete('/solicitacoes/:sol_cod', (solicitacoesController.deletarSolicitacao));
 
 module.exports = router;
