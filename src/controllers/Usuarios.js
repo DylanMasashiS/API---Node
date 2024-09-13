@@ -79,7 +79,7 @@ module.exports = {
                 usu_tipo,
                 usu_sexo,
                 usu_ativo,
-                usu_foto: 'http://10.67.23.27:3333/public/uploads/FotoUsuarios/' + img
+                usu_foto: 'http://localhost:3333/public/uploads/FotoUsuarios/' + img
             };
 
             return response.status(200).json({
@@ -178,7 +178,7 @@ module.exports = {
             const { usu_email, usu_senha } = request.body;
 
             const sql = `SELECT usu_cod, usu_nome, usu_tipo, usu_ativo = 1 AS usu_ativo FROM usuarios 
-                WHERE usu_email = ? AND usu_senha = ?;`;
+                WHERE usu_email = ?, usu_senha = ? AND usu_aprovado = 1;`;
 
             const values = [usu_email, usu_senha];
 
