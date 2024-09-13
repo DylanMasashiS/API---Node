@@ -50,8 +50,8 @@ router.post ('/recomendacao', (recomendacaoController.cadastrarRecomendacao));
 router.post ('/usuarios_cursos', (usuarios_cursosController.cadastrarUsuarios_Cursos));
 router.post ('/livros_autores', (livros_autoresController.cadastrarLivros_Autores));
 router.post ('/livros_generos', (livros_generosController.cadastrarLivros_Generos));
-router.post('/solicitacoes/:sol_cod/confirmar', (solicitacoesController.confirmarSolicitacao));
-router.post('/solicitacoes/:sol_cod/cancelar', (solicitacoesController.cancelarSolicitacao)); 
+router.post('/solicitacoes/:sol_cod/confirmar', (solicitacoesController.aprovarSolicitacao));
+router.post('/solicitacoes/:sol_cod/cancelar', (solicitacoesController.rejeitarSolicitacao)); 
 
 //UPDATE ou EDITAR
 router.patch ('/usuarios/:usu_cod', (usuariosController.editarUsuarios));
@@ -82,6 +82,6 @@ router.delete ('/recomendacao/:rcm_cod', (recomendacaoController.apagarRecomenda
 router.delete ('/usuarios_cursos/:ucu_cod', (usuarios_cursosController.apagarUsuarios_Cursos));
 router.delete ('/livros_autores/:lau_cod', (livros_autoresController.apagarLivros_Autores));
 router.delete ('/livros_generos/:lge_cod', (livros_generosController.apagarLivros_Generos));
-router.delete('/solicitacoes/:sol_cod', (solicitacoesController.deletarSolicitacao));
+router.delete('/solicitacoes/:sol_cod', (solicitacoesController.apagarSolicitacao));
 
 module.exports = router;

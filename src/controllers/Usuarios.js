@@ -4,7 +4,7 @@
 const express = require('express'); 
 const router = express.Router(); 
 
-function geralUrl (usu_foto) {
+function geraUrl (usu_foto) {
     let img = usu_foto ? usu_foto : 'default.jpg';
     if (!fs.existsSync ('./public/uploads/FotoUsuarios/' + img)) {
         img = 'usuario.jpg';
@@ -84,7 +84,7 @@ module.exports = {
 
             return response.status(200).json({
                 sucesso: true,
-                mensagem: 'Cadastro do usuário efetuado com sucesso.',
+                mensagem: 'Cadastro do usuário efetuado com sucesso. Aguarde a confirmação do administrador.',
                 dados
                 //mensSql: execSql
             });
