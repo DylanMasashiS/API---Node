@@ -82,6 +82,6 @@ router.delete ('/recomendacao/:rcm_cod', (recomendacaoController.apagarRecomenda
 router.delete ('/usuarios_cursos/:ucu_cod', (usuarios_cursosController.apagarUsuarios_Cursos));
 router.delete ('/livros_autores/:lau_cod', (livros_autoresController.apagarLivros_Autores));
 router.delete ('/livros_generos/:lge_cod', (livros_generosController.apagarLivros_Generos));
-router.delete('/solicitacoes/:sol_cod', (solicitacoesController.apagarSolicitacao));
+router.delete('/solicitacoes/:sol_cod', (solicitacoesController.rejeitarSolicitacao));
 
 module.exports = router;
