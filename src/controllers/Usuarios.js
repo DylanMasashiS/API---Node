@@ -79,7 +79,7 @@ module.exports = {
                 usu_tipo,
                 usu_sexo,
                 usu_ativo,
-                usu_foto: 'http://10.67.23.27:3333/public/uploads/FotoUsuarios/' + img
+                usu_foto: '/public/uploads/FotoUsuarios/' + img
             };
 
             return response.status(200).json({

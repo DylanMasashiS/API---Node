@@ -67,7 +67,7 @@ module.exports = {
             const dados = {
                 edt_cod,
                 edt_nome,
-                edt_foto: 'http://10.67.23.27:3333/public/uploads/CapaEditoras/' + img
+                edt_foto: 'public/uploads/CapaEditoras/' + img
             };
 
             return response.status(200).json({

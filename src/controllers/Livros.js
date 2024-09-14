@@ -109,7 +109,7 @@ module.exports = {
                 liv_nome,
                 liv_desc,
                 edt_cod,
-                liv_foto_capa: 'http://localhost:3333/public/uploads/CapaLivros/' + img
+                liv_foto_capa: '/public/uploads/CapaLivros/' + img
             }
 
             return response.status(200).json({
