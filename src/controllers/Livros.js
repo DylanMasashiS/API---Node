@@ -11,7 +11,7 @@ function geraUrl(liv_foto_capa) {
         img = 'livros.jpg';
     }
 
-    return '/uploads/CapaLivros/' + img;
+    return '/public/uploads/CapaLivros/' + img;
 }
 
 module.exports = {
