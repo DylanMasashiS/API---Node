@@ -69,7 +69,7 @@ module.exports = {
             const dados = {
                 gen_cod,
                 gen_nome,
-                gen_foto: 'http://10.67.23.27:3333/public/uploads/CapaGeneros/' + img
+                gen_foto: '/public/uploads/CapaGeneros/' + img
             };
 
             return response.status(200).json({
