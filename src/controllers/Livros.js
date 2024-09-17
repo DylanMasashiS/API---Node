@@ -42,6 +42,10 @@ module.exports = {
                 havingClauses.push("GROUP_CONCAT(DISTINCT gen.gen_nome) LIKE ?");
                 params.push(`%${gen_nome}%`);
             }
+            if (liv_cod {
+                havingClauses.push("liv.liv_cod = ?");
+                params.push(`%${gen_nome}%`);
+            }
 
             // Monta a consulta SQL dinamicamente com base nos critérios
             const sql = `
@@ -65,7 +69,7 @@ module.exports = {
             // const values = [liv_nome, aut_nome, edt_nome, gen_nome, livPesq];
 
             // Executa a consulta SQL
-            const livros = await db.query(sql, values, params);
+            const livros = await db.query(sql, params);
             const nItens = livros[0].length;
 
             const resultado = livros[0].map(livro => ({
