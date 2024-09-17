@@ -32,14 +32,14 @@ module.exports = {
     },
 
     // Rejeitar um usuário
-    async rejeitarSolicitacao(usu_cod) {
-        const query = 'DELETE FROM usuarios WHERE usu_cod = ?';
+    async inativarSolicitacao(usu_cod) {
+        const query = 'UPDATE usuarios SET usu_ativo = 0 WHERE usu_cod = ?';
         connection.query(query, [usu_cod], (err, results) => {
             if (err) {
-                console.error('Erro ao rejeitar usuário:', err);
+                console.error('Erro ao inativar usuário:', err);
                 return;
             }
-            console.log(`Usuário ${usu_cod} rejeitado.`);
+            console.log(`Usuário ${usu_cod} inativado.`);
         });
     }
 }

@@ -23,6 +23,7 @@ const solicitacoesController = require ('../controllers/Solicitacoes');
 //LISTAR 
 router.get ('/usuarios', (usuariosController.listarUsuarios));
 router.post ('/livros', (livrosController.listarLivros));
+router.get('/livros/:liv_cod', (livrosController.listarLivros));
 router.get ('/autores', (autoresController.listarAutores));
 router.get ('/editoras', (editorasController.listarEditoras));
 router.post ('/cursos', (cursosController.listarCursos));
@@ -39,7 +40,7 @@ router.get ('/solicitacoes', (solicitacoesController.listarSolicitacoes));
 // router.post ('/uploads/CapaAutores', uploads.single ('img'), (autoresController.cadastrarAutores));
 router.post ('/usuarios', uploadsU.single('img'), usuariosController.cadastrarUsuarios);
 router.post ('/login_usuarios', (usuariosController.loginUsuarios));
-router.post ('/livros', uploadsL.single('img'), livrosController.cadastrarLivros);
+router.post ('/livros_cadastrar', uploadsL.single('img'), livrosController.cadastrarLivros);
 router.post ('/autores', uploadsA.single('img'), autoresController.cadastrarAutores);
 router.post ('/editoras', uploadsE.single('img'), editorasController.cadastrarEditoras);
 router.post ('/cursos', (cursosController.cadastrarCursos));
@@ -50,8 +51,8 @@ router.post ('/recomendacao', (recomendacaoController.cadastrarRecomendacao));
 router.post ('/usuarios_cursos', (usuarios_cursosController.cadastrarUsuarios_Cursos));
 router.post ('/livros_autores', (livros_autoresController.cadastrarLivros_Autores));
 router.post ('/livros_generos', (livros_generosController.cadastrarLivros_Generos));
-router.post('/solicitacoes/:sol_cod/confirmar', (solicitacoesController.aprovarSolicitacao));
-router.post('/solicitacoes/:sol_cod/cancelar', (solicitacoesController.rejeitarSolicitacao)); 
+router.post('/solicitacoes_aprovar/:sol_cod', (solicitacoesController.aprovarSolicitacao));
+router.post('/solicitacoes_inativar/:sol_cod', (solicitacoesController.inativarSolicitacao)); 
 
 //UPDATE ou EDITAR
 router.patch ('/usuarios/:usu_cod', (usuariosController.editarUsuarios));

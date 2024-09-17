@@ -18,7 +18,7 @@ module.exports = {
     async listarLivros(request, response) {
         try {
             const { liv_nome, aut_nome, edt_nome, gen_nome } = request.body;
-            // const livPesq = liv_cod ? liv_cod : `%%`;
+            const livPesq = liv_cod ? liv_cod : `%%`;
 
             // Cria um array de parâmetros para a consulta
             let params = [];
@@ -42,9 +42,9 @@ module.exports = {
                 havingClauses.push("GROUP_CONCAT(DISTINCT gen.gen_nome) LIKE ?");
                 params.push(`%${gen_nome}%`);
             }
-            if (liv_cod {
+            if (liv_cod){
                 havingClauses.push("liv.liv_cod = ?");
-                params.push(`%${gen_nome}%`);
+                params.push(`%${liv_cod}%`);
             }
 
             // Monta a consulta SQL dinamicamente com base nos critérios
@@ -63,13 +63,12 @@ module.exports = {
                 GROUP BY liv.liv_cod, liv.liv_nome, liv.liv_foto_capa, 
                          edt.edt_nome, edt.edt_foto, aut.aut_nome, aut.aut_foto
                 ${havingClauses.length > 0 ? 'HAVING ' + havingClauses.join(' AND ') : ''}
-                
-            `;
+                AND liv.liv_cod = ?`;
 
-            // const values = [liv_nome, aut_nome, edt_nome, gen_nome, livPesq];
+            const values = [liv_nome, aut_nome, edt_nome, gen_nome, livPesq];
 
             // Executa a consulta SQL
-            const livros = await db.query(sql, params);
+            const livros = await db.query(sql, params, values);
             const nItens = livros[0].length;
 
             const resultado = livros[0].map(livro => ({
