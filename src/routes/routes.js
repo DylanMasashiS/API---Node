@@ -22,7 +22,7 @@ const solicitacoesController = require ('../controllers/Solicitacoes');
 
 //LISTAR 
 router.get ('/usuarios', (usuariosController.listarUsuarios));
-router.post ('/livros', (livrosController.listarLivros));
+router.get ('/livros', (livrosController.listarLivros));
 router.get ('/autores', (autoresController.listarAutores));
 router.get ('/editoras', (editorasController.listarEditoras));
 router.post ('/cursos', (cursosController.listarCursos));
