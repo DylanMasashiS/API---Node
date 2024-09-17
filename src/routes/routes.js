@@ -51,8 +51,8 @@ router.post ('/recomendacao', (recomendacaoController.cadastrarRecomendacao));
 router.post ('/usuarios_cursos', (usuarios_cursosController.cadastrarUsuarios_Cursos));
 router.post ('/livros_autores', (livros_autoresController.cadastrarLivros_Autores));
 router.post ('/livros_generos', (livros_generosController.cadastrarLivros_Generos));
-router.post('/solicitacoes_aprovar/:sol_cod', (solicitacoesController.aprovarSolicitacao));
-router.post('/solicitacoes_inativar/:sol_cod', (solicitacoesController.inativarSolicitacao)); 
+router.post ('/solicitacoes_aprovar/:sol_cod', (solicitacoesController.aprovarSolicitacao));
+router.post ('/solicitacoes_inativar/:sol_cod', (solicitacoesController.inativarSolicitacao)); 
 
 //UPDATE ou EDITAR
 router.patch ('/usuarios/:usu_cod', (usuariosController.editarUsuarios));
