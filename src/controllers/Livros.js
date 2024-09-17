@@ -18,7 +18,7 @@ module.exports = {
     async listarLivros(request, response) {
         try {
             const { liv_nome, aut_nome, edt_nome, gen_nome } = request.body;
-            const livPesq = liv_cod ? liv_cod : `%%`;
+            // const livPesq = liv_cod ? liv_cod : `%%`;
 
             // Cria um array de parâmetros para a consulta
             let params = [];
@@ -59,10 +59,10 @@ module.exports = {
                 GROUP BY liv.liv_cod, liv.liv_nome, liv.liv_foto_capa, 
                          edt.edt_nome, edt.edt_foto, aut.aut_nome, aut.aut_foto
                 ${havingClauses.length > 0 ? 'HAVING ' + havingClauses.join(' AND ') : ''}
-                AND liv.liv_cod like ?
+                
             `;
 
-            const values = [liv_nome, aut_nome, edt_nome, gen_nome, livPesq];
+            // const values = [liv_nome, aut_nome, edt_nome, gen_nome, livPesq];
 
             // Executa a consulta SQL
             const livros = await db.query(sql, values, params);
