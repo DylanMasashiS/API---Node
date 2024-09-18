@@ -90,6 +90,43 @@ module.exports = {
         }
     },
 
+    async listarLivrosQtd (request, response) {
+        try {
+            const sql = `SELECT COUNT( Exe.exe_cod ) AS TotalExemplares
+                        FROM Livros AS Liv
+                        LEFT JOIN Exemplares AS Exe ON Liv.liv_cod = Exe.liv_cod
+                        LEFT JOIN (     SELECT Emp.exe_cod, 
+                                        Emp.emp_devolvido, 
+                                        Emp.emp_data_emp
+                        FROM Emprestimos AS Emp
+                        INNER JOIN ( -- Subconsulta para pegar a data mais recente de empréstimo de cada exemplar
+                        SELECT exe_cod, 
+                               MAX(emp_data_emp) AS max_emp_data_emp
+                        FROM Emprestimos
+                        GROUP BY exe_cod
+                        ) AS MaxEmp ON Emp.exe_cod = MaxEmp.exe_cod AND Emp.emp_data_emp = MaxEmp.max_emp_data_emp
+                        ) AS EmpRecente ON Exe.exe_cod = EmpRecente.exe_cod
+                        WHERE Liv.liv_cod = ?
+                        AND ((Exe.exe_data_saida IS NULL)   OR (Exe.exe_cod IS NULL))
+                        AND ((EmpRecente.emp_devolvido = 1) OR (EmpRecente.exe_cod IS NULL));`;
+
+            const livros = await db.query(sql);
+            
+            return response.status(200).json({
+                sucesso: true,
+                mensagem: 'Quantidade de livros.',
+                dados: livros[0][0].qtd
+            });
+        } catch (error) {
+            console.error('Erro na requisição:', error);  // Registra o erro para depuração
+            return response.status(500).json({
+                sucesso: false,
+                mensagem: 'Erro na requisição.',
+                dados: error.message
+            });
+        }
+    },
+
     async cadastrarLivros(request, response) {
         try {
             // parâmetros recebidos no corpo da requisição

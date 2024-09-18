@@ -20,67 +20,74 @@ const livros_autoresController = require ('../controllers/Livros_autores');
 const livros_generosController = require ('../controllers/Livros_generos');
 const solicitacoesController = require ('../controllers/Solicitacoes');
 
-//LISTAR 
-router.get ('/usuarios', (usuariosController.listarUsuarios));
-router.post ('/livros', (livrosController.listarLivros));
+//LISTAR sem pesquisa
 router.get ('/autores', (autoresController.listarAutores));
-router.get ('/editoras', (editorasController.listarEditoras));
-router.post ('/cursos', (cursosController.listarCursos));
 router.get ('/generos', (generosController.listarGeneros));
+router.get ('livros_qtd', (livrosController.listarLivrosQtd));
+router.get ('/usuarios', (usuariosController.listarUsuarios));
+router.get ('/editoras', (editorasController.listarEditoras));
 router.get ('/exemplares', (exemplaresController.listarExemplares));
 router.get ('/emprestimos', (emprestimosController.listarEmprestimos));
-router.post ('/recomendacao', (recomendacaoController.listarRecomendacao));
-router.get ('/usuarios_cursos', (usuarios_cursosController.listarUsuarios_Cursos));
+router.get ('/solicitacoes', (solicitacoesController.listarSolicitacoes));
 router.get ('/livros_autores', (livros_autoresController.listarLivros_Autores));
 router.get ('/livros_generos', (livros_generosController.listarLivros_Generos));
-router.get ('/solicitacoes', (solicitacoesController.listarSolicitacoes));
+router.get ('/usuarios_cursos', (usuarios_cursosController.listarUsuarios_Cursos));
 
-//CADASTRAR ou INSERIR
-// router.post ('/uploads/CapaAutores', uploads.single ('img'), (autoresController.cadastrarAutores));
-router.post ('/usuarios', uploadsU.single('img'), usuariosController.cadastrarUsuarios);
+//LISTAR com pesquisa
+router.post ('/cursos', (cursosController.listarCursos));
+router.post ('/livros', (livrosController.listarLivros));
+router.get ('livros_qtd', (livrosController.listarLivrosQtd));
+router.post ('/recomendacao', (recomendacaoController.listarRecomendacao));
+
+//CADASTRAR com imagem
+router.post ('/cursos', (cursosController.cadastrarCursos));
 router.post ('/login_usuarios', (usuariosController.loginUsuarios));
-router.post ('/livros_cadastrar', uploadsL.single('img'), livrosController.cadastrarLivros);
+router.post ('/generos', uploadsG.single('img'), generosController.cadastrarGeneros);
 router.post ('/autores', uploadsA.single('img'), autoresController.cadastrarAutores);
 router.post ('/editoras', uploadsE.single('img'), editorasController.cadastrarEditoras);
-router.post ('/cursos', (cursosController.cadastrarCursos));
-router.post ('/generos', uploadsG.single('img'), generosController.cadastrarGeneros);
+router.post ('/usuarios', uploadsU.single('img'), usuariosController.cadastrarUsuarios);
+router.post ('/livros_cadastrar', uploadsL.single('img'), livrosController.cadastrarLivros);
+
+//CADASTRAR sem imagem
 router.post ('/exemplares', (exemplaresController.cadastrarExemplares));
 router.post ('/emprestimos', (emprestimosController.cadastrarEmprestimos));
 router.post ('/recomendacao', (recomendacaoController.cadastrarRecomendacao));
-router.post ('/usuarios_cursos', (usuarios_cursosController.cadastrarUsuarios_Cursos));
 router.post ('/livros_autores', (livros_autoresController.cadastrarLivros_Autores));
 router.post ('/livros_generos', (livros_generosController.cadastrarLivros_Generos));
+router.post ('/usuarios_cursos', (usuarios_cursosController.cadastrarUsuarios_Cursos));
 router.post ('/solicitacoes_aprovar/:sol_cod', (solicitacoesController.aprovarSolicitacao));
 router.post ('/solicitacoes_inativar/:sol_cod', (solicitacoesController.inativarSolicitacao)); 
 
-//UPDATE ou EDITAR
-router.patch ('/usuarios/:usu_cod', (usuariosController.editarUsuarios));
-router.patch ('/usuarios_ocultar', (usuariosController.ocultarUsuarios));
+//UPDATE normal
 router.patch ('/livros/:liv_cod', (livrosController.editarLivros));
-router.patch ('/autores/:aut_cod', (autoresController.editarAutores));
-router.patch ('/editoras/:edt_cod', (editorasController.editarEditoras));
 router.patch ('/cursos/:cur_cod', (cursosController.editarCursos));
+router.patch ('/autores/:aut_cod', (autoresController.editarAutores));
 router.patch ('/generos/:gen_cod', (generosController.editarGeneros));
+router.patch ('/usuarios/:usu_cod', (usuariosController.editarUsuarios));
+router.patch ('/editoras/:edt_cod', (editorasController.editarEditoras));
 router.patch ('/exemplares/:exe_cod', (exemplaresController.editarExemplares));
 router.patch ('/emprestimos/:emp_cod', (emprestimosController.editarEmprestimos));
-router.patch ('/emp_renovar/:emp_cod', (emprestimosController.renovarEmprestimos));
 router.patch ('/recomendacao/:rcm_cod', (recomendacaoController.editarRecomendacao));
-router.patch ('/usuarios_cursos/:ucu_cod', (usuarios_cursosController.editarUsuarios_Cursos));
 router.patch ('/livros_autores/:lau_cod', (livros_autoresController.editarLivros_Autores));
 router.patch ('/livros_generos/:lge_cod', (livros_generosController.editarLivros_Generos));
+router.patch ('/usuarios_cursos/:ucu_cod', (usuarios_cursosController.editarUsuarios_Cursos));
+
+//UPDATE diferente
+router.patch ('/usuarios_ocultar', (usuariosController.ocultarUsuarios));
+router.patch ('/emp_renovar/:emp_cod', (emprestimosController.renovarEmprestimos));
 
 //DELETE ou EXCLUIR
 router.delete ('/usuarios', (usuariosController.apagarUsuarios));
 router.delete ('/livros/:liv_cod', (livrosController.apagarLivros));
-router.delete ('/autores/:aut_cod', (autoresController.apagarAutores));
-router.delete ('/editoras/:edt_cod', (editorasController.apagarEditoras));
 router.delete ('/cursos/:cur_cod', (cursosController.apagarCursos));
 router.delete ('/generos/:gen_cod', (generosController.apagarGeneros));
+router.delete ('/autores/:aut_cod', (autoresController.apagarAutores));
+router.delete ('/editoras/:edt_cod', (editorasController.apagarEditoras));
 router.delete ('/exemplares/:exe_cod', (exemplaresController.apagarExemplares));
 router.delete ('/emprestimos/:emp_cod', (emprestimosController.apagarEmprestimos));
 router.delete ('/recomendacao/:rcm_cod', (recomendacaoController.apagarRecomendacao));
-router.delete ('/usuarios_cursos/:ucu_cod', (usuarios_cursosController.apagarUsuarios_Cursos));
 router.delete ('/livros_autores/:lau_cod', (livros_autoresController.apagarLivros_Autores));
 router.delete ('/livros_generos/:lge_cod', (livros_generosController.apagarLivros_Generos));
+router.delete ('/usuarios_cursos/:ucu_cod', (usuarios_cursosController.apagarUsuarios_Cursos));
 
 module.exports = router;
