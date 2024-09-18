@@ -65,7 +65,6 @@ module.exports = {
                 ${havingClauses.length > 0 ? 'HAVING ' + havingClauses.join(' AND ') : ''}`;
 
 
-
             // Executa a consulta SQL
             const livros = await db.query(sql, params);
             const nItens = livros[0].length;
