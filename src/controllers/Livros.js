@@ -17,7 +17,7 @@ function geraUrl(liv_foto_capa) {
 module.exports = {
     async listarLivros(request, response) {
         try {
-            const { liv_nome, aut_nome, edt_nome, gen_nome } = request.body;
+            const { liv_nome, aut_nome, edt_nome, gen_nome, liv_cod } = request.body;
             const livPesq = liv_cod ? liv_cod : `%%`;
 
             // Cria um array de parâmetros para a consulta
@@ -43,8 +43,8 @@ module.exports = {
                 params.push(`%${gen_nome}%`);
             }
             if (liv_cod){
-                havingClauses.push("liv.liv_cod = ?");
-                params.push(`%${liv_cod}%`);
+                whereClauses.push("liv.liv_cod = ?");
+                params.push(livPesq);
             }
 
             // Monta a consulta SQL dinamicamente com base nos critérios
@@ -62,18 +62,16 @@ module.exports = {
                 ${whereClauses.length > 0 ? 'WHERE ' + whereClauses.join(' AND ') : ''}
                 GROUP BY liv.liv_cod, liv.liv_nome, liv.liv_foto_capa, 
                          edt.edt_nome, edt.edt_foto, aut.aut_nome, aut.aut_foto
-                ${havingClauses.length > 0 ? 'HAVING ' + havingClauses.join(' AND ') : ''}
-                AND liv.liv_cod = ?`;
+                ${havingClauses.length > 0 ? 'HAVING ' + havingClauses.join(' AND ') : ''}`;
 
-            const values = [liv_nome, aut_nome, edt_nome, gen_nome, livPesq];
 
             // Executa a consulta SQL
-            const livros = await db.query(sql, params, values);
+            const livros = await db.query(sql, params);
             const nItens = livros[0].length;
 
-            const resultado = livros[0].map(livro => ({
-                ...livro,
-                liv_foto_capa: geraUrl(livro.liv_foto_capa)
+            const resultado = livros[0].map(livros => ({
+                ...livros,
+                liv_foto_capa: geraUrl(livros.liv_foto_capa)
             }));
 
             return response.status(200).json({
