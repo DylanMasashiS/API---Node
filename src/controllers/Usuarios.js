@@ -178,7 +178,7 @@ module.exports = {
             const { usu_email, usu_senha } = request.body;
 
             const sql = `SELECT usu_cod, usu_nome, usu_tipo, usu_ativo = 1 AS usu_ativo FROM usuarios 
-                WHERE usu_email = ? AND usu_senha = ?;`;
+                WHERE usu_email = ? AND usu_senha = ? AND usu_aprovado = 1;`;
 
             const values = [usu_email, usu_senha];
 
