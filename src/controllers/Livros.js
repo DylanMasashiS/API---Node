@@ -64,7 +64,6 @@ module.exports = {
             });
         }
     },
-
     async listarLivrosQtd (request, response) {
         
         try {
