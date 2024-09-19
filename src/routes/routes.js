@@ -36,7 +36,6 @@ router.get ('/usuarios_cursos', (usuarios_cursosController.listarUsuarios_Cursos
 //LISTAR com pesquisa
 router.post ('/cursos', (cursosController.listarCursos));
 router.post ('/livros', (livrosController.listarLivros));
-router.get ('livros_qtd', (livrosController.listarLivrosQtd));
 router.post ('/recomendacao', (recomendacaoController.listarRecomendacao));
 
 //CADASTRAR com imagem
@@ -77,7 +76,6 @@ router.patch ('/usuarios_ocultar', (usuariosController.ocultarUsuarios));
 router.patch ('/emp_renovar/:emp_cod', (emprestimosController.renovarEmprestimos));
 
 //DELETE ou EXCLUIR
-router.delete ('/usuarios', (usuariosController.apagarUsuarios));
 router.delete ('/livros/:liv_cod', (livrosController.apagarLivros));
 router.delete ('/cursos/:cur_cod', (cursosController.apagarCursos));
 router.delete ('/generos/:gen_cod', (generosController.apagarGeneros));

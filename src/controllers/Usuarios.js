@@ -126,30 +126,6 @@ module.exports = {
             });
         }
     },
-    async apagarUsuarios(request, response) {
-        try {
-            // parâmetro passado via url na chamada da api pelo front-end
-            const { usu_cod } = request.body;
-            // comando de exclusão
-            const sql = `DELETE FROM usuarios WHERE usu_cod = ?`;
-            // array com parâmetros da exclusão
-            const values = [usu_cod];
-            // executa instrução no banco de dados
-            const excluir = await db.query(sql, values);
-
-            return response.status(200).json({
-                sucesso: true,
-                mensagem: `Usuário ${usu_cod} excluído com sucesso`,
-                dados: excluir[0].affectedRows
-            });
-        } catch (error) {
-            return response.status(500).json({
-                sucesso: false,
-                mensagem: 'Erro na requisição.',
-                dados: error.message
-            });
-        }
-    }, 
     async ocultarUsuarios(request, response) {
         try {
             const usu_ativo = false; 
