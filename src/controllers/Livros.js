@@ -51,14 +51,16 @@ module.exports = {
             const sql = `
                 SELECT liv.liv_cod, liv.liv_nome, liv.liv_foto_capa, liv.liv_desc, 
                        edt.edt_nome, edt.edt_foto, 
-                       aut.aut_nome, aut.aut_foto,
+                       aut.aut_nome, aut.aut_foto, 
+                       count(liv.liv_cod) AS exemplares, 
                        GROUP_CONCAT(DISTINCT gen.gen_nome) AS generos
                 FROM livros liv
                 INNER JOIN editoras edt ON edt.edt_cod = liv.edt_cod
                 INNER JOIN livros_autores lau ON lau.liv_cod = liv.liv_cod
                 INNER JOIN autores aut ON aut.aut_cod = lau.aut_cod
                 INNER JOIN livros_generos lge ON lge.liv_cod = liv.liv_cod
-                INNER JOIN generos gen ON gen.gen_cod = lge.gen_cod
+                INNER JOIN generos gen ON gen.gen_cod = lge.gen_cod 
+                INNER JOIN exemplares e ON liv.liv_cod = e.liv_cod 
                 ${whereClauses.length > 0 ? 'WHERE ' + whereClauses.join(' AND ') : ''}
                 GROUP BY liv.liv_cod, liv.liv_nome, liv.liv_foto_capa, 
                          edt.edt_nome, edt.edt_foto, aut.aut_nome, aut.aut_foto
