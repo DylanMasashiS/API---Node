@@ -17,31 +17,55 @@ function geraUrl(liv_foto_capa) {
 module.exports = {
     async listarLivros(request, response) {
         try {
-            const { liv_nome, aut_nome, edt_nome, gen_nome, liv_cod} = request.body;
-            // const livPesq = liv_cod ? liv_cod : `%%`;
+            const { liv_nome, aut_nome, edt_nome, gen_nome, liv_cod } = request.body;
+            const livPesq = liv_cod ? liv_cod : `%%`;
+
+            // Cria um array de parâmetros para a consulta
+            let params = [];
+            let whereClauses = [];
+            let havingClauses = [];
+
+            // Adiciona cláusulas de pesquisa baseadas nos critérios fornecidos
+            if (liv_nome) {
+                whereClauses.push("liv.liv_nome LIKE ?");
+                params.push(`%${liv_nome}%`);
+            }
+            if (aut_nome) {
+                whereClauses.push("aut.aut_nome LIKE ?");
+                params.push(`%${aut_nome}%`);
+            }
+            if (edt_nome) {
+                whereClauses.push("edt.edt_nome LIKE ?");
+                params.push(`%${edt_nome}%`);
+            }
+            if (gen_nome) {
+                havingClauses.push("GROUP_CONCAT(DISTINCT gen.gen_nome) LIKE ?");
+                params.push(`%${gen_nome}%`);
+            }
+            if (liv_cod){
+                whereClauses.push("liv.liv_cod = ?");
+                params.push(livPesq);
+            }
 
             // Monta a consulta SQL dinamicamente com base nos critérios
-            const sql = `SELECT liv.liv_cod, liv.liv_nome, liv.liv_foto_capa, liv.liv_desc,
-                        edt.edt_nome, edt.edt_foto, aut.aut_nome, aut.aut_foto, gen.gen_foto,
-                        GROUP_CONCAT(DISTINCT gen.gen_nome) AS generos
-                        FROM livros liv
-                        INNER JOIN editoras edt ON edt.edt_cod = liv.edt_cod
-                        INNER JOIN livros_autores lau ON lau.liv_cod = liv.liv_cod
-                        INNER JOIN autores aut ON aut.aut_cod = lau.aut_cod
-                        INNER JOIN livros_generos lge ON lge.liv_cod = liv.liv_cod
-                        INNER JOIN generos gen ON gen.gen_cod = lge.gen_cod
-                        WHERE liv.liv_nome LIKE '%?%'
-                        OR aut.aut_nome LIKE '%?%'
-                        OR edt.edt_nome LIKE '%?%'
-                        OR gen.gen_nome LIKE '%?%'
-                        OR liv.liv_cod = ?
-                        GROUP BY liv.liv_cod, liv.liv_nome, aut.aut_nome, aut.aut_foto, liv.liv_foto_capa, 
-                        edt.edt_nome, edt.edt_foto, gen.gen_nome, gen.gen_foto `;
+            const sql = `
+                SELECT liv.liv_cod, liv.liv_nome, liv.liv_foto_capa, liv.liv_desc, 
+                       edt.edt_nome, edt.edt_foto, 
+                       aut.aut_nome, aut.aut_foto,
+                       GROUP_CONCAT(DISTINCT gen.gen_nome) AS generos
+                FROM livros liv
+                INNER JOIN editoras edt ON edt.edt_cod = liv.edt_cod
+                INNER JOIN livros_autores lau ON lau.liv_cod = liv.liv_cod
+                INNER JOIN autores aut ON aut.aut_cod = lau.aut_cod
+                INNER JOIN livros_generos lge ON lge.liv_cod = liv.liv_cod
+                INNER JOIN generos gen ON gen.gen_cod = lge.gen_cod
+                ${whereClauses.length > 0 ? 'WHERE ' + whereClauses.join(' AND ') : ''}
+                GROUP BY liv.liv_cod, liv.liv_nome, liv.liv_foto_capa, 
+                         edt.edt_nome, edt.edt_foto, aut.aut_nome, aut.aut_foto
+                ${havingClauses.length > 0 ? 'HAVING ' + havingClauses.join(' AND ') : ''}`;
 
-
-                const values = [liv_nome, edt_nome, gen_nome, aut_nome, liv_cod]
             // Executa a consulta SQL
-            const livros = await db.query(sql, values);
+            const livros = await db.query(sql, params);
             const nItens = livros[0].length;
 
             const resultado = livros[0].map(livros => ({
