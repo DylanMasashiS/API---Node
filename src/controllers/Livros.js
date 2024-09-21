@@ -52,7 +52,8 @@ module.exports = {
                 SELECT liv.liv_cod, liv.liv_nome, liv.liv_foto_capa, liv.liv_desc, 
                        edt.edt_nome, edt.edt_foto, 
                        aut.aut_nome, aut.aut_foto, 
-                       count(liv.liv_cod) AS exemplares, 
+                       gen.gen_nome, gen.gen_foto,
+                        (count(liv.liv_cod) - (SELECT COUNT(*) FROM EMPRESTIMOS X WHERE X.EXE_COD = E.EXE_COD AND X.emp_devolvido = 0) ) AS disponivel,
                        GROUP_CONCAT(DISTINCT gen.gen_nome) AS generos
                 FROM livros liv
                 INNER JOIN editoras edt ON edt.edt_cod = liv.edt_cod
