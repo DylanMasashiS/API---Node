@@ -11,11 +11,18 @@ module.exports = {
             const usuPesq = usu_nome ? `%${usu_nome}%` : `%%`;
             // instruções SQL
             const sql = `SELECT 
-                rec.rcm_cod, cur.cur_cod, liv.liv_cod, usu.usu_nome, rec.rcm_mod1, rec.rcm_mod2, rec.rcm_mod3, rec.rcm_mod4
+                rec.rcm_cod, cur.cur_cod, cur.cur_nome, liv.liv_cod, liv.liv_nome, liv.liv_desc,
+                usu.usu_nome, aut.aut_nome, aut.aut_foto, gen.gen_nome, gen.gen_foto, edt.edt_nome, edt.edt_cod, 
+                rec.rcm_mod1, rec.rcm_mod2, rec.rcm_mod3, rec.rcm_mod4
                 from recomendacao rec
                 inner join usuarios usu on usu.usu_cod = rec.usu_cod
                 inner join cursos cur on cur.cur_cod = rec.cur_cod
                 inner join livros liv on liv.liv_cod = rec.liv_cod
+                inner join livros_generos lge on liv.liv_cod = lge.liv_cod
+                inner join generos gen on gen.gen_cod = lge.gen_cod
+                inner join livros_autores lau on lau.liv_cod = liv.liv_cod
+                inner join autores aut on aut.aut_cod = lau.aut_cod
+                inner join editoras edt on edt.edt_cod = liv.edt_cod
                 where usu.usu_nome like ?;`;
 
             const values = [usuPesq];
