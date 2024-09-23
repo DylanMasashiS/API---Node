@@ -7,13 +7,13 @@ const router = express.Router();
 module.exports = {
     async listarRecomendacao(request, response) {
         try {
-            const {usu_nome} = request.body;
-            const usuPesq = usu_nome ? `%${usu_nome}%` : `%%`;
+            const {cur_cod} = request.body;
+
             // instruções SQL
             const sql = `SELECT 
-                rec.rcm_cod, cur.cur_cod, cur.cur_nome, liv.liv_cod, liv.liv_nome, liv.liv_desc,
-                usu.usu_nome, aut.aut_nome, aut.aut_foto, gen.gen_nome, gen.gen_foto, edt.edt_nome, edt.edt_cod, 
-                rec.rcm_mod1, rec.rcm_mod2, rec.rcm_mod3, rec.rcm_mod4
+                rec.rcm_cod, cur.cur_nome, liv.liv_cod, liv.liv_foto_capa, liv.liv_nome, liv.liv_desc,
+                usu.usu_nome, aut.aut_nome, aut.aut_foto, gen.gen_nome, gen.gen_foto, edt.edt_nome, edt.edt_foto, 
+                rec.rcm_mod1 = 1 AS rcm_mod1, rec.rcm_mod2 = 1 AS rcm_mod2, rec.rcm_mod3 = 1 AS rcm_mod3,  rec.rcm_mod4 = 1 AS rcm_mod4 
                 from recomendacao rec
                 inner join usuarios usu on usu.usu_cod = rec.usu_cod
                 inner join cursos cur on cur.cur_cod = rec.cur_cod
@@ -23,9 +23,9 @@ module.exports = {
                 inner join livros_autores lau on lau.liv_cod = liv.liv_cod
                 inner join autores aut on aut.aut_cod = lau.aut_cod
                 inner join editoras edt on edt.edt_cod = liv.edt_cod
-                where usu.usu_nome like ?;`;
+                where cur.cur_cod = ?;`;
 
-            const values = [usuPesq];
+            const values = [cur_cod];
             // executa instruções SQL e armazena o resultado na variável usuários
             const recomendacao = await db.query(sql, values);
             // armazena em uma variável o número de registros retornados

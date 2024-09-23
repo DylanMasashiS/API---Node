@@ -36,7 +36,7 @@ router.get ('/usuarios_cursos', (usuarios_cursosController.listarUsuarios_Cursos
 //LISTAR com pesquisa
 router.post ('/cursos', (cursosController.listarCursos));
 router.post ('/livros', (livrosController.listarLivros));
-router.post ('/recomendacao', (recomendacaoController.listarRecomendacao));
+router.post ('/listarrecomendacao', (recomendacaoController.listarRecomendacao));
 
 //CADASTRAR com imagem
 router.post ('/cursos', (cursosController.cadastrarCursos));
