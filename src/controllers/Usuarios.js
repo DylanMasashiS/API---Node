@@ -1,4 +1,4 @@
-// const db = require('../database/connection');
+ const db = require('../database/connection');
 // var fs = require('fs-extra');
 
 const express = require('express'); 
@@ -151,16 +151,26 @@ module.exports = {
     async loginUsuarios(request, response) {
         try {
 
-            const { usu_email, usu_senha } = request.body;
+            const { usu_email_rm, usu_senha } = request.body;
 
-            const sql = `SELECT usu_cod, usu_nome, usu_tipo, usu_ativo = 1 AS usu_ativo, 
-                        usu_email, usu_senha, cur.cur_cod, cur.cur_nome
-                        FROM usuarios usu
-                        Inner Join usuarios_cursos ucu on ucu.usu_cod = usu.usu_cod
-                        Inner Join cursos cur on cur.cur_cod = ucu.cur_cod
-                        WHERE usu_email = ? AND usu_senha = ? AND usu_aprovado = 1;`;
+            const sql = ` SELECT usu.usu_cod, 
+                                 usu.usu_nome, 
+                                 usu.usu_rm,
+                                 usu.usu_tipo, 
+                                  usu.usu_ativo = 1 as usu_ativo, 
+                                 usu.usu_email, 
+                                 usu.usu_senha, 
+                                 cur.cur_cod, 
+                                 cur.cur_nome
+                            FROM usuarios usu
+                      INNER JOIN usuarios_cursos ucu on ucu.usu_cod = usu.usu_cod
+                      INNER JOIN cursos cur on cur.cur_cod = ucu.cur_cod
+                           WHERE (   usu.usu_email = ?
+                                  OR usu.usu_rm    = ?)
+                             AND usu.usu_senha     = ?
+                             AND usu.usu_aprovado  = 1`;
 
-            const values = [usu_email, usu_senha];
+            const values = [usu_email_rm, usu_email_rm, usu_senha];
 
             const usuarios = await db.query(sql, values);
             const nItens = usuarios[0].length; 

@@ -7,7 +7,7 @@ const router = express.Router();
 module.exports = {
     async listarRecomendacao(request, response) {
         try {
-            const {cur_cod} = request.body;
+            const {usu_cod} = request.body;
 
             // instruções SQL
             const sql = `SELECT 
@@ -25,9 +25,9 @@ module.exports = {
                 inner join livros_autores lau on lau.liv_cod = liv.liv_cod
                 inner join autores aut on aut.aut_cod = lau.aut_cod
                 inner join editoras edt on edt.edt_cod = liv.edt_cod
-                where cur.cur_cod = ?;`;
+                where ucu.usu_cod = ?;`;
 
-            const values = [cur_cod];
+            const values = [usu_cod];
             // executa instruções SQL e armazena o resultado na variável usuários
             const recomendacao = await db.query(sql, values);
             // armazena em uma variável o número de registros retornados
