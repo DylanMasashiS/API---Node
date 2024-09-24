@@ -4,6 +4,14 @@ const db = require('../database/connection');
 const express = require('express'); 
 const router = express.Router(); 
 
+function geraUrl (liv_foto_capa) {
+    let img = liv_foto_capa ? liv_foto_capa : 'default.jpg';
+    if (!fs.existsSync ('./public/uploads/CapaLivros/' + img)) {
+        img = 'livros.jpg';
+    }
+    return '/uploads/CapaLivros/' + img;
+}
+
 module.exports = {
     async listarRecomendacao(request, response) {
         try {
@@ -29,14 +37,20 @@ module.exports = {
 
             const values = [usu_cod];
             // executa instruções SQL e armazena o resultado na variável usuários
-            const recomendacao = await db.query(sql, values);
+            const livros = await db.query(sql, values);
             // armazena em uma variável o número de registros retornados
-            const nItens = recomendacao[0].length;
+            const nItens = livros[0].length;
+
+            const resultado = livros[0].map(livros => ({
+                ...livros,
+                liv_foto_capa: geraUrl(livros.liv_foto_capa)
+
+            }));
 
             return response.status(200).json({
                 sucesso: true,
                 mensagem: 'Lista de recomendações.',
-                dados: recomendacao[0],
+                dados: resultado,
                 nItens
             });
         } catch (error) {
