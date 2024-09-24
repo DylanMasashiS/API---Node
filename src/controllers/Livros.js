@@ -48,24 +48,45 @@ module.exports = {
             }
 
             // Monta a consulta SQL dinamicamente com base nos critérios
-            const sql = `
-                SELECT liv.liv_cod, liv.liv_nome, liv.liv_foto_capa, liv.liv_desc, 
-                       edt.edt_nome, edt.edt_foto, 
-                       aut.aut_nome, aut.aut_foto, 
-                       gen.gen_nome, gen.gen_foto,
-                        (count(liv.liv_cod) - (SELECT COUNT(*) FROM EMPRESTIMOS X WHERE X.EXE_COD = E.EXE_COD AND X.emp_devolvido = 0) ) AS disponivel,
-                       GROUP_CONCAT(DISTINCT gen.gen_nome) AS generos
-                FROM livros liv
-                INNER JOIN editoras edt ON edt.edt_cod = liv.edt_cod
-                INNER JOIN livros_autores lau ON lau.liv_cod = liv.liv_cod
-                INNER JOIN autores aut ON aut.aut_cod = lau.aut_cod
-                INNER JOIN livros_generos lge ON lge.liv_cod = liv.liv_cod
-                INNER JOIN generos gen ON gen.gen_cod = lge.gen_cod 
-                INNER JOIN exemplares e ON liv.liv_cod = e.liv_cod 
-                ${whereClauses.length > 0 ? 'WHERE ' + whereClauses.join(' AND ') : ''}
-                GROUP BY liv.liv_cod, liv.liv_nome, liv.liv_foto_capa, 
-                         edt.edt_nome, edt.edt_foto, aut.aut_nome, aut.aut_foto
-                ${havingClauses.length > 0 ? 'HAVING ' + havingClauses.join(' AND ') : ''}`;
+            const sql = `SELECT liv.liv_cod, 
+                                liv.liv_nome, 
+                                liv.liv_foto_capa, 
+                                liv.liv_desc, 
+                                edt.edt_nome, 
+                                edt.edt_foto,
+                                aut.aut_nome, 
+                                aut.aut_foto,
+                                gen.gen_nome, 
+                                gen.gen_foto,
+                                count(exe.exe_cod) as exemplares,
+                                (    SELECT COUNT(*) 
+                     			      FROM emprestimos emp 
+                     			INNER JOIN exemplares  subexe ON emp.exe_cod = subexe.exe_cod            
+                     			     WHERE subexe.liv_cod = liv.liv_cod
+                                        AND emp.emp_devolvido = 0) as emprestados,
+                                (count(exe.exe_cod) - (    SELECT COUNT(*) 
+                     										FROM emprestimos emp 
+                     							      INNER JOIN exemplares  subexe ON emp.exe_cod = subexe.exe_cod            
+                     										WHERE subexe.liv_cod = liv.liv_cod
+                     										  AND emp.emp_devolvido = 0)) AS disponivel,
+                                GROUP_CONCAT(DISTINCT gen.gen_nome) AS generos
+                           FROM livros         liv
+                     INNER JOIN editoras       edt ON edt.edt_cod = liv.edt_cod
+                     INNER JOIN livros_autores lau ON lau.liv_cod = liv.liv_cod
+                     INNER JOIN autores        aut ON aut.aut_cod = lau.aut_cod
+                     INNER JOIN livros_generos lge ON lge.liv_cod = liv.liv_cod
+                     INNER JOIN generos        gen ON gen.gen_cod = lge.gen_cod 
+                     INNER JOIN exemplares     exe ON liv.liv_cod = exe.liv_cod 
+                     ${whereClauses.length > 0 ? 'WHERE ' + whereClauses.join(' AND ') : ''}
+                            AND exe.exe_data_saida IS NULL
+                     GROUP BY liv.liv_cod, 
+                              liv.liv_nome, 
+                              liv.liv_foto_capa, 
+                              edt.edt_nome, 
+                              edt.edt_foto, 
+                              aut.aut_nome, 
+                              aut.aut_foto
+                     ${havingClauses.length > 0 ? 'HAVING ' + havingClauses.join(' AND ') : ''}`;
 
             // Executa a consulta SQL
             const livros = await db.query(sql, params);
