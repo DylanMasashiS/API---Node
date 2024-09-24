@@ -16,9 +16,9 @@ module.exports = {
                 rec.rcm_mod1 = 1 AS rcm_mod1, rec.rcm_mod2 = 1 AS rcm_mod2, 
                 rec.rcm_mod3 = 1 AS rcm_mod3,  rec.rcm_mod4 = 1 AS rcm_mod4 
                 from recomendacao rec
-                inner join usuarios_cursos ucu on ucu.usu_cod = usu.usu_cod
                 inner join usuarios usu on usu.usu_cod = rec.usu_cod
-                inner join cursos cur on cur.cur_cod = rec.cur_cod
+                inner join usuarios_cursos ucu on ucu.usu_cod = usu.usu_cod
+                inner join cursos cur on cur.cur_cod = ucu.cur_cod
                 inner join livros liv on liv.liv_cod = rec.liv_cod
                 inner join livros_generos lge on liv.liv_cod = lge.liv_cod
                 inner join generos gen on gen.gen_cod = lge.gen_cod
