@@ -23,7 +23,6 @@ const solicitacoesController = require ('../controllers/Solicitacoes');
 //LISTAR sem pesquisa
 router.get ('/autores', (autoresController.listarAutores));
 router.get ('/generos', (generosController.listarGeneros));
-router.get ('livros_qtd', (livrosController.listarLivrosQtd));
 router.get ('/usuarios', (usuariosController.listarUsuarios));
 router.get ('/editoras', (editorasController.listarEditoras));
 router.get ('/exemplares', (exemplaresController.listarExemplares));
@@ -36,16 +35,16 @@ router.get ('/usuarios_cursos', (usuarios_cursosController.listarUsuarios_Cursos
 //LISTAR com pesquisa
 router.post ('/cursos', (cursosController.listarCursos));
 router.post ('/livros', (livrosController.listarLivros));
-router.post ('/listarrecomendacao', (recomendacaoController.listarRecomendacao));
+router.post ('/rec_listar', (recomendacaoController.listarRecomendacao));
 
 //CADASTRAR com imagem
 router.post ('/cursos', (cursosController.cadastrarCursos));
-router.post ('/login_usuarios', (usuariosController.loginUsuarios));
+router.post ('/usu_login', (usuariosController.loginUsuarios));
 router.post ('/generos', uploadsG.single('img'), generosController.cadastrarGeneros);
 router.post ('/autores', uploadsA.single('img'), autoresController.cadastrarAutores);
 router.post ('/editoras', uploadsE.single('img'), editorasController.cadastrarEditoras);
 router.post ('/usuarios', uploadsU.single('img'), usuariosController.cadastrarUsuarios);
-router.post ('/livros_cadastrar', uploadsL.single('img'), livrosController.cadastrarLivros);
+router.post ('/liv_cadastrar', uploadsL.single('img'), livrosController.cadastrarLivros);
 
 //CADASTRAR sem imagem
 router.post ('/exemplares', (exemplaresController.cadastrarExemplares));
@@ -72,7 +71,7 @@ router.patch ('/livros_generos/:lge_cod', (livros_generosController.editarLivros
 router.patch ('/usuarios_cursos/:ucu_cod', (usuarios_cursosController.editarUsuarios_Cursos));
 
 //UPDATE diferente
-router.patch ('/usuarios_ocultar', (usuariosController.ocultarUsuarios));
+router.patch ('/usu_ocultar', (usuariosController.ocultarUsuarios));
 router.patch ('/emp_renovar/:emp_cod', (emprestimosController.renovarEmprestimos));
 
 //DELETE ou EXCLUIR
