@@ -13,8 +13,10 @@ module.exports = {
             const sql = `SELECT 
                 rec.rcm_cod, cur.cur_nome, liv.liv_cod, liv.liv_foto_capa, liv.liv_nome, liv.liv_desc,
                 usu.usu_nome, aut.aut_nome, aut.aut_foto, gen.gen_nome, gen.gen_foto, edt.edt_nome, edt.edt_foto, 
-                rec.rcm_mod1 = 1 AS rcm_mod1, rec.rcm_mod2 = 1 AS rcm_mod2, rec.rcm_mod3 = 1 AS rcm_mod3,  rec.rcm_mod4 = 1 AS rcm_mod4 
+                rec.rcm_mod1 = 1 AS rcm_mod1, rec.rcm_mod2 = 1 AS rcm_mod2, 
+                rec.rcm_mod3 = 1 AS rcm_mod3,  rec.rcm_mod4 = 1 AS rcm_mod4 
                 from recomendacao rec
+                inner join usuarios_cursos ucu on ucu.usu_cod = usu.usu_cod
                 inner join usuarios usu on usu.usu_cod = rec.usu_cod
                 inner join cursos cur on cur.cur_cod = rec.cur_cod
                 inner join livros liv on liv.liv_cod = rec.liv_cod

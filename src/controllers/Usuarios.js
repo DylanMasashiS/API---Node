@@ -153,8 +153,12 @@ module.exports = {
 
             const { usu_email, usu_senha } = request.body;
 
-            const sql = `SELECT usu_cod, usu_nome, usu_tipo, usu_ativo = 1 AS usu_ativo FROM usuarios 
-                WHERE usu_email = ? AND usu_senha = ? AND usu_aprovado = 1;`;
+            const sql = `SELECT usu_cod, usu_nome, usu_tipo, usu_ativo = 1 AS usu_ativo, 
+                        usu_email, usu_senha, cur.cur_cod, cur.cur_nome
+                        FROM usuarios usu
+                        Inner Join usuarios_cursos ucu on ucu.usu_cod = usu.usu_cod
+                        Inner Join cursos cur on cur.cur_cod = ucu.cur_cod
+                        WHERE usu_email = ? AND usu_senha = ? AND usu_aprovado = 1;`;
 
             const values = [usu_email, usu_senha];
 
