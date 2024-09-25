@@ -1,5 +1,5 @@
 const db = require('../database/connection');
-
+var fs = require('fs-extra');  
 
 const express = require('express'); 
 const router = express.Router(); 
@@ -22,7 +22,18 @@ module.exports = {
                 rec.rcm_cod, cur.cur_nome, liv.liv_cod, liv.liv_foto_capa, liv.liv_nome, liv.liv_desc,
                 usu.usu_nome, aut.aut_nome, aut.aut_foto, gen.gen_nome, gen.gen_foto, edt.edt_nome, edt.edt_foto, 
                 rec.rcm_mod1 = 1 AS rcm_mod1, rec.rcm_mod2 = 1 AS rcm_mod2, 
-                rec.rcm_mod3 = 1 AS rcm_mod3,  rec.rcm_mod4 = 1 AS rcm_mod4 
+                rec.rcm_mod3 = 1 AS rcm_mod3,  rec.rcm_mod4 = 1 AS rcm_mod4
+                count(exe.exe_cod) as exemplares,
+                ( SELECT COUNT(*) 
+                FROM emprestimos emp 
+                INNER JOIN exemplares  subexe ON emp.exe_cod = subexe.exe_cod            
+                WHERE subexe.liv_cod = liv.liv_cod
+                AND emp.emp_devolvido = 0) as emprestados,
+                (count(exe.exe_cod) - (    SELECT COUNT(*) 
+                FROM emprestimos emp 
+                INNER JOIN exemplares  subexe ON emp.exe_cod = subexe.exe_cod            
+                WHERE subexe.liv_cod = liv.liv_cod
+                AND emp.emp_devolvido = 0)) AS disponivel,
                 from recomendacao rec
                 inner join usuarios usu on usu.usu_cod = rec.usu_cod
                 inner join usuarios_cursos ucu on ucu.usu_cod = usu.usu_cod
