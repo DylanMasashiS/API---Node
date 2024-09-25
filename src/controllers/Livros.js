@@ -48,45 +48,33 @@ module.exports = {
             }
 
             // Monta a consulta SQL dinamicamente com base nos critérios
-            const sql = `SELECT liv.liv_cod, 
-                                liv.liv_nome, 
-                                liv.liv_foto_capa, 
-                                liv.liv_desc, 
-                                edt.edt_nome, 
-                                edt.edt_foto,
-                                aut.aut_nome, 
-                                aut.aut_foto,
-                                gen.gen_nome, 
-                                gen.gen_foto,
-                                count(exe.exe_cod) as exemplares,
-                                (    SELECT COUNT(*) 
-                     			      FROM emprestimos emp 
+            const sql = `SELECT liv.liv_cod, liv.liv_nome, liv.liv_foto_capa, liv.liv_desc, 
+                                edt.edt_nome, edt.edt_foto, aut.aut_nome, aut.aut_foto,
+                                gen.gen_nome, gen.gen_foto,
+                                
+                         COUNT(exe.exe_cod) as exemplares,
+                            (SELECT COUNT(*) FROM emprestimos emp 
+                     		INNER JOIN exemplares  subexe ON emp.exe_cod = subexe.exe_cod            
+                     		WHERE subexe.liv_cod = liv.liv_cod
+                            AND emp.emp_devolvido = 0) as emprestados,
+                                (COUNT(exe.exe_cod) - (SELECT COUNT(*) FROM emprestimos emp 
                      			INNER JOIN exemplares  subexe ON emp.exe_cod = subexe.exe_cod            
-                     			     WHERE subexe.liv_cod = liv.liv_cod
-                                        AND emp.emp_devolvido = 0) as emprestados,
-                                (count(exe.exe_cod) - (    SELECT COUNT(*) 
-                     										FROM emprestimos emp 
-                     							      INNER JOIN exemplares  subexe ON emp.exe_cod = subexe.exe_cod            
-                     										WHERE subexe.liv_cod = liv.liv_cod
-                     										  AND emp.emp_devolvido = 0)) AS disponivel,
-                                GROUP_CONCAT(DISTINCT gen.gen_nome) AS generos
-                           FROM livros         liv
-                     INNER JOIN editoras       edt ON edt.edt_cod = liv.edt_cod
-                     INNER JOIN livros_autores lau ON lau.liv_cod = liv.liv_cod
-                     INNER JOIN autores        aut ON aut.aut_cod = lau.aut_cod
-                     INNER JOIN livros_generos lge ON lge.liv_cod = liv.liv_cod
-                     INNER JOIN generos        gen ON gen.gen_cod = lge.gen_cod 
-                     INNER JOIN exemplares     exe ON liv.liv_cod = exe.liv_cod 
-                     ${whereClauses.length > 0 ? 'WHERE ' + whereClauses.join(' AND ') : ''}
-                            AND exe.exe_data_saida IS NULL
-                     GROUP BY liv.liv_cod, 
-                              liv.liv_nome, 
-                              liv.liv_foto_capa, 
-                              edt.edt_nome, 
-                              edt.edt_foto, 
-                              aut.aut_nome, 
-                              aut.aut_foto
-                     ${havingClauses.length > 0 ? 'HAVING ' + havingClauses.join(' AND ') : ''}`;
+                     			WHERE subexe.liv_cod = liv.liv_cod
+                     			AND emp.emp_devolvido = 0)) AS disponivel,
+                                
+                         GROUP_CONCAT(DISTINCT gen.gen_nome) AS generos
+                        FROM livros         liv
+                        INNER JOIN editoras       edt ON edt.edt_cod = liv.edt_cod
+                        INNER JOIN livros_autores lau ON lau.liv_cod = liv.liv_cod
+                        INNER JOIN autores        aut ON aut.aut_cod = lau.aut_cod
+                        INNER JOIN livros_generos lge ON lge.liv_cod = liv.liv_cod
+                        INNER JOIN generos        gen ON gen.gen_cod = lge.gen_cod 
+                        INNER JOIN exemplares     exe ON liv.liv_cod = exe.liv_cod 
+                        ${whereClauses.length > 0 ? 'WHERE ' + whereClauses.join(' AND ') : ''}
+                        AND exe.exe_data_saida IS NULL
+                        GROUP BY liv.liv_cod, liv.liv_nome, liv.liv_foto_capa, edt.edt_nome, 
+                        edt.edt_foto, aut.aut_nome, aut.aut_foto
+                        ${havingClauses.length > 0 ? 'HAVING ' + havingClauses.join(' AND ') : ''}`;
 
             // Executa a consulta SQL
             const livros = await db.query(sql, params);
@@ -102,45 +90,6 @@ module.exports = {
                 mensagem: 'Lista de livros.',
                 dados: resultado,
                 nItens
-            });
-        } catch (error) {
-            console.error('Erro na requisição:', error);  // Registra o erro para depuração
-            return response.status(500).json({
-                sucesso: false,
-                mensagem: 'Erro na requisição.',
-                dados: error.message
-            });
-        }
-    },
-    async listarLivrosQtd (request, response) {
-        
-        try {
-            const {liv_cod} = request.body;
-
-            const sql = `SELECT COUNT( Exe.exe_cod ) AS TotalExemplares
-                        FROM Livros AS Liv
-                        LEFT JOIN Exemplares AS Exe ON Liv.liv_cod = Exe.liv_cod
-                        LEFT JOIN (SELECT Emp.exe_cod, Emp.emp_devolvido, Emp.emp_data_emp
-                        FROM Emprestimos AS Emp
-                        INNER JOIN ( SELECT exe_cod, MAX(emp_data_emp) AS max_emp_data_emp
-                        FROM Emprestimos
-                        GROUP BY exe_cod ) AS MaxEmp ON Emp.exe_cod = MaxEmp.exe_cod AND Emp.emp_data_emp = MaxEmp.max_emp_data_emp
-                        ) AS EmpRecente ON Exe.exe_cod = EmpRecente.exe_cod
-                        WHERE Liv.liv_cod = ? AND ((Exe.exe_data_saida IS NULL) OR (Exe.exe_cod IS NULL))
-                        AND ((EmpRecente.emp_devolvido = 1) OR (EmpRecente.exe_cod IS NULL));`;
-
-            const values = [liv_cod];
-
-            const quantidade = await db.query(sql, values);
-
-            const nItens = quantidade[0].TotalExemplares;
-            
-            return response.status(200).json({
-                sucesso: true,
-                mensagem: 'Quantidade de livros.',
-                dados: quantidade[0],
-                nItens
-                
             });
         } catch (error) {
             console.error('Erro na requisição:', error);  // Registra o erro para depuração

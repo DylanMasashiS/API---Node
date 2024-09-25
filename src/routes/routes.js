@@ -27,7 +27,7 @@ router.get ('/usuarios', (usuariosController.listarUsuarios));
 router.get ('/editoras', (editorasController.listarEditoras));
 router.get ('/exemplares', (exemplaresController.listarExemplares));
 router.get ('/emprestimos', (emprestimosController.listarEmprestimos));
-router.get ('/solicitacoes', (solicitacoesController.listarSolicitacoes));
+router.get ('/sol_listar', (solicitacoesController.listarSolicitacoes));
 router.get ('/livros_autores', (livros_autoresController.listarLivros_Autores));
 router.get ('/livros_generos', (livros_generosController.listarLivros_Generos));
 router.get ('/usuarios_cursos', (usuarios_cursosController.listarUsuarios_Cursos));
@@ -39,7 +39,6 @@ router.post ('/rec_listar', (recomendacaoController.listarRecomendacao));
 
 //CADASTRAR com imagem
 router.post ('/cursos', (cursosController.cadastrarCursos));
-router.post ('/usu_login', (usuariosController.loginUsuarios));
 router.post ('/generos', uploadsG.single('img'), generosController.cadastrarGeneros);
 router.post ('/autores', uploadsA.single('img'), autoresController.cadastrarAutores);
 router.post ('/editoras', uploadsE.single('img'), editorasController.cadastrarEditoras);
@@ -53,8 +52,6 @@ router.post ('/recomendacao', (recomendacaoController.cadastrarRecomendacao));
 router.post ('/livros_autores', (livros_autoresController.cadastrarLivros_Autores));
 router.post ('/livros_generos', (livros_generosController.cadastrarLivros_Generos));
 router.post ('/usuarios_cursos', (usuarios_cursosController.cadastrarUsuarios_Cursos));
-router.post ('/solicitacoes_aprovar/:sol_cod', (solicitacoesController.aprovarSolicitacao));
-router.post ('/solicitacoes_inativar/:sol_cod', (solicitacoesController.inativarSolicitacao)); 
 
 //UPDATE normal
 router.patch ('/livros/:liv_cod', (livrosController.editarLivros));
@@ -71,8 +68,11 @@ router.patch ('/livros_generos/:lge_cod', (livros_generosController.editarLivros
 router.patch ('/usuarios_cursos/:ucu_cod', (usuarios_cursosController.editarUsuarios_Cursos));
 
 //UPDATE diferente
+router.patch ('/usu_login', (usuariosController.loginUsuarios));
 router.patch ('/usu_ocultar', (usuariosController.ocultarUsuarios));
 router.patch ('/emp_renovar/:emp_cod', (emprestimosController.renovarEmprestimos));
+router.patch ('/sol_aprovar/:sol_cod', (solicitacoesController.aprovarSolicitacao));
+router.patch ('/sol_inativar/:sol_cod', (solicitacoesController.inativarSolicitacao)); 
 
 //DELETE ou EXCLUIR
 router.delete ('/livros/:liv_cod', (livrosController.apagarLivros));
