@@ -27,7 +27,9 @@ module.exports = {
            aut.aut_nome, 
            aut.aut_foto,
            gen.gen_nome, 
-           gen.gen_foto,
+           gen.gen_foto
+           cur.cur_cod,
+           cur.cur_nome,
            count(exe.exe_cod) as exemplares,
            (    SELECT COUNT(*) 
 			      FROM emprestimos emp 
@@ -55,7 +57,11 @@ INNER JOIN exemplares     exe ON liv.liv_cod = exe.liv_cod
            edt.edt_nome, 
            edt.edt_foto, 
            aut.aut_nome, 
-           aut.aut_foto;`;
+           aut.aut_foto,
+           gen.gen_nome,
+           gen.gen_foto,
+           cur.cur_cod,
+           cur.cur_nome,;`;
 
             const values = [usu_cod];
             // executa instruções SQL e armazena o resultado na variável usuários
