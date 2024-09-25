@@ -23,7 +23,7 @@ module.exports = {
             usu.usu_nome, aut.aut_nome, aut.aut_foto, gen.gen_nome, gen.gen_foto, edt.edt_nome, edt.edt_foto, 
             rec.rcm_mod1 = 1 AS rcm_mod1, rec.rcm_mod2 = 1 AS rcm_mod2, 
             rec.rcm_mod3 = 1 AS rcm_mod3,  rec.rcm_mod4 = 1 AS rcm_mod4, 
-            count(exe.exe_cod) as exemplares,
+            COUNT(exe.exe_cod) as exemplares,
             ( 
                 SELECT COUNT(*) 
                 FROM emprestimos emp 
@@ -32,7 +32,7 @@ module.exports = {
                 AND emp.emp_devolvido = 0
             ) as emprestados,
             (
-                count(exe.exe_cod) - (    SELECT COUNT(*) 
+                COUNT(exe.exe_cod) - (    SELECT COUNT(*) 
                 FROM emprestimos emp 
                 INNER JOIN exemplares  subexe ON emp.exe_cod = subexe.exe_cod            
                 WHERE subexe.liv_cod = liv.liv_cod
