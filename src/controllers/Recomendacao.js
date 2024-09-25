@@ -9,7 +9,7 @@ function geraUrl (liv_foto_capa) {
     if (!fs.existsSync ('./public/uploads/CapaLivros/' + img)) {
         img = 'livros.jpg';
     }
-    return '/uploads/CapaLivros/' + img;
+    return '/public/uploads/CapaLivros/' + img;
 }
 
 module.exports = {
@@ -44,7 +44,7 @@ module.exports = {
                 inner join livros_autores lau on lau.liv_cod = liv.liv_cod
                 inner join autores aut on aut.aut_cod = lau.aut_cod
                 inner join editoras edt on edt.edt_cod = liv.edt_cod
-                where ucu.usu_cod = ?;`;
+                where ucu.usu_cod = 19;`;
 
             const values = [usu_cod];
             // executa instruções SQL e armazena o resultado na variável usuários
