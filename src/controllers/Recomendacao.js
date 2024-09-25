@@ -9,7 +9,7 @@ function geraUrl (liv_foto_capa) {
     if (!fs.existsSync ('./public/uploads/CapaLivros/' + img)) {
         img = 'livros.jpg';
     }
-    return '/public/uploads/CapaLivros/' + img;
+    return '/uploads/CapaLivros/' + img;
 }
 
 module.exports = {
@@ -18,34 +18,44 @@ module.exports = {
             const {usu_cod} = request.body;
 
             // instruções SQL
-            const sql = `SELECT 
-                rec.rcm_cod, cur.cur_nome, liv.liv_cod, liv.liv_foto_capa, liv.liv_nome, liv.liv_desc,
-                usu.usu_nome, aut.aut_nome, aut.aut_foto, gen.gen_nome, gen.gen_foto, edt.edt_nome, edt.edt_foto, 
-                rec.rcm_mod1 = 1 AS rcm_mod1, rec.rcm_mod2 = 1 AS rcm_mod2, 
-                rec.rcm_mod3 = 1 AS rcm_mod3,  rec.rcm_mod4 = 1 AS rcm_mod4
-                count(exe.exe_cod) as exemplares,
-                ( SELECT COUNT(*) 
-                FROM emprestimos emp 
-                INNER JOIN exemplares  subexe ON emp.exe_cod = subexe.exe_cod            
-                WHERE subexe.liv_cod = liv.liv_cod
-                AND emp.emp_devolvido = 0) as emprestados,
-                (count(exe.exe_cod) - (    SELECT COUNT(*) 
-                FROM emprestimos emp 
-                INNER JOIN exemplares  subexe ON emp.exe_cod = subexe.exe_cod            
-                WHERE subexe.liv_cod = liv.liv_cod
-                AND emp.emp_devolvido = 0)) AS disponivel,
-                from recomendacao rec
-                inner join exemplares exe on exe.exe_cod = rec.exe_cod
-                inner join usuarios usu on usu.usu_cod = rec.usu_cod
-                inner join usuarios_cursos ucu on ucu.usu_cod = usu.usu_cod
-                inner join cursos cur on cur.cur_cod = ucu.cur_cod
-                inner join livros liv on liv.liv_cod = rec.liv_cod
-                inner join livros_generos lge on liv.liv_cod = lge.liv_cod
-                inner join generos gen on gen.gen_cod = lge.gen_cod
-                inner join livros_autores lau on lau.liv_cod = liv.liv_cod
-                inner join autores aut on aut.aut_cod = lau.aut_cod
-                inner join editoras edt on edt.edt_cod = liv.edt_cod
-                where ucu.usu_cod = ?;`;
+            const sql = `    SELECT liv.liv_cod, 
+           liv.liv_nome, 
+           liv.liv_foto_capa, 
+           liv.liv_desc, 
+           edt.edt_nome, 
+           edt.edt_foto,
+           aut.aut_nome, 
+           aut.aut_foto,
+           gen.gen_nome, 
+           gen.gen_foto,
+           count(exe.exe_cod) as exemplares,
+           (    SELECT COUNT(*) 
+			      FROM emprestimos emp 
+			INNER JOIN exemplares  subexe ON emp.exe_cod = subexe.exe_cod            
+			     WHERE subexe.liv_cod = liv.liv_cod
+                   AND emp.emp_devolvido = 0) as emprestados,
+           (count(exe.exe_cod) - (    SELECT COUNT(*) 
+										FROM emprestimos emp 
+							      INNER JOIN exemplares  subexe ON emp.exe_cod = subexe.exe_cod            
+										WHERE subexe.liv_cod = liv.liv_cod
+										  AND emp.emp_devolvido = 0)) AS disponivel,
+           GROUP_CONCAT(DISTINCT gen.gen_nome) AS generos
+      FROM livros         liv
+INNER JOIN editoras       edt ON edt.edt_cod = liv.edt_cod
+INNER JOIN livros_autores lau ON lau.liv_cod = liv.liv_cod
+INNER JOIN autores        aut ON aut.aut_cod = lau.aut_cod
+INNER JOIN livros_generos lge ON lge.liv_cod = liv.liv_cod
+INNER JOIN generos        gen ON gen.gen_cod = lge.gen_cod 
+INNER JOIN exemplares     exe ON liv.liv_cod = exe.liv_cod 
+     WHERE liv.liv_cod = 74
+       AND exe.exe_data_saida IS NULL
+  GROUP BY liv.liv_cod, 
+           liv.liv_nome, 
+           liv.liv_foto_capa, 
+           edt.edt_nome, 
+           edt.edt_foto, 
+           aut.aut_nome, 
+           aut.aut_foto;`;
 
             const values = [usu_cod];
             // executa instruções SQL e armazena o resultado na variável usuários
