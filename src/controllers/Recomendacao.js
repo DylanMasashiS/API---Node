@@ -35,6 +35,7 @@ module.exports = {
                 WHERE subexe.liv_cod = liv.liv_cod
                 AND emp.emp_devolvido = 0)) AS disponivel,
                 from recomendacao rec
+                inner join exemplares exe on exe.exe_cod = rec.exe_cod
                 inner join usuarios usu on usu.usu_cod = rec.usu_cod
                 inner join usuarios_cursos ucu on ucu.usu_cod = usu.usu_cod
                 inner join cursos cur on cur.cur_cod = ucu.cur_cod
