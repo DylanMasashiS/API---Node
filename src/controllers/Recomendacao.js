@@ -9,7 +9,7 @@ function geraUrl (liv_foto_capa) {
     if (!fs.existsSync ('./public/uploads/CapaLivros/' + img)) {
         img = 'livros.jpg';
     }
-    return '/uploads/CapaLivros/' + img;
+    return '/public/uploads/CapaLivros/' + img;
 }
 
 module.exports = {
