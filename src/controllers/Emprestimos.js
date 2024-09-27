@@ -11,12 +11,16 @@ module.exports = {
 
             const nomePesq = usu_nome ? `%${usu_nome}%` : '%%';
             // instruções SQL
-            const sql = `SELECT emp.emp_cod, emp.emp_data_emp, emp.emp_data_devol, exe.exe_cod, usu.usu_cod, usu.usu_nome,
+            const sql = `SELECT emp.emp_cod, DATE_FORMAT(emp.emp_data_emp, '%d/%m/%Y') AS Empréstimo, DATE_FORMAT(emp.emp_data_devol, '%d/%m/%Y') AS Devolução , liv.liv_nome, liv.liv_foto_capa, 
+                            exe.exe_cod, aut.aut_nome, usu.usu_cod, usu.usu_nome,
                             (SELECT usu_nome FROM usuarios WHERE usu_cod = emp.func_cod) as Funcionario
                             FROM emprestimos emp
                             INNER JOIN exemplares exe ON exe.exe_cod = emp.exe_cod
+                            INNER JOIN livros liv ON liv.liv_cod = exe.liv_cod
+                            INNER JOIN livros_autores lau ON lau.liv_cod = liv.liv_cod 
+                            INNER JOIN autores aut ON aut.aut_cod = lau.aut_cod
                             INNER JOIN usuarios usu ON usu.usu_cod = emp.usu_cod
-                            WHERE usu_nome LIKE ? && usu_ativo = 1;`;
+                            WHERE usu_nome = "Kawany Bandeira" && usu_ativo = 1;`;
 
             // executa instruções SQL e armazena o resultado na variável usuários
             const values = [nomePesq];
