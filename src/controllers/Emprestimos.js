@@ -1,8 +1,15 @@
 const db = require('../database/connection');
-
-
+const fs = require('fs-extra');
 const express = require('express'); 
 const router = express.Router(); 
+
+function geraUrl (liv_foto) {
+    let img = liv_foto ? liv_foto : 'default.jpg';
+    if (!fs.existsSync ('./public/uploads/CapaLivros/' + img)) {
+        img = 'livros.jpg';
+    }
+    return '/public/uploads/CapaLivros/' + img;
+}
 
 module.exports = {
     async listarEmprestimos(request, response) {
@@ -29,10 +36,16 @@ module.exports = {
             // armazena em uma variável o número de registros retornados
             const nItens = emprestimos[0].length;
 
+            const resultado = emprestimos[0].map(livros => ({
+                ...livros,
+                liv_foto_capa: geraUrl(emprestimos.liv_foto_capa)
+
+            }));
+
             return response.status(200).json({
                 sucesso: true,
                 mensagem: 'Lista de empréstimos.',
-                dados: emprestimos[0],
+                dados: resultado,
                 nItens
             });
         } catch (error) {
