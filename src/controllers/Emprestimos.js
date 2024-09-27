@@ -18,8 +18,9 @@ module.exports = {
 
             const nomePesq = usu_nome ? `%${usu_nome}%` : '%%';
             // instruções SQL
-            const sql = `SELECT emp.emp_cod, DATE_FORMAT(emp.emp_data_emp, '%d/%m/%Y') AS Empréstimo, DATE_FORMAT(emp.emp_data_devol, '%d/%m/%Y') AS Devolução , liv.liv_nome, liv.liv_foto_capa, 
-                            exe.exe_cod, aut.aut_nome, usu.usu_cod, usu.usu_nome,
+            const sql = `SELECT emp.emp_cod, DATE_FORMAT(emp.emp_data_emp, '%d/%m/%Y') AS Empréstimo, 
+                            DATE_FORMAT(emp.emp_data_devol, '%d/%m/%Y') AS Devolução , liv.liv_nome, 
+                            liv.liv_foto_capa, exe.exe_cod, aut.aut_nome, usu.usu_cod, usu.usu_nome,
                             (SELECT usu_nome FROM usuarios WHERE usu_cod = emp.func_cod) as Funcionario
                             FROM emprestimos emp
                             INNER JOIN exemplares exe ON exe.exe_cod = emp.exe_cod
