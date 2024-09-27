@@ -1,4 +1,4 @@
-// const db = require('../database/connection');
+const db = require('../database/connection');
 
 
 const express = require('express'); 
@@ -11,16 +11,13 @@ module.exports = {
 
             const nomePesq = usu_nome ? `%${usu_nome}%` : '%%';
             // instruções SQL
-            const sql = `SELECT 
-                emp.emp_cod, emp.emp_data_emp, emp.emp_data_devol, emp.emp_devolvido, 
-                emp.emp_renovacao, emp.emp_data_renov, usu1.usu_nome, emp.func_nome,
-                liv.liv_nome, liv.liv_foto_capa, exe.exe_tombo, exe.exe_cod
-                FROM emprestimos emp
-                Inner Join livros liv ON liv.liv_cod = emp.liv_cod
-                Inner Join exemplares exe ON exe.exe_cod = emp.exe_cod
-                Inner Join usuarios usu1 ON usu1.usu_cod = emp.usu_cod
-                Inner Join usuarios usu2 ON usu2.usu_cod = emp.func_cod
-                Where usu1.usu_nome like ?;`;
+            const sql = `SELECT emp.emp_cod, emp.emp_data_emp, emp.emp_data_devol, exe.exe_cod, usu.usu_cod, usu.usu_nome,
+                            (select usu_nome FROM usuarios WHERE usu_cod = emp.func_cod) as Funcionario
+                            FROM emprestimos emp
+                            INNER JOIN exemplares exe ON exe.exe_cod = emp.exe_cod
+                            INNER JOIN usuarios usu ON usu.usu_cod = emp.usu_cod
+                            WHERE usu_nome LIKE '%a%' && usu_ativo = 1;`;
+                            
             // executa instruções SQL e armazena o resultado na variável usuários
             const values = [nomePesq];
 
