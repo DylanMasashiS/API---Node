@@ -12,12 +12,12 @@ module.exports = {
             const nomePesq = usu_nome ? `%${usu_nome}%` : '%%';
             // instruções SQL
             const sql = `SELECT emp.emp_cod, emp.emp_data_emp, emp.emp_data_devol, exe.exe_cod, usu.usu_cod, usu.usu_nome,
-                            (select usu_nome FROM usuarios WHERE usu_cod = emp.func_cod) as Funcionario
+                            (SELECT usu_nome FROM usuarios WHERE usu_cod = emp.func_cod) as Funcionario
                             FROM emprestimos emp
                             INNER JOIN exemplares exe ON exe.exe_cod = emp.exe_cod
                             INNER JOIN usuarios usu ON usu.usu_cod = emp.usu_cod
-                            WHERE usu_nome LIKE '%a%' && usu_ativo = 1;`;
-                            
+                            WHERE usu_nome LIKE ? && usu_ativo = 1;`;
+
             // executa instruções SQL e armazena o resultado na variável usuários
             const values = [nomePesq];
 

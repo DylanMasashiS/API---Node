@@ -26,7 +26,6 @@ router.get ('/generos', (generosController.listarGeneros));
 router.get ('/usuarios', (usuariosController.listarUsuarios));
 router.get ('/editoras', (editorasController.listarEditoras));
 router.get ('/exemplares', (exemplaresController.listarExemplares));
-router.get ('/emprestimos', (emprestimosController.listarEmprestimos));
 router.get ('/sol_listar', (solicitacoesController.listarSolicitacoes));
 router.get ('/livros_autores', (livros_autoresController.listarLivros_Autores));
 router.get ('/livros_generos', (livros_generosController.listarLivros_Generos));
@@ -35,6 +34,7 @@ router.get ('/usuarios_cursos', (usuarios_cursosController.listarUsuarios_Cursos
 //LISTAR com pesquisa
 router.post ('/cursos', (cursosController.listarCursos));
 router.post ('/livros', (livrosController.listarLivros));
+router.post ('/emprestimos', (emprestimosController.listarEmprestimos));
 router.post ('/rec_listar', (recomendacaoController.listarRecomendacao));
 
 //CADASTRAR com imagem
