@@ -3,8 +3,8 @@ const fs = require('fs-extra');
 const express = require('express'); 
 const router = express.Router(); 
 
-function geraUrl (liv_foto) {
-    let img = liv_foto ? liv_foto : 'default.jpg';
+function geraUrl (liv_foto_capa) {
+    let img = liv_foto_capa ? liv_foto_capa : 'default.jpg';
     if (!fs.existsSync ('./public/uploads/CapaLivros/' + img)) {
         img = 'livros.jpg';
     }
@@ -28,7 +28,7 @@ module.exports = {
                             INNER JOIN livros_autores lau ON lau.liv_cod = liv.liv_cod 
                             INNER JOIN autores aut ON aut.aut_cod = lau.aut_cod
                             INNER JOIN usuarios usu ON usu.usu_cod = emp.usu_cod
-                            WHERE usu_nome = "Kawany Bandeira" && usu_ativo = 1;`;
+                            WHERE usu_nome LIKE ? && usu_ativo = 1;`;
 
             // executa instruções SQL e armazena o resultado na variável usuários
             const values = [nomePesq];
@@ -37,8 +37,8 @@ module.exports = {
             // armazena em uma variável o número de registros retornados
             const nItens = emprestimos[0].length;
 
-            const resultado = emprestimos[0].map(livros => ({
-                ...livros,
+            const resultado = emprestimos[0].map(emprestimos => ({
+                ...emprestimos,
                 liv_foto_capa: geraUrl(emprestimos.liv_foto_capa)
 
             }));

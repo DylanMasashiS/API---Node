@@ -3,13 +3,13 @@ const express = require('express');
 const router = express.Router(); 
 const fs = require('fs-extra');
 
-// function geraUrl (liv_foto_capa) {
-//     let img = liv_foto_capa ? liv_foto_capa : 'default.jpg';
-//     if (!fs.existsSync ('./public/uploads/CapaLivros/' + img)) {
-//         img = 'livros.jpg';
-//     }
-//     return '/public/uploads/CapaLivros/' + img;
-// }
+function geraUrl (liv_foto_capa) {
+    let img = liv_foto_capa ? liv_foto_capa : 'default.jpg';
+    if (!fs.existsSync ('./public/uploads/CapaLivros/' + img)) {
+        img = 'livros.jpg';
+    }
+    return '/public/uploads/CapaLivros/' + img;
+}
 
 
 module.exports = {
@@ -18,7 +18,7 @@ module.exports = {
             const {liv_nome} = request.body;
             const exePesq = liv_nome ? `%${liv_nome}%` : `%%`;
             // instruções SQL
-            const sql = `SELECT exe.exe_cod, liv.liv_cod, liv.liv_nome, exe.exe_tombo, 
+            const sql = `SELECT exe.exe_cod, liv.liv_cod, liv.liv_nome, liv.liv_foto_capa, exe.exe_tombo, 
                 DATE_FORMAT(exe.exe_data_aquis, '%d/%m/%Y') AS Aquisição, 
                 DATE_FORMAT(exe.exe_data_saida, '%d/%m/%Y') AS Saída
                 FROM exemplares exe
@@ -31,16 +31,16 @@ module.exports = {
             // armazena em uma variável o número de registros retornados
             const nItens = exemplares[0].length;
 
-            // const resultado = exemplares[0].map(exemplares => ({
-            //     ...exemplares,
-            //     liv_foto_capa: geraUrl(exemplares.liv_foto_capa)
+            const resultado = exemplares[0].map(exemplares => ({
+                ...exemplares,
+                liv_foto_capa: geraUrl(exemplares.liv_foto_capa)
 
-            // }));
+            }));
 
             return response.status(200).json({
                 sucesso: true,
                 mensagem: 'Lista de exemplares.',
-                dados: exemplares[0],
+                dados: resultado,
                 nItens
             });
         } catch (error) {
