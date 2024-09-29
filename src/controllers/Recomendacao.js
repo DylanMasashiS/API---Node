@@ -15,7 +15,41 @@ function geraUrl(liv_foto_capa) {
 module.exports = {
     async listarRecomendacao(request, response) {
         try {
-            const { cur_cod } = request.body;
+            const { cur_cod, cur_nome, liv_nome, aut_nome, edt_nome, gen_nome, liv_cod } = request.body;
+
+            let params = [];
+            let whereClauses = [];
+            let havingClauses = [];
+
+            // Adiciona cláusulas de pesquisa baseadas nos critérios fornecidos
+            if (aut_nome) {
+                whereClauses.push("aut.aut_nome LIKE ?");
+                params.push(`%${aut_nome}%`);
+            }
+            if (edt_nome) {
+                whereClauses.push("edt.edt_nome LIKE ?");
+                params.push(`%${edt_nome}%`);
+            }
+            if (gen_nome) {
+                havingClauses.push("GROUP_CONCAT(DISTINCT gen.gen_nome) LIKE ?");
+                params.push(`%${gen_nome}%`);
+            }
+            if (liv_nome) {
+                whereClauses.push("liv.liv_nome LIKE ?");
+                params.push(`%${liv_nome}%`);  
+            }
+            if (liv_cod) {
+                whereClauses.push("liv.liv_cod = ?");
+                params.push(liv_cod);
+            }
+            if (cur_nome) {
+                whereClauses.push("cur.cur_nome LIKE ?");
+                params.push(`%${cur_nome}%`);
+            }
+            if (cur_cod) {
+                whereClauses.push("cur.cur_cod = ?");
+                params.push(cur_cod);
+            }
 
             // instruções SQL
             const sql = `SELECT 
@@ -37,7 +71,8 @@ module.exports = {
                 INNER JOIN exemplares  subexe ON emp.exe_cod = subexe.exe_cod            
                 WHERE subexe.liv_cod = liv.liv_cod
                 AND emp.emp_devolvido = 0)
-            ) AS disponivel 
+            ) AS disponivel
+             
             from recomendacao rec
             inner join cursos cur on cur.cur_cod = rec.cur_cod
             inner join livros liv on liv.liv_cod = rec.liv_cod
@@ -48,11 +83,17 @@ module.exports = {
             inner join livros_generos lge on liv.liv_cod = lge.liv_cod
             inner join generos gen on gen.gen_cod = lge.gen_cod
             inner join editoras edt on edt.edt_cod = liv.edt_cod
-            where cur.cur_cod = ?; `;
+            ${whereClauses.length > 0 ? 'WHERE ' + whereClauses.join(' AND ') : ''}
+            GROUP BY liv.liv_cod, liv.liv_nome, liv.liv_foto_capa, edt.edt_nome, 
+            edt.edt_foto, aut.aut_nome, aut.aut_foto, gen.gen_nome, gen.gen_foto,
+            cur.cur_nome, cur.cur_cod
+            ${havingClauses.length > 0 ? 'HAVING ' + havingClauses.join(' AND ') : ''}`;
 
-            const values = [cur_cod];
-            // executa instruções SQL e armazena o resultado na variável usuários
-            const livros = await db.query(sql, values);
+            // AND exe.exe_data_saida IS NULL
+            //  where cur.cur_cod = ?;
+
+            
+            const livros = await db.query(sql, params);
             // armazena em uma variável o número de registros retornados
             const nItens = livros[0].length;
 

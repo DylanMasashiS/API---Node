@@ -14,7 +14,23 @@ function geraUrl (liv_foto_capa) {
 module.exports = {
     async listarEmprestimos(request, response) {
         try {
-            const {usu_nome} = request.body
+            const {usu_nome, aut_nome, liv_nome} = request.body
+
+            let params = []
+            let whereClauses = []
+
+            if (aut_nome) {
+                whereClauses.push("aut.aut_nome LIKE ?")
+                params.push(`%${aut_nome}%`)
+            }
+            if (liv_nome) {
+                whereClauses.push("liv.liv_nome LIKE ?")
+                params.push(`%${liv_nome}%`)
+            }
+            if (usu_nome) {
+                whereClauses.push("usu.usu_nome = ?")
+                params.push(usu_nome)
+            }
 
             const nomePesq = usu_nome ? `%${usu_nome}%` : '%%';
             // instruções SQL
@@ -28,7 +44,9 @@ module.exports = {
                             INNER JOIN livros_autores lau ON lau.liv_cod = liv.liv_cod 
                             INNER JOIN autores aut ON aut.aut_cod = lau.aut_cod
                             INNER JOIN usuarios usu ON usu.usu_cod = emp.usu_cod
-                            WHERE usu_nome LIKE ? && usu_ativo = 1;`;
+                            ${whereClauses.length > 0 ? 'WHERE ' + whereClauses.join(' AND ') : ''}
+                            AND usu_ativo = 1
+                            GROUP BY usu.usu_nome;`;
 
             // executa instruções SQL e armazena o resultado na variável usuários
             const values = [nomePesq];
