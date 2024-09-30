@@ -32,11 +32,12 @@ module.exports = {
                 params.push(usu_nome)
             }
 
-            const nomePesq = usu_nome ? `%${usu_nome}%` : '%%';
+            // const nomePesq = usu_nome ? `%${usu_nome}%` : '%%';
             // instruções SQL
             const sql = `SELECT emp.emp_cod, DATE_FORMAT(emp.emp_data_emp, '%d/%m/%Y') AS Empréstimo, 
                             DATE_FORMAT(emp.emp_data_devol, '%d/%m/%Y') AS Devolução , liv.liv_nome, 
                             liv.liv_foto_capa, exe.exe_cod, aut.aut_nome, usu.usu_cod, usu.usu_nome,
+                            gen.gen_nome, gen.gen_cod,
                             (SELECT usu_nome FROM usuarios WHERE usu_cod = emp.func_cod) as Funcionario
                             FROM emprestimos emp
                             INNER JOIN exemplares exe ON exe.exe_cod = emp.exe_cod
@@ -44,14 +45,16 @@ module.exports = {
                             INNER JOIN livros_autores lau ON lau.liv_cod = liv.liv_cod 
                             INNER JOIN autores aut ON aut.aut_cod = lau.aut_cod
                             INNER JOIN usuarios usu ON usu.usu_cod = emp.usu_cod
+                            INNER JOIN livros_generos lge ON lge.liv_cod = liv.liv_cod
+                            INNER JOIN generos gen ON gen.gen_cod = lge.gen_cod
                             ${whereClauses.length > 0 ? 'WHERE ' + whereClauses.join(' AND ') : ''}
-                            AND usu_ativo = 1
-                            GROUP BY usu.usu_nome;`;
+                            AND usu_ativo = 1`;
+                            
 
             // executa instruções SQL e armazena o resultado na variável usuários
-            const values = [nomePesq];
+            // const values = [nomePesq];
 
-            const emprestimos = await db.query(sql, values);
+            const emprestimos = await db.query(sql, params);
             // armazena em uma variável o número de registros retornados
             const nItens = emprestimos[0].length;
 

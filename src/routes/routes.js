@@ -68,7 +68,7 @@ router.patch ('/livros_generos/:lge_cod', (livros_generosController.editarLivros
 router.patch ('/usuarios_cursos/:ucu_cod', (usuarios_cursosController.editarUsuarios_Cursos));
 
 //UPDATE diferente
-router.patch ('/usu_login', (usuariosController.loginUsuarios));
+router.post ('/usu_login', (usuariosController.loginUsuarios));
 router.patch ('/usu_ocultar', (usuariosController.ocultarUsuarios));
 router.patch ('/emp_renovar/:emp_cod', (emprestimosController.renovarEmprestimos));
 router.patch ('/sol_aprovar/:sol_cod', (solicitacoesController.aprovarSolicitacao));

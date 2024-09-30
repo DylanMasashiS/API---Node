@@ -93,13 +93,13 @@ module.exports = {
             //  where cur.cur_cod = ?;
 
             
-            const livros = await db.query(sql, params);
+            const recomendacao = await db.query(sql, params);
             // armazena em uma variável o número de registros retornados
-            const nItens = livros[0].length;
+            const nItens = recomendacao[0].length;
 
-            const resultado = livros[0].map(livros => ({
-                ...livros,
-                liv_foto_capa: geraUrl(livros.liv_foto_capa)
+            const resultado = recomendacao[0].map(recomendacao => ({
+                ...recomendacao,
+                liv_foto_capa: geraUrl(recomendacao.liv_foto_capa)
 
             }));
 

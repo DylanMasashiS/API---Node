@@ -163,8 +163,8 @@ module.exports = {
                                  cur.cur_cod, 
                                  cur.cur_nome
                             FROM usuarios usu
-                      INNER JOIN usuarios_cursos ucu on ucu.usu_cod = usu.usu_cod
-                      INNER JOIN cursos cur on cur.cur_cod = ucu.cur_cod
+                      LEFT JOIN usuarios_cursos ucu on ucu.usu_cod = usu.usu_cod
+                      LEFT JOIN cursos cur on cur.cur_cod = ucu.cur_cod
                            WHERE (   usu.usu_email = ?
                                   OR usu.usu_rm    = ?)
                              AND usu.usu_senha     = ?
