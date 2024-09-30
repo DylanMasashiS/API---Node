@@ -14,54 +14,57 @@ function geraUrl (liv_foto_capa) {
 module.exports = {
     async listarEmprestimos(request, response) {
         try {
-            const {usu_nome, aut_nome, liv_nome} = request.body
+            const { usu_nome, aut_nome, liv_nome, emp_data_emp, usuEmp } = request.body; // Adicionado usuarioId
 
-            let params = []
-            let whereClauses = []
+            let params = [];
+            let whereClauses = [];
 
-            if (aut_nome) {
-                whereClauses.push("aut.aut_nome LIKE ?")
-                params.push(`%${aut_nome}%`)
-            }
-            if (liv_nome) {
-                whereClauses.push("liv.liv_nome LIKE ?")
-                params.push(`%${liv_nome}%`)
-            }
-            if (usu_nome) {
-                whereClauses.push("usu.usu_nome = ?")
-                params.push(usu_nome)
+            if (usuEmp) {
+                whereClauses.push("usu.usu_cod = ?");
+                params.push(usuEmp);
+            } else {
+
+                if (emp_data_emp) {
+                    whereClauses.push("emp.emp_data_emp = ?");
+                    params.push(emp_data_emp);
+                }
+                if (aut_nome) {
+                    whereClauses.push("aut.aut_nome LIKE ?");
+                    params.push(`%${aut_nome}%`);
+                }
+                if (liv_nome) {
+                    whereClauses.push("liv.liv_nome LIKE ?");
+                    params.push(`%${liv_nome}%`);
+                }
+                if (usu_nome) {
+                    whereClauses.push("usu.usu_nome LIKE ?"); // Alterado para LIKE
+                    params.push(`%${usu_nome}%`);
+                }
             }
 
-            // const nomePesq = usu_nome ? `%${usu_nome}%` : '%%';
-            // instruções SQL
             const sql = `SELECT emp.emp_cod, DATE_FORMAT(emp.emp_data_emp, '%d/%m/%Y') AS Empréstimo, 
                             DATE_FORMAT(emp.emp_data_devol, '%d/%m/%Y') AS Devolução , liv.liv_nome, 
                             liv.liv_foto_capa, exe.exe_cod, aut.aut_nome, usu.usu_cod, usu.usu_nome,
                             gen.gen_nome, gen.gen_cod,
                             (SELECT usu_nome FROM usuarios WHERE usu_cod = emp.func_cod) as Funcionario
-                            FROM emprestimos emp
-                            INNER JOIN exemplares exe ON exe.exe_cod = emp.exe_cod
-                            INNER JOIN livros liv ON liv.liv_cod = exe.liv_cod
-                            INNER JOIN livros_autores lau ON lau.liv_cod = liv.liv_cod 
-                            INNER JOIN autores aut ON aut.aut_cod = lau.aut_cod
-                            INNER JOIN usuarios usu ON usu.usu_cod = emp.usu_cod
-                            INNER JOIN livros_generos lge ON lge.liv_cod = liv.liv_cod
-                            INNER JOIN generos gen ON gen.gen_cod = lge.gen_cod
-                            ${whereClauses.length > 0 ? 'WHERE ' + whereClauses.join(' AND ') : ''}
-                            AND usu_ativo = 1`;
-                            
-
-            // executa instruções SQL e armazena o resultado na variável usuários
-            // const values = [nomePesq];
+                        FROM emprestimos emp
+                        INNER JOIN exemplares exe ON exe.exe_cod = emp.exe_cod
+                        INNER JOIN livros liv ON liv.liv_cod = exe.liv_cod
+                        INNER JOIN livros_autores lau ON lau.liv_cod = liv.liv_cod 
+                        INNER JOIN autores aut ON aut.aut_cod = lau.aut_cod
+                        INNER JOIN usuarios usu ON usu.usu_cod = emp.usu_cod
+                        INNER JOIN livros_generos lge ON lge.liv_cod = liv.liv_cod
+                        INNER JOIN generos gen ON gen.gen_cod = lge.gen_cod
+                        ${whereClauses.length > 0 ? 'WHERE ' + whereClauses.join(' AND ') : ''}
+                        AND usu_ativo = 1`;
 
             const emprestimos = await db.query(sql, params);
-            // armazena em uma variável o número de registros retornados
-            const nItens = emprestimos[0].length;
 
-            const resultado = emprestimos[0].map(emprestimos => ({
-                ...emprestimos,
-                liv_foto_capa: geraUrl(emprestimos.liv_foto_capa)
+            const nItens = emprestimos.length;
 
+            const resultado = emprestimos.map(emprestimo => ({
+                ...emprestimo,
+                liv_foto_capa: geraUrl(emprestimo.liv_foto_capa)
             }));
 
             return response.status(200).json({
@@ -71,6 +74,7 @@ module.exports = {
                 nItens
             });
         } catch (error) {
+            console.error(error);
             return response.status(500).json({
                 sucesso: false,
                 mensagem: 'Erro na requisição.',
@@ -78,6 +82,7 @@ module.exports = {
             });
         }
     },
+
     async cadastrarEmprestimos(request, response) {
         try {
             // parâmetros recebidos no corpo da requisição
