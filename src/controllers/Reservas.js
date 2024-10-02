@@ -29,15 +29,16 @@ module.exports = {
                         INNER JOIN usuarios usu ON usu.usu_cod = emp.usu_cod
                         INNER JOIN livros_generos lge ON lge.liv_cod = liv.liv_cod
                         INNER JOIN generos gen ON gen.gen_cod = lge.gen_cod
-                        WHERE usu.usu_cod = ? AND usu_ativo = 1`;
+                        WHERE usu.usu_cod = ? AND usu_ativo = 1
+                        GROUP BY emp.emp_cod`;
 
                         const values = [usu_cod];
 
             const reservas = await db.query(sql, values);
 
-            const nItens = reservas.length;
+            const nItens = reservas[0].length;
 
-            const resultado = reservas.map(reservas => ({
+            const resultado = reservas[0].map(reservas => ({
                 ...reservas,
                 liv_foto_capa: geraUrl(reservas.liv_foto_capa)
             }));
