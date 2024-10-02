@@ -35,9 +35,9 @@ module.exports = {
 
             const reservas = await db.query(sql, values);
 
-            const nItens = reservas.length;
+            const nItens = reservas[0].length;
 
-            const resultado = reservas.map(reservas => ({
+            const resultado = reservas[0].map(reservas => ({
                 ...reservas,
                 liv_foto_capa: geraUrl(reservas.liv_foto_capa)
             }));

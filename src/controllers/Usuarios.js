@@ -7,9 +7,9 @@ const router = express.Router();
 function geraUrl (usu_foto) {
     let img = usu_foto ? usu_foto : 'default.jpg';
     if (!fs.existsSync ('./public/uploads/FotoUsuarios/' + img)) {
-        img = 'usuario.jpg';
+        img = 'usuarios.jpg';
     }
-    return '/uploads/FotoUsuarios/' + img;
+    return '/public/uploads/FotoUsuarios/' + img;
 }
 
 module.exports = {
@@ -53,16 +53,16 @@ module.exports = {
     async cadastrarUsuarios(request, response) {
         try {
             // parâmetros recebidos no corpo da requisição
-            const { usu_rm, usu_nome, usu_email, usu_senha, usu_tipo, usu_sexo, usu_ativo } = request.body;
+            const { usu_rm, usu_nome, usu_email, usu_senha, usu_tipo, usu_sexo, usu_ativo, usu_aprovado } = request.body;
 
             //insert com imagem
             const img = request.file.filename;
             // instrução SQL
             const sql = `INSERT INTO usuarios 
-                (usu_rm, usu_nome, usu_email, usu_senha, usu_tipo, usu_sexo, usu_ativo) 
-                VALUES (?, ?, ?, ?, ?, ?, ?)`;
+                (usu_rm, usu_nome, usu_email, usu_senha, usu_tipo, usu_sexo, usu_ativo, usu_aprovado, usu_foto) 
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`;
             // definição dos dados a serem inseridos em um array
-            const values = [usu_rm, usu_nome, usu_email, usu_senha, usu_tipo, usu_sexo, usu_ativo, img];
+            const values = [usu_rm, usu_nome, usu_email, usu_senha, usu_tipo, usu_sexo, usu_ativo, usu_aprovado, img];
 
             
             // execução da instrução sql passando os parâmetros
@@ -79,7 +79,8 @@ module.exports = {
                 usu_tipo,
                 usu_sexo,
                 usu_ativo,
-                usu_foto: '/public/uploads/FotoUsuarios/' + img
+                usu_aprovado,
+                img: '/public/uploads/FotoUsuarios/' + img
             };
 
             return response.status(200).json({
