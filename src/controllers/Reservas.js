@@ -29,7 +29,8 @@ module.exports = {
                         INNER JOIN usuarios usu ON usu.usu_cod = emp.usu_cod
                         INNER JOIN livros_generos lge ON lge.liv_cod = liv.liv_cod
                         INNER JOIN generos gen ON gen.gen_cod = lge.gen_cod
-                        WHERE usu.usu_cod = ? AND usu_ativo = 1`;
+                        WHERE usu.usu_cod = ? AND usu_ativo = 1
+                        GROUP BY emp.emp_cod`;
 
                         const values = [usu_cod];
 
