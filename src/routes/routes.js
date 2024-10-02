@@ -19,6 +19,7 @@ const usuarios_cursosController = require ('../controllers/Usuario_Cursos');
 const livros_autoresController = require ('../controllers/Livros_autores');
 const livros_generosController = require ('../controllers/Livros_generos');
 const solicitacoesController = require ('../controllers/Solicitacoes');
+const reservasController = require ('../controllers/Reservas');
 
 //LISTAR sem pesquisa
 router.get ('/autores', (autoresController.listarAutores));
@@ -35,6 +36,7 @@ router.get ('/usuarios_cursos', (usuarios_cursosController.listarUsuarios_Cursos
 router.post ('/cursos', (cursosController.listarCursos));
 router.post ('/livros', (livrosController.listarLivros));
 router.post ('/emprestimos', (emprestimosController.listarEmprestimos));
+router.post ('/reservas', (reservasController.listarReservas));
 router.post ('/rec_listar', (recomendacaoController.listarRecomendacao));
 
 //CADASTRAR com imagem

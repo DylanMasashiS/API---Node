@@ -14,16 +14,12 @@ function geraUrl (liv_foto_capa) {
 module.exports = {
     async listarEmprestimos(request, response) {
         try {
-            const { usu_nome, aut_nome, liv_nome, emp_data_emp, usuEmp } = request.body; // Adicionado usuarioId
+            const { usu_nome, aut_nome, liv_nome, emp_data_emp } = request.body; // Adicionado usuarioId
 
             let params = [];
             let whereClauses = [];
 
-            if (usuEmp) {
-                whereClauses.push("usu.usu_cod = ?");
-                params.push(usuEmp);
-            } else {
-
+            
                 if (emp_data_emp) {
                     whereClauses.push("emp.emp_data_emp = ?");
                     params.push(emp_data_emp);
@@ -40,7 +36,6 @@ module.exports = {
                     whereClauses.push("usu.usu_nome LIKE ?"); // Alterado para LIKE
                     params.push(`%${usu_nome}%`);
                 }
-            }
 
             const sql = `SELECT emp.emp_cod, DATE_FORMAT(emp.emp_data_emp, '%d/%m/%Y') AS Empréstimo, 
                             DATE_FORMAT(emp.emp_data_devol, '%d/%m/%Y') AS Devolução , liv.liv_nome, 
@@ -73,7 +68,7 @@ module.exports = {
                 dados: resultado,
                 nItens
             });
-        } catch (error) {
+            } catch (error) {
             console.error(error);
             return response.status(500).json({
                 sucesso: false,
