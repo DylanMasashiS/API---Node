@@ -55,14 +55,23 @@ module.exports = {
             // parâmetros recebidos no corpo da requisição
             const { usu_rm, usu_nome, usu_email, usu_senha, usu_tipo, usu_sexo, usu_ativo, usu_aprovado } = request.body;
 
+            const ativo = usu_ativo ? 1 : 0;
+            const aprovado = usu_aprovado ? 1 : 0;
+
+            if (!request.file) {
+                return response.status(400).json({
+                    sucesso: false,
+                    mensagem: 'A imagem do usuário é obrigatória.'
+                });
+            }
+
             //insert com imagem
             const img = request.file.filename;
             // instrução SQL
-            const sql = `INSERT INTO usuarios 
-                (usu_rm, usu_nome, usu_email, usu_senha, usu_tipo, usu_sexo, usu_ativo, usu_aprovado, usu_foto) 
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+            const sql = `INSERT INTO usuarios (usu_rm, usu_nome, usu_email, usu_senha, usu_tipo, usu_sexo, usu_ativo, usu_aprovado, usu_foto) 
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);`;
             // definição dos dados a serem inseridos em um array
-            const values = [usu_rm, usu_nome, usu_email, usu_senha, usu_tipo, usu_sexo, usu_ativo, usu_aprovado, img];
+            const values = [usu_rm, usu_nome, usu_email, usu_senha, usu_tipo, usu_sexo, ativo, aprovado, img];
 
             
             // execução da instrução sql passando os parâmetros
@@ -78,9 +87,9 @@ module.exports = {
                 usu_senha,
                 usu_tipo,
                 usu_sexo,
-                usu_ativo,
-                usu_aprovado,
-                img: '/public/uploads/FotoUsuarios/' + img
+                usu_ativo: ativo,
+                usu_aprovado: aprovado,
+                usu_foto: '/public/uploads/FotoUsuarios/' + img
             };
 
             return response.status(200).json({
