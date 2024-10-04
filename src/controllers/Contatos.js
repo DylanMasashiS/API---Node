@@ -9,10 +9,10 @@ module.exports = {
             const {cont_cod} = request.body;
             // instruções SQL
             const sql = `SELECT 
-                esc_ FROM contatos
+                esc_nome, esc_endereco, esc_tel, esc_cel, esc_email  FROM contatos
                 where cont_cod = ?;`;
 
-            const values = [lau_cod];
+            const values = [cont_cod];
             // executa instruções SQL e armazena o resultado na variável usuários
             const contatos = await db.query(sql, values);
             // armazena em uma variável o número de registros retornados
@@ -31,4 +31,5 @@ module.exports = {
                 dados: error.message
             });
         }
-    },
+    }
+}

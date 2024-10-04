@@ -32,7 +32,7 @@ router.get ('/sol_listar', (solicitacoesController.listarSolicitacoes));
 router.get ('/livros_autores', (livros_autoresController.listarLivros_Autores));
 router.get ('/livros_generos', (livros_generosController.listarLivros_Generos));
 router.get ('/usuarios_cursos', (usuarios_cursosController.listarUsuarios_Cursos));
-router.get ('contatos', (contatosController.listarContatos));
+router.get ('/contatos', (contatosController.listarContatos));
 
 //LISTAR com pesquisa
 router.post ('/cursos', (cursosController.listarCursos));
