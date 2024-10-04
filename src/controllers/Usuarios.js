@@ -53,23 +53,23 @@ module.exports = {
     async cadastrarUsuarios(request, response) {
         try {
             // parâmetros recebidos no corpo da requisição
-            const { usu_rm, usu_nome, usu_email, usu_senha, usu_tipo, usu_sexo, usu_ativo, usu_aprovado } = request.body;
+            const { usu_rm, usu_nome, usu_email, usu_senha, usu_tipo, usu_sexo, usu_ativo, usu_aprovado, usu_foto } = request.body;
 
             const ativo = usu_ativo ? 1 : 0;
             const aprovado = usu_aprovado ? 1 : 0;
 
             // Se a foto não for enviada, define img como null ou uma string padrão
-            const img = request.file ? request.file.filename : null;
+            // const img = request.file ? request.file.filename : null;
 
-            // if (!request.file) {
-            //     return response.status(400).json({
-            //         sucesso: false,
-            //         mensagem: 'A imagem do usuário é obrigatória.'
-            //     });
-            // }
+            if (!request.file) {
+                return response.status(400).json({
+                    sucesso: false,
+                    mensagem: 'A imagem do usuário é obrigatória.'
+                });
+            }
 
             //insert com imagem
-            // const img = request.file.filename;
+            const img = request.file.filename;
             // instrução SQL
             const sql = `INSERT INTO usuarios (usu_rm, usu_nome, usu_email, usu_senha, usu_tipo, usu_sexo, usu_ativo, usu_aprovado, usu_foto) 
                         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);`;
@@ -92,7 +92,7 @@ module.exports = {
                 usu_sexo,
                 usu_ativo: ativo,
                 usu_aprovado: aprovado,
-                usu_foto: img ? '/public/uploads/FotoUsuarios/' + img : null //add aq
+                usu_foto: '/public/uploads/FotoUsuarios/' + img //add aq
             };
 
             return response.status(200).json({

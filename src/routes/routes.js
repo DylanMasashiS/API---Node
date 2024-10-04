@@ -20,6 +20,7 @@ const livros_autoresController = require ('../controllers/Livros_autores');
 const livros_generosController = require ('../controllers/Livros_generos');
 const solicitacoesController = require ('../controllers/Solicitacoes');
 const reservasController = require ('../controllers/Reservas');
+const contatosController = require ('../controllers/Contatos');
 
 //LISTAR sem pesquisa
 router.get ('/autores', (autoresController.listarAutores));
@@ -31,6 +32,7 @@ router.get ('/sol_listar', (solicitacoesController.listarSolicitacoes));
 router.get ('/livros_autores', (livros_autoresController.listarLivros_Autores));
 router.get ('/livros_generos', (livros_generosController.listarLivros_Generos));
 router.get ('/usuarios_cursos', (usuarios_cursosController.listarUsuarios_Cursos));
+router.get ('contatos', (contatosController.listarContatos));
 
 //LISTAR com pesquisa
 router.post ('/cursos', (cursosController.listarCursos));
