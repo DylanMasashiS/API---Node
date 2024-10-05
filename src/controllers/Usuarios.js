@@ -1,12 +1,12 @@
 const db = require('../database/connection');
 const fs = require('fs-extra');
 
-const express = require('express'); 
-const router = express.Router(); 
+const express = require('express');
+const router = express.Router();
 
-function geraUrl (usu_foto) {
-    let img = usu_foto ? usu_foto : 'default.jpg';
-    if (!fs.existsSync ('./public/uploads/FotoUsuarios/' + img)) {
+function geraUrl(usu_foto) {
+    let img = usu_foto ? usu_foto : 'usuarios.jpg';
+    if (!fs.existsSync('./public/uploads/FotoUsuarios/' + img)) {
         img = 'usuarios.jpg';
     }
     return '/public/uploads/FotoUsuarios/' + img;
@@ -16,7 +16,7 @@ module.exports = {
     async listarUsuarios(request, response) {
         try {
 
-            const {usu_nome} = request.body;
+            const { usu_nome } = request.body;
             const usuPesq = usu_nome ? `%${usu_nome}%` : `%%`;
             // instruções SQL
             const sql = `SELECT usu_cod,
@@ -33,7 +33,7 @@ module.exports = {
 
             const resultado = usuarios[0].map(usuarios => ({
                 ...usuarios,
-                usu_foto: geraUrl(usuarios.usu_foto), 
+                usu_foto: geraUrl(usuarios.usu_foto),
             }));
 
             return response.status(200).json({
@@ -53,30 +53,35 @@ module.exports = {
     async cadastrarUsuarios(request, response) {
         try {
             // parâmetros recebidos no corpo da requisição
-            const { usu_rm, usu_nome, usu_email, usu_senha, usu_tipo, usu_sexo, usu_ativo, usu_aprovado, usu_foto } = request.body;
-
-            const ativo = usu_ativo ? 1 : 0;
-            const aprovado = usu_aprovado ? 1 : 0;
+            const { usu_rm, usu_nome, usu_email, usu_senha, usu_tipo = 5, usu_sexo, usu_ativo = 0, usu_aprovado = 0 } = request.body;
+            console.log(usu_rm + ' - ' + usu_nome + ' - ' + usu_tipo);
+            
+            // const ativo = usu_ativo ? 1 : 0;
+            // const aprovado = usu_aprovado ? 1 : 0;
 
             // Se a foto não for enviada, define img como null ou uma string padrão
             // const img = request.file ? request.file.filename : null;
 
-            if (!request.file) {
-                return response.status(400).json({
-                    sucesso: false,
-                    mensagem: 'A imagem do usuário é obrigatória.'
-                });
-            }
+            // if (!request.file) {
+            //     return response.status(400).json({
+            //         sucesso: false,
+            //         mensagem: 'A imagem do usuário é obrigatória.'
+            //     });
+            // }
 
             //insert com imagem
-            const img = request.file.filename;
+            // const img = request.file.filename;
             // instrução SQL
-            const sql = `INSERT INTO usuarios (usu_rm, usu_nome, usu_email, usu_senha, usu_tipo, usu_sexo, usu_ativo, usu_aprovado, usu_foto) 
-                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);`;
+            const sql = `
+                            INSERT INTO usuarios 
+                            (usu_rm, usu_nome, usu_email, usu_senha, usu_tipo, usu_sexo, usu_ativo, usu_aprovado) 
+                            VALUES 
+                            (?, ?, ?, ?, ?, ?, ?, ?);
+                        `;
             // definição dos dados a serem inseridos em um array
-            const values = [usu_rm, usu_nome, usu_email, usu_senha, usu_tipo, usu_sexo, ativo, aprovado, img];
+            const values = [usu_rm, usu_nome, usu_email, usu_senha, usu_tipo, usu_sexo, usu_ativo, usu_aprovado ];
 
-            
+
             // execução da instrução sql passando os parâmetros
             const execSql = await db.query(sql, values);
             // identificação do ID do registro inserido
@@ -87,12 +92,12 @@ module.exports = {
                 usu_rm,
                 usu_nome,
                 usu_email,
-                usu_senha,
-                usu_tipo,
+                usu_senha, 
+                usu_tipo, 
                 usu_sexo,
-                usu_ativo: ativo,
-                usu_aprovado: aprovado,
-                usu_foto: '/public/uploads/FotoUsuarios/' + img //add aq
+                usu_foto: '/public/uploads/FotoUsuarios/usuarios.jpg',
+                usu_ativo, 
+                usu_aprovado
             };
 
             return response.status(200).json({
@@ -141,13 +146,13 @@ module.exports = {
     },
     async ocultarUsuarios(request, response) {
         try {
-            const usu_ativo = false; 
-            const { usu_cod } = request.body; 
+            const usu_ativo = false;
+            const { usu_cod } = request.body;
             const sql = `UPDATE usuarios SET usu_ativo = ? 
                 WHERE usu_cod = ?;`;
-            const values = [usu_ativo, usu_cod]; 
-            const atualizacao = await db.query(sql, values); 
-            
+            const values = [usu_ativo, usu_cod];
+            const atualizacao = await db.query(sql, values);
+
             return response.status(200).json({
                 sucesso: true,
                 mensagem: `Usuário ${usu_cod} ocultado com sucesso`,
@@ -160,7 +165,7 @@ module.exports = {
                 dados: error.message
             });
         }
-    }, 
+    },
     async loginUsuarios(request, response) {
         try {
 
@@ -186,7 +191,7 @@ module.exports = {
             const values = [usu_email_rm, usu_email_rm, usu_senha];
 
             const usuarios = await db.query(sql, values);
-            const nItens = usuarios[0].length; 
+            const nItens = usuarios[0].length;
 
             if (nItens < 1) {
                 return response.status(403).json({

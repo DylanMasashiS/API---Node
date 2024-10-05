@@ -46,7 +46,7 @@ router.post ('/cursos', (cursosController.cadastrarCursos));
 router.post ('/generos', uploadsG.single('img'), generosController.cadastrarGeneros);
 router.post ('/autores', uploadsA.single('img'), autoresController.cadastrarAutores);
 router.post ('/editoras', uploadsE.single('img'), editorasController.cadastrarEditoras);
-router.post ('/usuarios', uploadsU.single('img'), usuariosController.cadastrarUsuarios);
+router.post ('/usuarios', usuariosController.cadastrarUsuarios);
 router.post ('/liv_cadastrar', uploadsL.single('img'), livrosController.cadastrarLivros);
 
 //CADASTRAR sem imagem
