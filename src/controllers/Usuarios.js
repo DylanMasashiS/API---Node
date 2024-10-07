@@ -16,12 +16,28 @@ module.exports = {
     async listarUsuarios(request, response) {
         try {
 
-            const { usu_nome } = request.body;
-            const usuPesq = usu_nome ? `%${usu_nome}%` : `%%`;
+            let params = [];
+            let whereClauses = [];
+
+            // Adiciona cláusulas de pesquisa baseadas nos critérios fornecidos
+            if (usu_rm) {
+                whereClauses.push("usu.usu_rm LIKE ?");
+                params.push(`%${usu_rm}%`);
+            }
+            if (usu_nome) {
+                whereClauses.push("usu.usu_nome LIKE ?");
+                params.push(`%${usu_nome}%`);
+            }
+            if (usu_tipo) {
+                whereClauses.push("usu.usu_tipo = ?");
+                params.push(usu_tipo);
+            }
             // instruções SQL
             const sql = `SELECT usu_cod,
                 usu_rm, usu_nome, usu_email, usu_senha, usu_sexo,
-                usu_foto, usu_ativo = 1 as usu_ativo
+                usu_foto, usu_ativo = 1 as usu_ativo, 
+                usu_aprovado = 0 AS Rejeitado, 
+                usu_tipo = 4 AS Pendente
                 FROM usuarios 
                 WHERE usu_nome like ?`;
 

@@ -8,7 +8,7 @@ module.exports = {
     async listarSolicitacoes(request, response) {
         try {
 
-            const {usu_rm, usu_nome} = request.body;
+            const {usu_rm, usu_nome, usu_tipo} = request.body;
 
             let params = [];
             let whereClauses = [];
@@ -21,6 +21,10 @@ module.exports = {
             if (usu_nome) {
                 whereClauses.push("usu.usu_nome LIKE ?");
                 params.push(`%${usu_nome}%`);
+            }
+            if (usu_tipo) {
+                whereClauses.push("usu.usu_tipo = ?");
+                params.push(usu_tipo);
             }
              // instruções SQL
             const sql = `SELECT usu_rm, usu_nome, usu_email, usu_senha, usu_sexo, cur_nome
