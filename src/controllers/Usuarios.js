@@ -53,7 +53,7 @@ module.exports = {
     async cadastrarUsuarios(request, response) {
         try {
             // parâmetros recebidos no corpo da requisição
-            const { usu_rm, usu_nome, usu_email, usu_senha, usu_tipo = 5, usu_sexo, usu_ativo = 1, usu_aprovado = 0, cur_cod } = request.body;
+            const { usu_rm, usu_nome, usu_email, usu_senha, usu_tipo = 4, usu_sexo, usu_ativo = 1, usu_aprovado = 0, cur_cod } = request.body;
             // console.log(usu_rm + ' - ' + usu_nome + ' - ' + usu_tipo);
             
             // const ativo = usu_ativo ? 1 : 0;
