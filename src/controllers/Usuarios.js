@@ -53,8 +53,8 @@ module.exports = {
     async cadastrarUsuarios(request, response) {
         try {
             // parâmetros recebidos no corpo da requisição
-            const { usu_rm, usu_nome, usu_email, usu_senha, usu_tipo = 5, usu_sexo, usu_ativo = 0, usu_aprovado = 0 } = request.body;
-            console.log(usu_rm + ' - ' + usu_nome + ' - ' + usu_tipo);
+            const { usu_rm, usu_nome, usu_email, usu_senha, usu_tipo = 5, usu_sexo, usu_ativo = 1, usu_aprovado = 0, cur_cod } = request.body;
+            // console.log(usu_rm + ' - ' + usu_nome + ' - ' + usu_tipo);
             
             // const ativo = usu_ativo ? 1 : 0;
             // const aprovado = usu_aprovado ? 1 : 0;
@@ -85,7 +85,20 @@ module.exports = {
             // execução da instrução sql passando os parâmetros
             const execSql = await db.query(sql, values);
             // identificação do ID do registro inserido
-            const usu_cod = execSql[0].insertId;
+            const usu_cod = execSql[0].insertId; 
+
+            // relaciona o usuário com o curso
+            const sqlUsuCurso = `
+                        INSERT INTO usuarios_cursos
+                        (usu_cod, cur_cod) 
+                        VALUES (?, ?);
+                        `;
+            // definição dos dados a serem inseridos em um array
+            const valuesUsuCurso = [usu_cod, cur_cod ];
+
+
+            // execução da instrução sql passando os parâmetros
+            const execSqlUsuCurso = await db.query(sqlUsuCurso, valuesUsuCurso);
 
             const dados = {
                 usu_cod,
@@ -97,7 +110,8 @@ module.exports = {
                 usu_sexo,
                 usu_foto: '/public/uploads/FotoUsuarios/usuarios.jpg',
                 usu_ativo, 
-                usu_aprovado
+                usu_aprovado, 
+                cur_cod
             };
 
             return response.status(200).json({
