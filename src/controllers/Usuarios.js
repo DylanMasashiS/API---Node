@@ -306,7 +306,7 @@ module.exports = {
                 INNER JOIN cursos cur ON cur.cur_cod = ucu.cur_cod
                 WHERE usu_cod = ?;`;
 
-            const values = [usu_ativo, usu_cod];
+            const values = [usu_cod];
             const atualizacao = await db.query(sql, values);
 
             return response.status(200).json({
