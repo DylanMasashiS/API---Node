@@ -74,7 +74,7 @@ router.post ('/usu_login', (usuariosController.loginUsuarios));
 router.patch ('/usu_ocultar', (usuariosController.ocultarUsuarios));
 router.patch ('/emp_renovar/:emp_cod', (emprestimosController.renovarEmprestimos));
 router.patch ('/analizarUcu/:usu_cod', (usuariosController.analizarUsuariosCursos)); 
-router.patch ('/liv_inativar/:liv_cod', (livrosController.inativarLivros));
+router.patch ('/liv_inativar', (livrosController.inativarLivros));
 
 //DELETE ou EXCLUIR
 router.delete ('/livros/:liv_cod', (livrosController.apagarLivros));

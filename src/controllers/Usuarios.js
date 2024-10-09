@@ -148,7 +148,7 @@ module.exports = {
     async cadastrarUsuarios(request, response) {
         try {
             // parâmetros recebidos no corpo da requisição
-            const { usu_rm, usu_nome, usu_email, usu_senha, usu_tipo = 4, usu_sexo, usu_ativo = 1, usu_aprovado = 0, cur_cod } = request.body;
+            const { usu_rm, usu_nome, usu_email, usu_senha, usu_tipo = 4, usu_sexo, usu_ativo = 1, usu_aprovado = 0, cur_cod, ucu_status, ucu_ativo, ucu_aprovado } = request.body;
 
             // instrução SQL
             const sql = `
@@ -168,11 +168,11 @@ module.exports = {
             // relaciona o usuário com o curso
             const sqlUsuCurso = `
                         INSERT INTO usuarios_cursos
-                        (usu_cod, cur_cod) 
-                        VALUES (?, ?);
+                        (usu_cod, cur_cod, ucu_status, ucu_ativo, ucu_aprovado) 
+                        VALUES (?, ?, ?, ?, ?);
                         `;
             // definição dos dados a serem inseridos em um array
-            const valuesUsuCurso = [usu_cod, cur_cod ];
+            const valuesUsuCurso = [usu_cod, cur_cod, ucu_status, ucu_ativo, ucu_aprovado ];
 
             // execução da instrução sql passando os parâmetros
             const execSqlUsuCurso = await db.query(sqlUsuCurso, valuesUsuCurso);
@@ -188,7 +188,10 @@ module.exports = {
                 usu_foto: '/public/uploads/FotoUsuarios/usuarios.jpg',
                 usu_ativo, 
                 usu_aprovado, 
-                cur_cod
+                cur_cod,
+                ucu_status, 
+                ucu_ativo, 
+                ucu_aprovado
             };
 
             return response.status(200).json({
@@ -295,10 +298,14 @@ module.exports = {
     },
     async ocultarUsuarios(request, response) {
         try {
-            const usu_ativo = false;
             const { usu_cod } = request.body;
-            const sql = `UPDATE usuarios SET usu_ativo = ? 
+
+            const sql = `UPDATE usuarios 
+                SET usu.usu_ativo = ?, ucu.ucu_ativo = ?
+                INNER JOIN usuarios_cursos ucu ON ucu.usu_cod = usu.usu_cod
+                INNER JOIN cursos cur ON cur.cur_cod = ucu.cur_cod
                 WHERE usu_cod = ?;`;
+
             const values = [usu_ativo, usu_cod];
             const atualizacao = await db.query(sql, values);
 

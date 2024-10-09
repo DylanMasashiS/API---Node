@@ -60,7 +60,7 @@ module.exports = {
                      			INNER JOIN exemplares  subexe ON emp.exe_cod = subexe.exe_cod            
                      			WHERE subexe.liv_cod = liv.liv_cod
                      			AND emp.emp_devolvido = 0)) AS disponivel,
-                                
+                                liv.liv_ativo = 1 AS liv_ativo,
                          GROUP_CONCAT(DISTINCT gen.gen_nome) AS generos
                         FROM livros         liv
                         INNER JOIN editoras       edt ON edt.edt_cod = liv.edt_cod
@@ -102,13 +102,13 @@ module.exports = {
 
     async inativarLivros (request, response) {
         try {
-            const { liv_cod } = request.body;
+            const { liv_ativo, liv_cod } = request.body;
 
             // instrução SQL
-            const sql = `UPDATE livros SET liv_ativo = 0 WHERE liv_cod = ?`;
+            const sql = `UPDATE livros SET liv_ativo = ? WHERE liv_cod = ?`;
 
             // array com parâmetros
-            const values = [liv_cod];
+            const values = [liv_ativo, liv_cod];
 
             // executa instrução no banco de dados
             const execSql = await db.query(sql, values);
@@ -116,7 +116,7 @@ module.exports = {
             // Retorna o resultado da requisição
             return response.status(200).json({
                 sucesso: true,
-                mensagem: 'Livro inativado com sucesso.',
+                mensagem: 'Status do Livro atualizado com sucesso.',
                 dados: execSql[0].affectedRows
             });
         } catch (error) {
@@ -132,19 +132,25 @@ module.exports = {
     async cadastrarLivros(request, response) {
         try {
             // parâmetros recebidos no corpo da requisição
-            const { liv_pha_cod, liv_categ_cod, liv_nome, liv_desc, edt_cod } = request.body;
-
+            
+            const { liv_pha_cod, liv_categ_cod, liv_nome, liv_desc, edt_cod, liv_ativo } = request.body;
+            const livAtivoParsed = parseInt(liv_ativo, 10);  // Converter liv_ativo para número
+            
             const img = request.file.filename;
             // instrução SQL
+            
             const sql = `INSERT INTO livros
-                (liv_pha_cod, liv_categ_cod, liv_nome, liv_desc, edt_cod, liv_foto_capa) 
-                VALUES (?, ?, ?, ?, ?, ?)`;
+                (liv_pha_cod, liv_categ_cod, liv_nome, liv_desc, edt_cod, liv_ativo, liv_foto_capa) 
+                VALUES (?, ?, ?, ?, ?, ?, ?);`;
             // definição dos dados a serem inseridos em um array
-            const values = [liv_pha_cod, liv_categ_cod, liv_nome, liv_desc, edt_cod, img];
+            
+            const values = [liv_pha_cod, liv_categ_cod, liv_nome, liv_desc, edt_cod, livAtivoParsed, img];
             // execução da instrução sql passando os parâmetros
+            
             const execSql = await db.query(sql, values);
             // identificação do ID do registro inserido
             const liv_cod = execSql[0].insertId;
+         
 
             const dados = {
                 liv_cod,
@@ -153,8 +159,9 @@ module.exports = {
                 liv_nome,
                 liv_desc,
                 edt_cod,
+                liv_ativo: livAtivoParsed,  // Usar valor numérico
                 liv_foto_capa: '/public/uploads/CapaLivros/' + img
-            }
+            };
 
             return response.status(200).json({
                 sucesso: true,
