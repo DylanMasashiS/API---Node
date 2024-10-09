@@ -18,7 +18,6 @@ const recomendacaoController = require ('../controllers/Recomendacao');
 const usuarios_cursosController = require ('../controllers/Usuario_Cursos');
 const livros_autoresController = require ('../controllers/Livros_autores');
 const livros_generosController = require ('../controllers/Livros_generos');
-const solicitacoesController = require ('../controllers/Solicitacoes');
 const reservasController = require ('../controllers/Reservas');
 const contatosController = require ('../controllers/Contatos');
 
@@ -28,7 +27,6 @@ router.get ('/generos', (generosController.listarGeneros));
 router.get ('/usuarios', (usuariosController.listarUsuarios));
 router.get ('/editoras', (editorasController.listarEditoras));
 router.get ('/exemplares', (exemplaresController.listarExemplares));
-router.get ('/sol_listar', (solicitacoesController.listarSolicitacoes));
 router.get ('/livros_autores', (livros_autoresController.listarLivros_Autores));
 router.get ('/livros_generos', (livros_generosController.listarLivros_Generos));
 router.get ('/usuarios_cursos', (usuarios_cursosController.listarUsuarios_Cursos));
@@ -62,7 +60,7 @@ router.patch ('/livros/:liv_cod', (livrosController.editarLivros));
 router.patch ('/cursos/:cur_cod', (cursosController.editarCursos));
 router.patch ('/autores/:aut_cod', (autoresController.editarAutores));
 router.patch ('/generos/:gen_cod', (generosController.editarGeneros));
-router.patch ('/usuarios/:usu_cod', (usuariosController.editarUsuarios));
+router.patch ('/usuarios/:usu_cod', (usuariosController.editarPerfil));
 router.patch ('/editoras/:edt_cod', (editorasController.editarEditoras));
 router.patch ('/exemplares/:exe_cod', (exemplaresController.editarExemplares));
 router.patch ('/emprestimos/:emp_cod', (emprestimosController.editarEmprestimos));
@@ -71,12 +69,11 @@ router.patch ('/livros_autores/:lau_cod', (livros_autoresController.editarLivros
 router.patch ('/livros_generos/:lge_cod', (livros_generosController.editarLivros_Generos));
 router.patch ('/usuarios_cursos/:ucu_cod', (usuarios_cursosController.editarUsuarios_Cursos));
 
-//UPDATE diferente
+//UPDATE Personalizado
 router.post ('/usu_login', (usuariosController.loginUsuarios));
 router.patch ('/usu_ocultar', (usuariosController.ocultarUsuarios));
 router.patch ('/emp_renovar/:emp_cod', (emprestimosController.renovarEmprestimos));
-router.patch ('/sol_aprovar/:sol_cod', (solicitacoesController.aprovarSolicitacao));
-router.patch ('/sol_inativar/:sol_cod', (solicitacoesController.inativarSolicitacao)); 
+router.patch ('/analizarUcu/:usu_cod', (usuariosController.analizarUsuariosCursos)); 
 
 //DELETE ou EXCLUIR
 router.delete ('/livros/:liv_cod', (livrosController.apagarLivros));
