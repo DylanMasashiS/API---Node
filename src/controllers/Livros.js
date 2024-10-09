@@ -48,8 +48,8 @@ module.exports = {
 
             // Monta a consulta SQL dinamicamente com base nos critérios
             const sql = `SELECT liv.liv_cod, liv.liv_nome, liv.liv_foto_capa, liv.liv_desc, 
-                                edt.edt_nome, edt.edt_foto, aut.aut_nome, aut.aut_foto,
-                                gen.gen_nome, gen.gen_foto,
+                                edt.edt_cod, edt.edt_nome, edt.edt_foto, aut.aut_nome, aut.aut_foto,
+                                gen.gen_nome, gen.gen_foto, lau.aut_cod, edt.edt_cod, gen.gen_cod,
                                 
                          COUNT(exe.exe_cod) as exemplares,
                             (SELECT COUNT(*) FROM emprestimos emp 

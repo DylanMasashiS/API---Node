@@ -22,7 +22,7 @@ module.exports = {
             const edtPesq = edt_nome ? `%${edt_nome}%` : `%%`;
             // instruções SQL
             const sql = `SELECT edt_cod, edt_nome, edt_foto from editoras
-                        where edt_nome like ?;`;
+                        where edt_nome like ? order by edt_nome;`;
 
             const values = [edtPesq];
             // executa instruções SQL e armazena o resultado na variável usuários

@@ -21,7 +21,7 @@ module.exports = {
             // instruções SQL
             const sql = `SELECT aut_cod, aut_nome, aut_foto 
                         from autores
-                        where aut_nome like ?;`;
+                        where aut_nome like ? order by aut_nome;`;
 
             const values = [autPesq];
             // executa instruções SQL e armazena o resultado na variável usuários
