@@ -100,6 +100,35 @@ module.exports = {
         }
     },
 
+    async inativarLivros (request, response) {
+        try {
+            const { liv_cod } = request.body;
+
+            // instrução SQL
+            const sql = `UPDATE livros SET liv_ativo = 0 WHERE liv_cod = ?`;
+
+            // array com parâmetros
+            const values = [liv_cod];
+
+            // executa instrução no banco de dados
+            const execSql = await db.query(sql, values);
+
+            // Retorna o resultado da requisição
+            return response.status(200).json({
+                sucesso: true,
+                mensagem: 'Livro inativado com sucesso.',
+                dados: execSql[0].affectedRows
+            });
+        } catch (error) {
+            console.error('Erro na requisição:', error);  // Registra o erro para depuração
+            return response.status(500).json({
+                sucesso: false,
+                mensagem: 'Erro na requisição.',
+                dados: error.message
+            });
+        }
+    },
+
     async cadastrarLivros(request, response) {
         try {
             // parâmetros recebidos no corpo da requisição

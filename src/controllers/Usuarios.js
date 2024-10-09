@@ -15,6 +15,30 @@ function geraUrl(usu_foto) {
 module.exports = {
     async listarUsuarios(request, response) {
         try {
+            // Extrair parâmetros de consulta para pesquisa e paginação
+            const { usu_rm, usu_nome, usu_tipo, page = 1, limit = 10 } = request.query;
+
+            // Converter page e limit para números inteiros
+            const pageNum = parseInt(page, 10);
+            const limitNum = parseInt(limit, 10);
+
+            // Validar os parâmetros
+            if (isNaN(pageNum) || pageNum < 1) {
+                return response.status(400).json({
+                    sucesso: false,
+                    mensagem: 'Parâmetro "page" inválido.',
+                });
+            }
+
+            if (isNaN(limitNum) || limitNum < 1 || limitNum > 100) { // Limite máximo de 100 itens por página
+                return response.status(400).json({
+                    sucesso: false,
+                    mensagem: 'Parâmetro "limit" inválido. Deve ser um número entre 1 e 100.',
+                });
+            }
+
+            // Calcular OFFSET
+            const offset = (pageNum - 1) * limitNum;
 
             let params = [];
             let whereClauses = [];
@@ -32,31 +56,86 @@ module.exports = {
                 whereClauses.push("usu.usu_tipo = ?");
                 params.push(usu_tipo);
             }
-            // instruções SQL
-            const sql = `SELECT usu_cod,
-                usu_rm, usu_nome, usu_email, usu_senha, usu_sexo,
-                usu_foto, usu_ativo = 1 as usu_ativo, 
-                usu_aprovado = 0 AS Rejeitado, 
-                usu_tipo = 4 AS Pendente
-                FROM usuarios 
-                WHERE usu_nome like ?`;
 
-            const values = [usuPesq];
-            // executa instruções SQL e armazena o resultado na variável usuários
-            const usuarios = await db.query(sql, values);
-            // armazena em uma variável o número de registros retornados
-            const nItens = usuarios[0].length;
+	     // Adicionar LIMIT e OFFSET aos parâmetros
+            params.push(limitNum, offset);
 
-            const resultado = usuarios[0].map(usuarios => ({
-                ...usuarios,
-                usu_foto: geraUrl(usuarios.usu_foto),
-            }));
+            // Instruções SQL com junção das tabelas usuarios, usuarios_cursos e cursos
+            const sql = `
+                SELECT 
+                    usu.usu_cod, 
+                    usu.usu_rm, 
+                    usu.usu_nome, 
+                    usu.usu_email, 
+                    usu.usu_senha, 
+                    usu.usu_sexo, 
+                    usu.usu_foto, 
+                    uc.ucu_cod,
+                    c.cur_cod, 
+                    c.cur_nome,
+                    CASE WHEN usu.usu_ativo = 1 THEN 'Ativo' ELSE 'Inativo' END AS status_ativo, 
+                    CASE WHEN usu.usu_aprovado = 0 THEN 'Não Aprovado' ELSE 'Aprovado' END AS status_aprovado, 
+                    CASE WHEN usu.usu_tipo = 4 THEN 'Pendente' ELSE 'Outro Tipo' END AS status_tipo
+                FROM usuarios usu
+                INNER JOIN usuarios_cursos uc ON usu.usu_cod = uc.usu_cod
+                INNER JOIN cursos c ON uc.cur_cod = c.cur_cod
+                ${whereClauses.length ? 'WHERE ' + whereClauses.join(' AND ') : ''}
+                GROUP BY usu.usu_cod, uc.ucu_cod, c.cur_cod
+                ORDER BY usu.usu_cod
+                LIMIT ? OFFSET ?
+            `;
+
+            // Executa a consulta SQL
+            const [rows] = await db.query(sql, params);
+
+            // Contar o total de itens (sem LIMIT e OFFSET) para calcular o total de páginas
+            const countSql = `
+                SELECT COUNT(DISTINCT usu.usu_cod) AS total 
+                FROM usuarios usu
+                ${whereClauses.length ? 'WHERE ' + whereClauses.join(' AND ') : ''}
+            `;
+            const [countRows] = await db.query(countSql, params.slice(0, params.length - 2)); // Remover LIMIT e OFFSET
+            const totalItems = countRows[0].total;
+            const totalPages = Math.ceil(totalItems / limitNum);
+
+            // Mapa para agrupar cursos por usuário
+            const usuariosMap = {};
+
+            rows.forEach(row => {
+                if (!usuariosMap[row.usu_cod]) {
+                    usuariosMap[row.usu_cod] = {
+                        usu_cod: row.usu_cod,
+                        usu_rm: row.usu_rm,
+                        usu_nome: row.usu_nome,
+                        usu_email: row.usu_email,
+                        usu_sexo: row.usu_sexo,
+                        usu_foto: geraUrl(row.usu_foto),
+                        status_ativo: row.status_ativo,
+                        status_aprovado: row.status_aprovado,
+                        status_tipo: row.status_tipo,
+                        cursos: []
+                    };
+                }
+
+                if (row.cur_cod && row.cur_nome) {
+                    usuariosMap[row.usu_cod].cursos.push({
+                        ucu_cod: row.ucu_cod,
+                        cur_cod: row.cur_cod,
+                        cur_nome: row.cur_nome
+                    });
+                }
+            });
+
+            // Converte o mapa para um array
+            const resultado = Object.values(usuariosMap);
 
             return response.status(200).json({
                 sucesso: true,
                 mensagem: 'Lista de usuários.',
                 dados: resultado,
-                nItens
+                nItens: totalItems,
+                paginaAtual: pageNum,
+                totalPaginas: totalPages
             });
         } catch (error) {
             return response.status(500).json({
@@ -70,23 +149,7 @@ module.exports = {
         try {
             // parâmetros recebidos no corpo da requisição
             const { usu_rm, usu_nome, usu_email, usu_senha, usu_tipo = 4, usu_sexo, usu_ativo = 1, usu_aprovado = 0, cur_cod } = request.body;
-            // console.log(usu_rm + ' - ' + usu_nome + ' - ' + usu_tipo);
-            
-            // const ativo = usu_ativo ? 1 : 0;
-            // const aprovado = usu_aprovado ? 1 : 0;
 
-            // Se a foto não for enviada, define img como null ou uma string padrão
-            // const img = request.file ? request.file.filename : null;
-
-            // if (!request.file) {
-            //     return response.status(400).json({
-            //         sucesso: false,
-            //         mensagem: 'A imagem do usuário é obrigatória.'
-            //     });
-            // }
-
-            //insert com imagem
-            // const img = request.file.filename;
             // instrução SQL
             const sql = `
                             INSERT INTO usuarios 
@@ -96,7 +159,6 @@ module.exports = {
                         `;
             // definição dos dados a serem inseridos em um array
             const values = [usu_rm, usu_nome, usu_email, usu_senha, usu_tipo, usu_sexo, usu_ativo, usu_aprovado ];
-
 
             // execução da instrução sql passando os parâmetros
             const execSql = await db.query(sql, values);
@@ -111,7 +173,6 @@ module.exports = {
                         `;
             // definição dos dados a serem inseridos em um array
             const valuesUsuCurso = [usu_cod, cur_cod ];
-
 
             // execução da instrução sql passando os parâmetros
             const execSqlUsuCurso = await db.query(sqlUsuCurso, valuesUsuCurso);
@@ -144,7 +205,64 @@ module.exports = {
             });
         }
     },
-    async editarUsuarios(request, response) {
+
+    async analizarUsuariosCursos (request, response) {
+        try {    
+        const { usu_tipo, usu_ativo, usu_aprovado, usu_cod, ucu_status, ucu_ativo, ucu_aprovado, ucu_cod } = request.body; 
+
+        // Verifique se o novo_tipo é válido (supondo que os tipos válidos são 0, 1 e 2)
+        const tiposValidos = [0, 1, 2];
+        if (!tiposValidos.includes(usu_tipo)) {
+            return response.status(400).json({
+                sucesso: false,
+                mensagem: 'Tipo inválido. Deve ser 0, 1 ou 2.',
+            });
+        }
+
+        //ucu_status: 0 = pendente, 1 = analisado (Para mostrar as solicitações pendentes de usuarios_cursos)
+        //ucu_ativo: 0 = inativo, 1 = ativo (Para mostrar os cursos desativados de alunos ou professores, uma vez que pode haver erro)
+        //ucu_aprovado: 0 = não aprovado, 1 = aprovado (Para mostrar os cursos de alunos ou professores que não foram aprovados)
+
+        // execução da primeira instrução sql passando os parâmetros dos usuários
+        const sqlUsuarios =       
+                    `UPDATE usuarios
+                        SET usu_tipo     = ?, 
+                            usu_ativo    = ?, 
+                            usu_aprovado = ?
+                      WHERE usu_cod = ?;`;
+
+        const values = [usu_tipo, usu_ativo, usu_aprovado, usu_cod];
+        const result = await db.query(sqlUsuarios, values);
+
+        // execução da próxima instrução sql passando os parâmetros dos cursos
+        const sqlCursos =       
+                    `UPDATE usuarios_cursos
+                        SET ucu_status   = ?, 
+                            ucu_ativo    = ?, 
+                            ucu_aprovado = ?
+                      WHERE ucu_cod = ?;`;
+
+        const valores = [ucu_status, ucu_ativo, ucu_aprovado, ucu_cod ];
+        const resultado = await db.query(sqlCursos, valores);
+
+        return response.status(200).json({
+            sucesso: true,
+            mensagem: `Usuário ${usu_cod} analizado com sucesso`,
+            dados: {
+                usuariosAtualizados: result[0].affectedRows,
+                cursosAtualizados: resultado[0].affectedRows
+            }
+        });
+
+        } catch (error) {
+            return response.status(500).json({
+                sucesso: false,
+                mensagem: 'Erro na requisição.',
+                dados: error.message
+            });
+        }
+    },
+    async editarPerfil(request, response) {
         try {
             // parâmetros recebidos pelo corpo da requisição
             const { usu_nome, usu_email, usu_senha, usu_tipo, usu_sexo, usu_ativo } = request.body;
@@ -159,6 +277,7 @@ module.exports = {
             const values = [usu_nome, usu_email, usu_senha, usu_tipo, usu_sexo, usu_ativo, usu_cod];
             // execução e obtenção de confirmação da atualização realizada
             const atualizaDados = await db.query(sql, values);
+            
 
             return response.status(200).json({
                 sucesso: true,
