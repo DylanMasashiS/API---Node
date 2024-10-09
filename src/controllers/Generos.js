@@ -22,7 +22,7 @@ module.exports = {
             // instruções SQL
             const sql = `SELECT gen_cod, gen_nome, gen_foto 
                         from generos
-                        where gen_nome like ?;`;
+                        where gen_nome like ? order by gen_nome;`;
 
             const values = [genPesq];
             // executa instruções SQL e armazena o resultado na variável usuários
