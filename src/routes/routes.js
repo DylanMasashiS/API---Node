@@ -24,13 +24,13 @@ const contatosController = require ('../controllers/Contatos');
 //LISTAR sem pesquisa
 router.get ('/autores', (autoresController.listarAutores));
 router.get ('/generos', (generosController.listarGeneros));
+router.get ('/contatos', (contatosController.listarContatos));
 router.get ('/usuarios', (usuariosController.listarUsuarios));
 router.get ('/editoras', (editorasController.listarEditoras));
 router.get ('/exemplares', (exemplaresController.listarExemplares));
 router.get ('/livros_autores', (livros_autoresController.listarLivros_Autores));
 router.get ('/livros_generos', (livros_generosController.listarLivros_Generos));
 router.get ('/usuarios_cursos', (usuarios_cursosController.listarUsuarios_Cursos));
-router.get ('/contatos', (contatosController.listarContatos));
 
 //LISTAR com pesquisa
 router.post ('/cursos', (cursosController.listarCursos));
@@ -41,10 +41,10 @@ router.post ('/rec_listar', (recomendacaoController.listarRecomendacao));
 
 //CADASTRAR com imagem
 router.post ('/cursos', (cursosController.cadastrarCursos));
+router.post ('/usuarios', usuariosController.cadastrarUsuarios);
 router.post ('/generos', uploadsG.single('img'), generosController.cadastrarGeneros);
 router.post ('/autores', uploadsA.single('img'), autoresController.cadastrarAutores);
 router.post ('/editoras', uploadsE.single('img'), editorasController.cadastrarEditoras);
-router.post ('/usuarios', usuariosController.cadastrarUsuarios);
 router.post ('/liv_cadastrar', uploadsL.single('img'), livrosController.cadastrarLivros);
 
 //CADASTRAR sem imagem
@@ -74,6 +74,7 @@ router.post ('/usu_login', (usuariosController.loginUsuarios));
 router.patch ('/usu_ocultar', (usuariosController.ocultarUsuarios));
 router.patch ('/emp_renovar/:emp_cod', (emprestimosController.renovarEmprestimos));
 router.patch ('/analizarUcu/:usu_cod', (usuariosController.analizarUsuariosCursos)); 
+router.patch ('/liv_inativar/:liv_cod', (livrosController.inativarLivros));
 
 //DELETE ou EXCLUIR
 router.delete ('/livros/:liv_cod', (livrosController.apagarLivros));
