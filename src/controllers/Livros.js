@@ -64,7 +64,7 @@ module.exports = {
                                 (COUNT(exe.exe_cod) - (SELECT COUNT(*) FROM emprestimos emp 
                      			INNER JOIN exemplares  subexe ON emp.exe_cod = subexe.exe_cod            
                      			WHERE subexe.liv_cod = liv.liv_cod
-                     			AND emp.emp_devolvido = 0)) AS disponivel,
+                     			AND emp.emp_devolvido = 0)) AS disponivel
                          
                                 FROM livros         liv
                                 INNER JOIN editoras       edt ON edt.edt_cod = liv.edt_cod
@@ -134,7 +134,7 @@ module.exports = {
         }
     },
 
-    async GerenciarLivros(request, response) {
+    async gerenciarLivros(request, response) {
         try {
             const { liv_nome, aut_nome, edt_nome, gen_nome, liv_cod } = request.body;
     
@@ -179,9 +179,9 @@ module.exports = {
                                     WHERE subexe.liv_cod = liv.liv_cod AND emp.emp_devolvido = 0)) AS disponivel,
 
                                 CASE 
-                                WHEN liv.liv_ativo = 1 THEN 'Ativo'
-                                WHEN liv.liv_ativo = 0 THEN 'Inativo'
-                                END AS Status,
+                                    WHEN liv.liv_ativo = 1 THEN 'Ativo'
+                                    WHEN liv.liv_ativo = 0 THEN 'Inativo'
+                                    END AS Status
 
                                 FROM livros liv
                                 INNER JOIN editoras edt ON edt.edt_cod = liv.edt_cod

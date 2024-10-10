@@ -35,6 +35,7 @@ router.get ('/usuarios_cursos', (usuarios_cursosController.listarUsuarios_Cursos
 //LISTAR com pesquisa
 router.post ('/cursos', (cursosController.listarCursos));
 router.post ('/livros', (livrosController.listarLivros));
+router.post ('/liv_gerenciar', (livrosController.gerenciarLivros))
 router.post ('/emprestimos', (emprestimosController.listarEmprestimos));
 router.post ('/reservas', (reservasController.listarReservas));
 router.post ('/rec_listar', (recomendacaoController.listarRecomendacao));
