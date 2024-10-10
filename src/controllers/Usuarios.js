@@ -16,7 +16,8 @@ module.exports = {
     async listarUsuarios(request, response) {
         try {
             // Extrair parâmetros de consulta para pesquisa e paginação
-            const { usu_rm, usu_nome, usu_tipo, page = 1, limit = 10 } = request.query;
+            const { usu_rm, usu_nome, usu_tipo} = request.body;
+            const { page = 1, limit = 10 } = request.query;
 
             // Converter page e limit para números inteiros
             const pageNum = parseInt(page, 10);
@@ -58,14 +59,16 @@ module.exports = {
             }
 
 	     // Adicionar LIMIT e OFFSET aos parâmetros
-            params.push(limitNum, offset);
-
+            params.push(limitNum);
+            params.push(offset);
+            console.log(params);
             // Instruções SQL com junção das tabelas usuarios, usuarios_cursos e cursos
             const sql = `
                 SELECT 
                     usu.usu_cod, 
                     usu.usu_rm, 
-                    usu.usu_nome, 
+                    usu.usu_nome,
+                    usu.usu_social, 
                     usu.usu_email, 
                     usu.usu_senha, 
                     usu.usu_sexo, 
@@ -86,7 +89,9 @@ module.exports = {
             `;
 
             // Executa a consulta SQL
-            const [rows] = await db.query(sql, params);
+            const [rows] = await db.query(sql, params); 
+            console.log(sql);
+            console.log(params);
 
             // Contar o total de itens (sem LIMIT e OFFSET) para calcular o total de páginas
             const countSql = `
@@ -107,6 +112,7 @@ module.exports = {
                         usu_cod: row.usu_cod,
                         usu_rm: row.usu_rm,
                         usu_nome: row.usu_nome,
+                        usu_social: row.usu_social,
                         usu_email: row.usu_email,
                         usu_sexo: row.usu_sexo,
                         usu_foto: geraUrl(row.usu_foto),
@@ -268,20 +274,19 @@ module.exports = {
     async editarPerfil(request, response) {
         try {
             // parâmetros recebidos pelo corpo da requisição
-            const { usu_nome, usu_email, usu_senha, usu_tipo, usu_sexo, usu_ativo } = request.body;
+            const { usu_nome, usu_social, usu_email, usu_senha, usu_tipo, usu_sexo, usu_ativo } = request.body;
             // parâmetro recebido pela URL via params ex: /usuario/1
             const { usu_cod } = request.params;
             // instruções SQL
-            const sql = `UPDATE usuarios SET usu_nome = ?, 
+            const sql = `UPDATE usuarios SET usu_nome = ?, usu_social = ?, 
                         usu_email = ?, usu_senha = ?, usu_tipo = ?, 
                         usu_sexo = ?, usu_ativo = ? 
                         WHERE usu_cod = ?;`;
             // preparo do array com dados que serão atualizados
-            const values = [usu_nome, usu_email, usu_senha, usu_tipo, usu_sexo, usu_ativo, usu_cod];
+            const values = [usu_nome, usu_social, usu_email, usu_senha, usu_tipo, usu_sexo, usu_ativo, usu_cod];
             // execução e obtenção de confirmação da atualização realizada
             const atualizaDados = await db.query(sql, values);
             
-
             return response.status(200).json({
                 sucesso: true,
                 mensagem: `Usuário ${usu_cod} atualizado com sucesso!`,
