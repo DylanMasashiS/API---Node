@@ -17,7 +17,6 @@ module.exports = {
     async listarLivros(request, response) {
         try {
             const { liv_nome, aut_nome, edt_nome, gen_nome, liv_cod } = request.body;
-            const livPesq = liv_cod ? liv_cod : `%%`;
 
             // Cria um array de parâmetros para a consulta
             let params = [];
@@ -43,40 +42,43 @@ module.exports = {
             }
             if (liv_cod){
                 whereClauses.push("liv.liv_cod = ?");
-                params.push(livPesq);
+                params.push(liv_cod);
             }
 
-            // Adiciona cláusulas de ativo
             whereClauses.push("liv.liv_ativo = 1");
+            
+            //tirei a clausula do liv_ativo e tirei gen_cod do select pois estava agrupando com o concat
+            //liv.liv_ativo = 1 AS liv_ativo, (tirei porque farei outra rota para listar livros ativos)
 
             // Monta a consulta SQL dinamicamente com base nos critérios
             const sql = `SELECT liv.liv_cod, liv.liv_nome, liv.liv_foto_capa, liv.liv_desc, 
                                 edt.edt_cod, edt.edt_nome, edt.edt_foto, aut.aut_nome, aut.aut_foto,
-                                gen.gen_nome, gen.gen_foto, lau.aut_cod, edt.edt_cod, gen.gen_cod,
-                                
-                         COUNT(exe.exe_cod) as exemplares,
-                            (SELECT COUNT(*) FROM emprestimos emp 
-                     		INNER JOIN exemplares  subexe ON emp.exe_cod = subexe.exe_cod            
-                     		WHERE subexe.liv_cod = liv.liv_cod
-                            AND emp.emp_devolvido = 0) as emprestados,
+                                gen.gen_nome, gen.gen_foto, lau.aut_cod,
+                                GROUP_CONCAT(DISTINCT gen.gen_nome) AS Generos,
+
+                                COUNT(exe.exe_cod) as exemplares,
+                                (SELECT COUNT(*) FROM emprestimos emp 
+                     		    INNER JOIN exemplares  subexe ON emp.exe_cod = subexe.exe_cod            
+                     		    WHERE subexe.liv_cod = liv.liv_cod
+                                AND emp.emp_devolvido = 0) as emprestados,
                                 (COUNT(exe.exe_cod) - (SELECT COUNT(*) FROM emprestimos emp 
                      			INNER JOIN exemplares  subexe ON emp.exe_cod = subexe.exe_cod            
                      			WHERE subexe.liv_cod = liv.liv_cod
                      			AND emp.emp_devolvido = 0)) AS disponivel,
-                                liv.liv_ativo = 1 AS liv_ativo,
-                         GROUP_CONCAT(DISTINCT gen.gen_nome) AS generos
-                        FROM livros         liv
-                        INNER JOIN editoras       edt ON edt.edt_cod = liv.edt_cod
-                        INNER JOIN livros_autores lau ON lau.liv_cod = liv.liv_cod
-                        INNER JOIN autores        aut ON aut.aut_cod = lau.aut_cod
-                        INNER JOIN livros_generos lge ON lge.liv_cod = liv.liv_cod
-                        INNER JOIN generos        gen ON gen.gen_cod = lge.gen_cod 
-                        INNER JOIN exemplares     exe ON liv.liv_cod = exe.liv_cod 
-                        ${whereClauses.length > 0 ? 'WHERE ' + whereClauses.join(' AND ') : ''}
-                        AND exe.exe_data_saida IS NULL
-                        GROUP BY liv.liv_cod, liv.liv_nome, liv.liv_foto_capa, edt.edt_nome, 
-                        edt.edt_foto, aut.aut_nome, aut.aut_foto
-                        ${havingClauses.length > 0 ? 'HAVING ' + havingClauses.join(' AND ') : ''}`;
+                         
+                                FROM livros         liv
+                                INNER JOIN editoras       edt ON edt.edt_cod = liv.edt_cod
+                                INNER JOIN livros_autores lau ON lau.liv_cod = liv.liv_cod
+                                INNER JOIN autores        aut ON aut.aut_cod = lau.aut_cod
+                                INNER JOIN livros_generos lge ON lge.liv_cod = liv.liv_cod
+                                INNER JOIN generos        gen ON gen.gen_cod = lge.gen_cod 
+                                INNER JOIN exemplares     exe ON liv.liv_cod = exe.liv_cod
+                                
+                                ${whereClauses.length > 0 ? 'WHERE ' + whereClauses.join(' AND ') : ''}
+                                AND exe.exe_data_saida IS NULL
+                                GROUP BY liv.liv_cod, liv.liv_nome, liv.liv_foto_capa, edt.edt_nome, 
+                                edt.edt_foto, aut.aut_nome, aut.aut_foto
+                                ${havingClauses.length > 0 ? 'HAVING ' + havingClauses.join(' AND ') : ''}`;
 
             // Executa a consulta SQL
             const livros = await db.query(sql, params);
@@ -131,6 +133,92 @@ module.exports = {
             });
         }
     },
+
+    async GerenciarLivros(request, response) {
+        try {
+            const { liv_nome, aut_nome, edt_nome, gen_nome, liv_cod } = request.body;
+    
+            // Cria um array de parâmetros para a consulta
+            let params = [];
+            let whereClauses = [];
+            let havingClauses = [];
+    
+            // Adiciona cláusulas de pesquisa baseadas nos critérios fornecidos
+            if (liv_nome) {
+                whereClauses.push("liv.liv_nome LIKE ?");
+                params.push(`%${liv_nome}%`);
+            }
+            if (aut_nome) {
+                whereClauses.push("aut.aut_nome LIKE ?");
+                params.push(`%${aut_nome}%`);
+            }
+            if (edt_nome) {
+                whereClauses.push("edt.edt_nome LIKE ?");
+                params.push(`%${edt_nome}%`);
+            }
+            if (gen_nome) {
+                havingClauses.push("GROUP_CONCAT(DISTINCT gen.gen_nome) LIKE ?");
+                params.push(`%${gen_nome}%`);
+            }
+            if (liv_cod){
+                whereClauses.push("liv.liv_cod = ?");
+                params.push(liv_cod);
+            }
+    
+            // Monta a consulta SQL dinamicamente com base nos critérios
+            const sql = `SELECT liv.liv_cod, liv.liv_nome, liv.liv_foto_capa, liv.liv_desc, 
+                                edt.edt_cod, edt.edt_nome, edt.edt_foto, aut.aut_nome, aut.aut_foto,
+                                GROUP_CONCAT(DISTINCT gen.gen_nome) AS generos,
+
+                                COUNT(exe.exe_cod) as exemplares,
+                                    (SELECT COUNT(*) FROM emprestimos emp 
+                                    INNER JOIN exemplares subexe ON emp.exe_cod = subexe.exe_cod            
+                                    WHERE subexe.liv_cod = liv.liv_cod AND emp.emp_devolvido = 0) as emprestados,
+                                    (COUNT(exe.exe_cod) - (SELECT COUNT(*) FROM emprestimos emp 
+                                    INNER JOIN exemplares subexe ON emp.exe_cod = subexe.exe_cod            
+                                    WHERE subexe.liv_cod = liv.liv_cod AND emp.emp_devolvido = 0)) AS disponivel,
+
+                                CASE 
+                                WHEN liv.liv_ativo = 1 THEN 'Ativo'
+                                WHEN liv.liv_ativo = 0 THEN 'Inativo'
+                                END AS Status,
+
+                                FROM livros liv
+                                INNER JOIN editoras edt ON edt.edt_cod = liv.edt_cod
+                                INNER JOIN livros_autores lau ON lau.liv_cod = liv.liv_cod
+                                INNER JOIN autores aut ON aut.aut_cod = lau.aut_cod
+                                INNER JOIN livros_generos lge ON lge.liv_cod = liv.liv_cod
+                                INNER JOIN generos gen ON gen.gen_cod = lge.gen_cod 
+                                INNER JOIN exemplares exe ON liv.liv_cod = exe.liv_cod 
+
+                                ${whereClauses.length > 0 ? 'WHERE ' + whereClauses.join(' AND ') : ''}
+                                GROUP BY liv.liv_cod, liv.liv_nome, liv.liv_foto_capa, edt.edt_nome, edt.edt_foto, aut.aut_nome, aut.aut_foto
+                                ${havingClauses.length > 0 ? 'HAVING ' + havingClauses.join(' AND ') : ''}`;
+    
+            // Executa a consulta SQL
+            const livros = await db.query(sql, params);
+            const nItens = livros[0].length;
+    
+            const resultado = livros[0].map(livros => ({
+                ...livros,
+                liv_foto_capa: geraUrl(livros.liv_foto_capa)
+            }));
+    
+            return response.status(200).json({
+                sucesso: true,
+                mensagem: 'Lista de todos os livros (ativos e inativos).',
+                dados: resultado,
+                nItens
+            });
+        } catch (error) {
+            console.error('Erro na requisição:', error);  // Registra o erro para depuração
+            return response.status(500).json({
+                sucesso: false,
+                mensagem: 'Erro na requisição.',
+                dados: error.message
+            });
+        }
+    },    
 
     async cadastrarLivros(request, response) {
         try {
