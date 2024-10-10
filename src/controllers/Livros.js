@@ -46,6 +46,9 @@ module.exports = {
                 params.push(livPesq);
             }
 
+            // Adiciona cláusulas de ativo
+            whereClauses.push("liv.liv_ativo = 1");
+
             // Monta a consulta SQL dinamicamente com base nos critérios
             const sql = `SELECT liv.liv_cod, liv.liv_nome, liv.liv_foto_capa, liv.liv_desc, 
                                 edt.edt_cod, edt.edt_nome, edt.edt_foto, aut.aut_nome, aut.aut_foto,
