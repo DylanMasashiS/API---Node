@@ -16,7 +16,7 @@ module.exports = {
     async listarUsuarios(request, response) {
         try {
             // Extrair parâmetros de consulta para pesquisa e paginação
-            const { usu_rm, usu_nome, usu_tipo} = request.body;
+            const { usu_cod, usu_rm, usu_nome, usu_tipo} = request.body;
             const { page = 1, limit = 10 } = request.query;
 
             // Converter page e limit para números inteiros
@@ -46,8 +46,12 @@ module.exports = {
 
             // Adiciona cláusulas de pesquisa baseadas nos critérios fornecidos
             if (usu_rm) {
-                whereClauses.push("usu.usu_rm LIKE ?");
-                params.push(`%${usu_rm}%`);
+                whereClauses.push("usu.usu_rm = ?");
+                params.push(`${usu_rm}`);
+            }
+            if (usu_cod) {
+                whereClauses.push("usu.usu_cod = ?");
+                params.push(`${usu_cod}`);
             }
             if (usu_nome) {
                 whereClauses.push("usu.usu_nome LIKE ?");
@@ -90,8 +94,9 @@ module.exports = {
 
             // Executa a consulta SQL
             const [rows] = await db.query(sql, params); 
-            console.log(sql);
-            console.log(params);
+            // console.log(sql);
+            // console.log(params);
+            
 
             // Contar o total de itens (sem LIMIT e OFFSET) para calcular o total de páginas
             const countSql = `
