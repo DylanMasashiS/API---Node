@@ -50,7 +50,7 @@ router.post ('/liv_cadastrar', uploadsL.single('img'), livrosController.cadastra
 
 //CADASTRAR sem imagem
 router.post ('/exemplares', (exemplaresController.cadastrarExemplares));
-router.post ('/emprestimos', (emprestimosController.cadastrarEmprestimos));
+router.post ('/emp_cadastrar', (emprestimosController.cadastrarEmprestimos));
 router.post ('/recomendacao', (recomendacaoController.cadastrarRecomendacao));
 router.post ('/livros_autores', (livros_autoresController.cadastrarLivros_Autores));
 router.post ('/livros_generos', (livros_generosController.cadastrarLivros_Generos));

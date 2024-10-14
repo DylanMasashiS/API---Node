@@ -47,15 +47,13 @@ module.exports = {
 
             const values = [esc_nome, esc_endereco, esc_tel, esc_cel, esc_email, cont_cod];
             // executa instruções SQL e armazena o resultado na variável usuários
-            const contatos = await db.query(sql, values);
+            const atualizaDados = await db.query(sql, values);
             // armazena em uma variável o número de registros retornados
-            const nItens = contatos[0].length;
 
             return response.status(200).json({
                 sucesso: true,
                 mensagem: 'Lista dos Contatos atualizada com sucesso.',
-                dados: contatos[0],
-                nItens
+                dados: atualizaDados[0].affectedRows
             });
         } catch (error) {
             return response.status(500).json({
