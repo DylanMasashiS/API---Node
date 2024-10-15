@@ -134,7 +134,7 @@ module.exports = {
 
             return response.status(200).json({
                 sucesso: true,
-                mensagem: 'Cadastro da recomendação efetuada com sucesso.',
+                mensagem: `Recomendação ${rcm_cod} cadastrado com sucesso.`,
                 dados: rcm_cod
                 //mensSql: execSql
             });

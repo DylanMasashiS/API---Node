@@ -207,7 +207,7 @@ module.exports = {
 
             return response.status(200).json({
                 sucesso: true,
-                mensagem: 'Cadastro do usuário efetuado com sucesso. Aguarde a confirmação do administrador.',
+                mensagem: `Usuário ${usu_cod} cadastrado com sucesso. Aguarde a confirmação do administrador.`,
                 dados
                 //mensSql: execSql
             });

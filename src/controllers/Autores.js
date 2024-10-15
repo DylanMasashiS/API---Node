@@ -74,7 +74,7 @@ module.exports = {
 
             return response.status(200).json({
                 sucesso: true,
-                mensagem: 'Cadastro do autor efetuado com sucesso.',
+                mensagem: `Autor ${aut_cod} cadastrado com sucesso.`,
                 dados 
                 //mensSql: execSql
             });

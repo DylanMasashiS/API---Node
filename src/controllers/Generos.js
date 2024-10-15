@@ -74,7 +74,7 @@ module.exports = {
 
             return response.status(200).json({
                 sucesso: true,
-                mensagem: 'Cadastro do gênero efetuado com sucesso.',
+                mensagem: `Gênero ${gen_cod} cadastrado com sucesso.`,
                 dados
                 //mensSql: execSql
             });
