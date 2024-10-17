@@ -77,17 +77,17 @@ module.exports = {
                     usu.usu_senha, 
                     usu.usu_sexo, 
                     usu.usu_foto, 
-                    uc.ucu_cod,
-                    c.cur_cod, 
-                    c.cur_nome,
+                    ucu.ucu_cod,
+                    cur.cur_cod, 
+                    cur.cur_nome,
                     CASE WHEN usu.usu_ativo = 1 THEN 'Ativo' ELSE 'Inativo' END AS status_ativo, 
                     CASE WHEN usu.usu_aprovado = 0 THEN 'Não Aprovado' ELSE 'Aprovado' END AS status_aprovado, 
                     CASE WHEN usu.usu_tipo = 4 THEN 'Pendente' ELSE 'Outro Tipo' END AS status_tipo
                 FROM usuarios usu
-                INNER JOIN usuarios_cursos uc ON usu.usu_cod = uc.usu_cod
-                INNER JOIN cursos c ON uc.cur_cod = c.cur_cod
+                INNER JOIN usuarios_cursos ucu ON usu.usu_cod = ucu.usu_cod
+                INNER JOIN cursos cur ON cur.cur_cod = ucu.cur_cod
                 ${whereClauses.length ? 'WHERE ' + whereClauses.join(' AND ') : ''}
-                GROUP BY usu.usu_cod, uc.ucu_cod, c.cur_cod
+                GROUP BY usu.usu_cod, ucu.ucu_cod, cur.cur_cod
                 ORDER BY usu.usu_cod
                 LIMIT ? OFFSET ?
             `;
@@ -222,11 +222,13 @@ module.exports = {
 
     async listarUsuariosPendentes(request, response) {
         try {
-            const sqlUsP = `SELECT usu.usu_cod, usu.usu_nome, usu.usu_email, usu.usu_tipo, 
+            const sqlUsP = `SELECT usu.usu_cod, usu.usu_nome, usu.usu_rm, usu.usu_email, 
+                            cur.cur_cod, cur.cur_nome, usu.usu_tipo, 
                             usu.usu_ativo, usu.usu_aprovado, ucu.ucu_status, ucu.ucu_cod,
                             ucu.ucu_ativo, ucu.ucu_aprovado
                             FROM usuarios usu
                             INNER JOIN usuarios_cursos ucu ON usu.usu_cod = ucu.usu_cod
+                            INNER JOIN cursos cur ON cur.cur_cod = ucu.cur_cod
                             WHERE usu.usu_tipo = 4
                             AND usu.usu_ativo = 1
                             AND usu.usu_aprovado = 0
