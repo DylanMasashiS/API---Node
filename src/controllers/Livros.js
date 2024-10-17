@@ -5,7 +5,7 @@ const express = require('express');
 const router = express.Router();
 
 function geraUrl(liv_foto_capa) {
-    let img = liv_foto_capa ? liv_foto_capa : 'default.jpg';
+    let img = liv_foto_capa || 'default.jpg';
     if (!fs.existsSync('./public/uploads/CapaLivros/' + img)) {
         img = 'livros.jpg';
     }
