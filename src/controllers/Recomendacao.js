@@ -84,7 +84,7 @@ module.exports = {
             inner join generos gen on gen.gen_cod = lge.gen_cod
             inner join editoras edt on edt.edt_cod = liv.edt_cod
             ${whereClauses.length > 0 ? 'WHERE ' + whereClauses.join(' AND ') : ''}
-            GROUP BY liv.liv_cod, liv.liv_nome, liv.liv_foto_capa, edt.edt_nome, 
+            GROUP BY rec.rcm_cod, liv.liv_cod, liv.liv_nome, liv.liv_foto_capa, edt.edt_nome, 
             edt.edt_foto, aut.aut_nome, aut.aut_foto, gen.gen_nome, gen.gen_foto,
             cur.cur_nome, cur.cur_cod
             ${havingClauses.length > 0 ? 'HAVING ' + havingClauses.join(' AND ') : ''}`;

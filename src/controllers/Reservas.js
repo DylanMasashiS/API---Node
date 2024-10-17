@@ -30,7 +30,7 @@ module.exports = {
                         INNER JOIN livros_generos lge ON lge.liv_cod = liv.liv_cod
                         INNER JOIN generos gen ON gen.gen_cod = lge.gen_cod
                         WHERE usu.usu_cod = ? AND usu_ativo = 1
-                        GROUP BY emp.emp_cod`;
+                        ORDER BY emp.emp_data_emp`;
 
                         const values = [usu_cod];
 

@@ -220,62 +220,117 @@ module.exports = {
         }
     },
 
-    async analizarUsuariosCursos (request, response) {
-        try {    
-        const { usu_tipo, usu_ativo, usu_aprovado, usu_cod, ucu_status, ucu_ativo, ucu_aprovado, ucu_cod } = request.body; 
+    async listarUsuariosPendentes(request, response) {
+        try {
+            const sqlUsP = `SELECT usu.usu_cod, usu.usu_nome, usu.usu_email, usu.usu_tipo, 
+                            usu.usu_ativo, usu.usu_aprovado, ucu.ucu_status, ucu.ucu_cod,
+                            ucu.ucu_ativo, ucu.ucu_aprovado
+                            FROM usuarios usu
+                            INNER JOIN usuarios_cursos ucu ON usu.usu_cod = ucu.usu_cod
+                            WHERE usu.usu_tipo = 4
+                            AND usu.usu_ativo = 1
+                            AND usu.usu_aprovado = 0
+                            AND ucu.ucu_status = 0; `;
 
-        // Verifique se o novo_tipo é válido (supondo que os tipos válidos são 0, 1 e 2)
-        const tiposValidos = [0, 1, 2];
-        if (!tiposValidos.includes(usu_tipo)) {
-            return response.status(400).json({
-                sucesso: false,
-                mensagem: 'Tipo inválido. Deve ser 0, 1 ou 2.',
+            const [usuariosPendentes] = await db.query(sqlUsP)
+            // Converte campos de Buffer para número
+            const usuariosConvertidos = usuariosPendentes.map(usuario => ({
+                ...usuario,
+                usu_ativo: usuario.usu_ativo[0], // Converte Buffer para número
+                usu_aprovado: usuario.usu_aprovado[0], // Converte Buffer para número
+                ucu_status: usuario.ucu_status[0], // Converte Buffer para número
+                ucu_ativo: usuario.ucu_ativo[0], // Converte Buffer para número
+                ucu_aprovado: usuario.ucu_aprovado[0], // Converte Buffer para número
+            }));
+                
+            return response.status(200).json({
+                sucesso: true,
+                mensagem: 'Usuários pendentes recuperados com sucesso',
+                dados: usuariosConvertidos
             });
-        }
-
-        //ucu_status: 0 = pendente, 1 = analisado (Para mostrar as solicitações pendentes de usuarios_cursos)
-        //ucu_ativo: 0 = inativo, 1 = ativo (Para mostrar os cursos desativados de alunos ou professores, uma vez que pode haver erro)
-        //ucu_aprovado: 0 = não aprovado, 1 = aprovado (Para mostrar os cursos de alunos ou professores que não foram aprovados)
-
-        // execução da primeira instrução sql passando os parâmetros dos usuários
-        const sqlUsuarios =       
-                    `UPDATE usuarios
-                        SET usu_tipo     = ?, 
-                            usu_ativo    = ?, 
-                            usu_aprovado = ?
-                      WHERE usu_cod = ?;`;
-
-        const values = [usu_tipo, usu_ativo, usu_aprovado, usu_cod];
-        const result = await db.query(sqlUsuarios, values);
-
-        // execução da próxima instrução sql passando os parâmetros dos cursos
-        const sqlCursos =       
-                    `UPDATE usuarios_cursos
-                        SET ucu_status   = ?, 
-                            ucu_ativo    = ?, 
-                            ucu_aprovado = ?
-                      WHERE ucu_cod = ?;`;
-
-        const valores = [ucu_status, ucu_ativo, ucu_aprovado, ucu_cod ];
-        const resultado = await db.query(sqlCursos, valores);
-
-        return response.status(200).json({
-            sucesso: true,
-            mensagem: `Usuário ${usu_cod} analizado com sucesso`,
-            dados: {
-                usuariosAtualizados: result[0].affectedRows,
-                cursosAtualizados: resultado[0].affectedRows
-            }
-        });
-
-        } catch (error) {
-            return response.status(500).json({
-                sucesso: false,
-                mensagem: 'Erro na requisição.',
-                dados: error.message
+            } catch (error) {
+                return response.status(500).json({
+                    sucesso: false,
+                    mensagem: 'Erro ao recuperar usuários pendentes.',
+                    dados: error.message
             });
         }
     },
+
+    async analizarUsuariosCursos(request, response) {
+        try {
+          const usuarios = request.body.usuarios; // Expectando um array de usuários
+      
+          // Resposta padrão
+          const resultadoFinal = {
+            sucesso: true,
+            mensagem: '',
+            dados: {},
+          };
+      
+          for (const usuario of usuarios) {
+            const { usu_tipo, usu_ativo, usu_aprovado, usu_cod, ucu_status, ucu_ativo, ucu_aprovado, ucu_cod } = usuario;
+      
+            //ucu_status: 0 = pendente, 1 = analisado (Para mostrar as solicitações pendentes de usuarios_cursos)
+            //ucu_ativo: 0 = inativo, 1 = ativo (Para mostrar os cursos desativados de alunos ou professores, uma vez que pode haver erro)
+            //ucu_aprovado: 0 = não aprovado, 1 = aprovado (Para mostrar os cursos de alunos ou professores que não foram aprovados)
+            //usu_ativo: 0 = pendente, 1 = aprovado (Para mostrar os usuários pendentes de aprovação)
+            //usu_aprovado: 0 = não aprovado, 1 = aprovado (Para mostrar os usuários que não foram aprovados)
+            //usu_tipo: 0 = aluno, 1 = professor, 2 = funcionario, 3 = manutenção, 4 = pendente, 5 = reprovado.
+            
+            // Verifique se o novo tipo é válido
+            const tiposValidos = [0, 1, 2];
+            if (!tiposValidos.includes(usu_tipo)) {
+              return response.status(400).json({
+                sucesso: false,
+                mensagem: `Tipo inválido para o usuário ${usu_cod}. Deve ser 0, 1 ou 2.`,
+              });
+            }
+      
+            // Atualização dos usuários
+            const sqlUsuarios =       
+              `UPDATE usuarios
+               SET usu_tipo     = ?, 
+                   usu_ativo    = ?, 
+                   usu_aprovado = ?
+               WHERE usu_cod = ?;`;
+      
+            const values = [usu_tipo, usu_ativo, usu_aprovado, usu_cod];
+            const result = await db.query(sqlUsuarios, values);
+      
+            // Atualização dos cursos
+            const sqlCursos =       
+              `UPDATE usuarios_cursos
+               SET ucu_status   = ?, 
+                   ucu_ativo    = ?, 
+                   ucu_aprovado = ?
+               WHERE ucu_cod = ?;`;
+      
+            const valores = [ucu_status, ucu_ativo, ucu_aprovado, ucu_cod];
+            const resultado = await db.query(sqlCursos, valores);
+      
+            // Adicionar informação ao resultado final
+            resultadoFinal.dados[usu_cod] = {
+              usuariosAtualizados: result[0].affectedRows,
+              cursosAtualizados: resultado[0].affectedRows,
+            };
+          }
+      
+          resultadoFinal.mensagem = 'Usuários analisados com sucesso';
+          return response.status(200).json(resultadoFinal);
+      
+        } catch (error) {
+          return response.status(500).json({
+            sucesso: false,
+            mensagem: 'Erro na requisição.',
+            dados: error.message,
+          });
+        }
+      },
+      
+            
+
+  
     async editarPerfil(request, response) {
         try {
             // parâmetros recebidos pelo corpo da requisição

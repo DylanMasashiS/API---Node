@@ -49,6 +49,8 @@ router.post ('/editoras', uploadsE.single('img'), editorasController.cadastrarEd
 router.post ('/liv_cadastrar', uploadsL.single('img'), livrosController.cadastrarLivros);
 
 //CADASTRAR sem imagem
+router.post ('/usu_login', (usuariosController.loginUsuarios));
+router.post ('/usu_pendentes', (usuariosController.listarUsuariosPendentes));
 router.post ('/exemplares', (exemplaresController.cadastrarExemplares));
 router.post ('/emp_cadastrar', (emprestimosController.cadastrarEmprestimos));
 router.post ('/recomendacao', (recomendacaoController.cadastrarRecomendacao));
@@ -72,10 +74,9 @@ router.patch ('/livros_generos/:lge_cod', (livros_generosController.editarLivros
 router.patch ('/usuarios_cursos/:ucu_cod', (usuarios_cursosController.editarUsuarios_Cursos));
 
 //UPDATE Personalizado
-router.post ('/usu_login', (usuariosController.loginUsuarios));
 router.patch ('/usu_ocultar', (usuariosController.ocultarUsuarios));
 router.patch ('/emp_renovar/:emp_cod', (emprestimosController.renovarEmprestimos));
-router.patch ('/analizarUcu/:usu_cod', (usuariosController.analizarUsuariosCursos)); 
+router.patch ('/analizarUcu', (usuariosController.analizarUsuariosCursos)); 
 router.patch ('/liv_inativar', (livrosController.inativarLivros));
 
 //DELETE ou EXCLUIR

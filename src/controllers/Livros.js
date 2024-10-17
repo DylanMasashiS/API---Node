@@ -77,7 +77,7 @@ module.exports = {
                                 ${whereClauses.length > 0 ? 'WHERE ' + whereClauses.join(' AND ') : ''}
                                 AND exe.exe_data_saida IS NULL
                                 GROUP BY liv.liv_cod, liv.liv_nome, liv.liv_foto_capa, edt.edt_nome, 
-                                edt.edt_foto, aut.aut_nome, aut.aut_foto
+                                edt.edt_foto, aut.aut_nome, aut.aut_foto, aut.aut_cod
                                 ${havingClauses.length > 0 ? 'HAVING ' + havingClauses.join(' AND ') : ''}`;
 
             // Executa a consulta SQL
