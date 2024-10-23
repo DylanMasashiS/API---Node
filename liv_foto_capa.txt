@@ -1,1 +1,0 @@
-ALTER TABLE livros MODIFY liv_foto_capa varchar(256) NULL;

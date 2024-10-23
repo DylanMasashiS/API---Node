@@ -1,6 +1,6 @@
 const db = require('../database/connection');
 const fs = require('fs-extra');
-
+const { compare } = require('bcrypt');
 const express = require('express');
 const router = express.Router();
 
@@ -16,7 +16,7 @@ module.exports = {
     async listarUsuarios(request, response) {
         try {
             // Extrair parâmetros de consulta para pesquisa e paginação
-            const { usu_cod, usu_rm, usu_nome, usu_tipo} = request.body;
+            const { usu_cod, usu_rm, usu_nome, usu_tipo } = request.body;
             const { page = 1, limit = 10 } = request.query;
 
             // Converter page e limit para números inteiros
@@ -62,7 +62,7 @@ module.exports = {
                 params.push(usu_tipo);
             }
 
-	     // Adicionar LIMIT e OFFSET aos parâmetros
+            // Adicionar LIMIT e OFFSET aos parâmetros
             params.push(limitNum);
             params.push(offset);
             console.log(params);
@@ -93,10 +93,10 @@ module.exports = {
             `;
 
             // Executa a consulta SQL
-            const [rows] = await db.query(sql, params); 
+            const [rows] = await db.query(sql, params);
             // console.log(sql);
             // console.log(params);
-            
+
 
             // Contar o total de itens (sem LIMIT e OFFSET) para calcular o total de páginas
             const countSql = `
@@ -161,6 +161,8 @@ module.exports = {
             // parâmetros recebidos no corpo da requisição
             const { usu_rm, usu_nome, usu_email, usu_senha, usu_tipo = 4, usu_sexo, usu_ativo = 1, usu_aprovado = 0, cur_cod, ucu_status, ucu_ativo, ucu_aprovado } = request.body;
 
+            const senhaHash = await bcrypt.hash(usu_senha, 10);
+
             // instrução SQL
             const sql = `
                             INSERT INTO usuarios 
@@ -169,12 +171,12 @@ module.exports = {
                             (?, ?, ?, ?, ?, ?, ?, ?);
                         `;
             // definição dos dados a serem inseridos em um array
-            const values = [usu_rm, usu_nome, usu_email, usu_senha, usu_tipo, usu_sexo, usu_ativo, usu_aprovado ];
+            const values = [usu_rm, usu_nome, usu_email, senhaHash, usu_tipo, usu_sexo, usu_ativo, usu_aprovado];
 
             // execução da instrução sql passando os parâmetros
             const execSql = await db.query(sql, values);
             // identificação do ID do registro inserido
-            const usu_cod = execSql[0].insertId; 
+            const usu_cod = execSql[0].insertId;
 
             // relaciona o usuário com o curso
             const sqlUsuCurso = `
@@ -183,25 +185,39 @@ module.exports = {
                         VALUES (?, ?, ?, ?, ?);
                         `;
             // definição dos dados a serem inseridos em um array
-            const valuesUsuCurso = [usu_cod, cur_cod, ucu_status, ucu_ativo, ucu_aprovado ];
+            const valuesUsuCurso = [usu_cod, cur_cod, ucu_status, ucu_ativo, ucu_aprovado];
 
             // execução da instrução sql passando os parâmetros
             const execSqlUsuCurso = await db.query(sqlUsuCurso, valuesUsuCurso);
+
+            const ucu_cod = execSqlUsuCurso[0].insertId;
+
+            // Execução da instrução SQL para usuários_cursos
+            try {
+                await db.query(sqlUsuCurso, valuesUsuCurso);
+            } catch (cursoError) {
+                return response.status(500).json({
+                    sucesso: false,
+                    mensagem: 'Erro ao associar o usuário ao curso.',
+                    dados: cursoError.message
+                });
+            }
 
             const dados = {
                 usu_cod,
                 usu_rm,
                 usu_nome,
                 usu_email,
-                usu_senha, 
-                usu_tipo, 
+                usu_senha,
+                usu_tipo,
                 usu_sexo,
                 usu_foto: '/public/uploads/FotoUsuarios/usuarios.jpg',
-                usu_ativo, 
-                usu_aprovado, 
+                usu_ativo,
+                usu_aprovado,
                 cur_cod,
-                ucu_status, 
-                ucu_ativo, 
+                ucu_cod,
+                ucu_status,
+                ucu_ativo,
                 ucu_aprovado
             };
 
@@ -244,95 +260,95 @@ module.exports = {
                 ucu_ativo: usuario.ucu_ativo[0], // Converte Buffer para número
                 ucu_aprovado: usuario.ucu_aprovado[0], // Converte Buffer para número
             }));
-                
+
             return response.status(200).json({
                 sucesso: true,
                 mensagem: 'Usuários pendentes recuperados com sucesso',
                 dados: usuariosConvertidos
             });
-            } catch (error) {
-                return response.status(500).json({
-                    sucesso: false,
-                    mensagem: 'Erro ao recuperar usuários pendentes.',
-                    dados: error.message
+        } catch (error) {
+            return response.status(500).json({
+                sucesso: false,
+                mensagem: 'Erro ao recuperar usuários pendentes.',
+                dados: error.message
             });
         }
     },
 
     async analizarUsuariosCursos(request, response) {
         try {
-          const usuarios = request.body.usuarios; // Expectando um array de usuários
-      
-          // Resposta padrão
-          const resultadoFinal = {
-            sucesso: true,
-            mensagem: '',
-            dados: {},
-          };
-      
-          for (const usuario of usuarios) {
-            const { usu_tipo, usu_ativo, usu_aprovado, usu_cod, ucu_status, ucu_ativo, ucu_aprovado, ucu_cod } = usuario;
-      
-            //ucu_status: 0 = pendente, 1 = analisado (Para mostrar as solicitações pendentes de usuarios_cursos)
-            //ucu_ativo: 0 = inativo, 1 = ativo (Para mostrar os cursos desativados de alunos ou professores, uma vez que pode haver erro)
-            //ucu_aprovado: 0 = não aprovado, 1 = aprovado (Para mostrar os cursos de alunos ou professores que não foram aprovados)
-            //usu_ativo: 0 = pendente, 1 = aprovado (Para mostrar os usuários pendentes de aprovação)
-            //usu_aprovado: 0 = não aprovado, 1 = aprovado (Para mostrar os usuários que não foram aprovados)
-            //usu_tipo: 0 = aluno, 1 = professor, 2 = funcionario, 3 = manutenção, 4 = pendente, 5 = reprovado.
-            
-            // Verifique se o novo tipo é válido
-            const tiposValidos = [0, 1, 2];
-            if (!tiposValidos.includes(usu_tipo)) {
-              return response.status(400).json({
-                sucesso: false,
-                mensagem: `Tipo inválido para o usuário ${usu_cod}. Deve ser 0, 1 ou 2.`,
-              });
-            }
-      
-            // Atualização dos usuários
-            const sqlUsuarios =       
-              `UPDATE usuarios
+            const usuarios = request.body.usuarios; // Expectando um array de usuários
+
+            // Resposta padrão
+            const resultadoFinal = {
+                sucesso: true,
+                mensagem: '',
+                dados: {},
+            };
+
+            for (const usuario of usuarios) {
+                const { usu_tipo, usu_ativo, usu_aprovado, usu_cod, ucu_status, ucu_ativo, ucu_aprovado, ucu_cod } = usuario;
+
+                //ucu_status: 0 = pendente, 1 = analisado (Para mostrar as solicitações pendentes de usuarios_cursos)
+                //ucu_ativo: 0 = inativo, 1 = ativo (Para mostrar os cursos desativados de alunos ou professores, uma vez que pode haver erro)
+                //ucu_aprovado: 0 = não aprovado, 1 = aprovado (Para mostrar os cursos de alunos ou professores que não foram aprovados)
+                //usu_ativo: 0 = pendente, 1 = aprovado (Para mostrar os usuários pendentes de aprovação)
+                //usu_aprovado: 0 = não aprovado, 1 = aprovado (Para mostrar os usuários que não foram aprovados)
+                //usu_tipo: 0 = aluno, 1 = professor, 2 = funcionario, 3 = manutenção, 4 = pendente, 5 = reprovado.
+
+                // Verifique se o novo tipo é válido
+                const tiposValidos = [0, 1, 2];
+                if (!tiposValidos.includes(usu_tipo)) {
+                    return response.status(400).json({
+                        sucesso: false,
+                        mensagem: `Tipo inválido para o usuário ${usu_cod}. Deve ser 0, 1 ou 2.`,
+                    });
+                }
+
+                // Atualização dos usuários
+                const sqlUsuarios =
+                    `UPDATE usuarios
                SET usu_tipo     = ?, 
                    usu_ativo    = ?, 
                    usu_aprovado = ?
                WHERE usu_cod = ?;`;
-      
-            const values = [usu_tipo, usu_ativo, usu_aprovado, usu_cod];
-            const result = await db.query(sqlUsuarios, values);
-      
-            // Atualização dos cursos
-            const sqlCursos =       
-              `UPDATE usuarios_cursos
+
+                const values = [usu_tipo, usu_ativo, usu_aprovado, usu_cod];
+                const result = await db.query(sqlUsuarios, values);
+
+                // Atualização dos cursos
+                const sqlCursos =
+                    `UPDATE usuarios_cursos
                SET ucu_status   = ?, 
                    ucu_ativo    = ?, 
                    ucu_aprovado = ?
                WHERE ucu_cod = ?;`;
-      
-            const valores = [ucu_status, ucu_ativo, ucu_aprovado, ucu_cod];
-            const resultado = await db.query(sqlCursos, valores);
-      
-            // Adicionar informação ao resultado final
-            resultadoFinal.dados[usu_cod] = {
-              usuariosAtualizados: result[0].affectedRows,
-              cursosAtualizados: resultado[0].affectedRows,
-            };
-          }
-      
-          resultadoFinal.mensagem = 'Usuários analisados com sucesso';
-          return response.status(200).json(resultadoFinal);
-      
-        } catch (error) {
-          return response.status(500).json({
-            sucesso: false,
-            mensagem: 'Erro na requisição.',
-            dados: error.message,
-          });
-        }
-      },
-      
-            
 
-  
+                const valores = [ucu_status, ucu_ativo, ucu_aprovado, ucu_cod];
+                const resultado = await db.query(sqlCursos, valores);
+
+                // Adicionar informação ao resultado final
+                resultadoFinal.dados[usu_cod] = {
+                    usuariosAtualizados: result[0].affectedRows,
+                    cursosAtualizados: resultado[0].affectedRows,
+                };
+            }
+
+            resultadoFinal.mensagem = 'Usuários analisados com sucesso';
+            return response.status(200).json(resultadoFinal);
+
+        } catch (error) {
+            return response.status(500).json({
+                sucesso: false,
+                mensagem: 'Erro na requisição.',
+                dados: error.message,
+            });
+        }
+    },
+
+
+
+
     async editarPerfil(request, response) {
         try {
             // parâmetros recebidos pelo corpo da requisição
@@ -348,7 +364,7 @@ module.exports = {
             const values = [usu_nome, usu_social, usu_email, usu_senha, usu_tipo, usu_sexo, usu_ativo, usu_cod];
             // execução e obtenção de confirmação da atualização realizada
             const atualizaDados = await db.query(sql, values);
-            
+
             return response.status(200).json({
                 sucesso: true,
                 mensagem: `Usuário ${usu_cod} atualizado com sucesso!`,
@@ -391,44 +407,58 @@ module.exports = {
     },
     async loginUsuarios(request, response) {
         try {
-
             const { usu_email_rm, usu_senha } = request.body;
 
             const sql = ` SELECT usu.usu_cod, 
-                                 usu.usu_nome, 
-                                 usu.usu_rm,
-                                 usu.usu_tipo, 
-                                  usu.usu_ativo = 1 as usu_ativo, 
-                                 usu.usu_email, 
-                                 usu.usu_senha, 
-                                 cur.cur_cod, 
-                                 cur.cur_nome
-                            FROM usuarios usu
-                      LEFT JOIN usuarios_cursos ucu on ucu.usu_cod = usu.usu_cod
-                      LEFT JOIN cursos cur on cur.cur_cod = ucu.cur_cod
-                           WHERE (   usu.usu_email = ?
-                                  OR usu.usu_rm    = ?)
-                             AND usu.usu_senha     = ?
-                             AND usu.usu_aprovado  = 1`;
+                                usu.usu_nome, 
+                                usu.usu_rm,
+                                usu.usu_tipo, 
+                                usu.usu_ativo = 1 as usu_ativo, 
+                                usu.usu_email, 
+                                usu.usu_senha, 
+                                cur.cur_cod, 
+                                cur.cur_nome
+                           FROM usuarios usu
+                     LEFT JOIN usuarios_cursos ucu on ucu.usu_cod = usu.usu_cod
+                     LEFT JOIN cursos cur on cur.cur_cod = ucu.cur_cod
+                          WHERE (   usu.usu_email = ?
+                                 OR usu.usu_rm    = ?)
+                            AND usu.usu_aprovado  = 1`;
 
-            const values = [usu_email_rm, usu_email_rm, usu_senha];
+            const values = [usu_email_rm, usu_email_rm];
 
-            const usuarios = await db.query(sql, values);
-            const nItens = usuarios[0].length;
+            // Executando a consulta
+            const result = await db.query(sql, values);
+            const usuarios = result[0];
 
-            if (nItens < 1) {
+            // Verificando se o usuário existe
+            if (usuarios.length < 1) {
                 return response.status(403).json({
                     sucesso: false,
-                    mensagem: 'Login e/ou senha inválido.',
+                    mensagem: 'Usuário inválido.',
                     dados: null,
                 });
             }
-            // fazendo login
+
+            // Comparando a senha fornecida com o hash no banco de dados
+            const usuario = usuarios[0];
+            const senhaValida = await bcrypt.compare(usu_senha, usuario.usu_senha);
+
+            if (!senhaValida) {
+                return response.status(403).json({
+                    sucesso: false,
+                    mensagem: 'Senha inválida.',
+                    dados: null,
+                });
+            }
+
+            // Login bem-sucedido
             return response.status(200).json({
                 sucesso: true,
                 mensagem: 'Login efetuado com sucesso',
-                dados: usuarios[0]
+                dados: usuario
             });
+
         } catch (error) {
             return response.status(500).json({
                 sucesso: false,
@@ -436,6 +466,6 @@ module.exports = {
                 dados: error.message
             });
         }
-    },
+    }
 }
 

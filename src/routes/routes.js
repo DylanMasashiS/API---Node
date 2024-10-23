@@ -4,7 +4,7 @@ const router = express.Router();
 const uploadsA = require ('../middlewares/upImgAutores');
 const uploadsG = require ('../middlewares/upImgGeneros');
 const uploadsE = require ('../middlewares/upImgEditoras');
-const uploadsU = require ('../middlewares/upImgUsuarios');
+// const uploadsU = require ('../middlewares/upImgUsuarios');
 const uploadsL = require ('../middlewares/upImgLivros');
 
 const usuariosController = require ('../controllers/Usuarios');
@@ -21,7 +21,7 @@ const livros_autoresController = require ('../controllers/Livros_autores');
 const livros_generosController = require ('../controllers/Livros_generos');
 const reservasController = require ('../controllers/Reservas');
 const contatosController = require ('../controllers/Contatos');
-// const senhaController = require('../controllers/Senha');
+const senhaController = require('../controllers/Senhas');
 
 //LISTAR sem pesquisa
 router.get ('/autores', (autoresController.listarAutores));
@@ -31,6 +31,7 @@ router.get ('/exemplares', (exemplaresController.listarExemplares));
 router.get ('/livros_autores', (livros_autoresController.listarLivros_Autores));
 router.get ('/livros_generos', (livros_generosController.listarLivros_Generos));
 router.get ('/usuarios_cursos', (usuarios_cursosController.listarUsuarios_Cursos));
+router.get ('/form_senha/:token', senhaController.FormRedefinicao);
 
 //LISTAR com pesquisa
 router.post ('/usuarios', (usuariosController.listarUsuarios));
@@ -59,8 +60,8 @@ router.post ('/recomendacao', (recomendacaoController.cadastrarRecomendacao));
 router.post ('/livros_autores', (livros_autoresController.cadastrarLivros_Autores));
 router.post ('/livros_generos', (livros_generosController.cadastrarLivros_Generos));
 router.post ('/usuarios_cursos', (usuarios_cursosController.cadastrarUsuarios_Cursos));
-// router.post('/esquecer_senha', (senhaController.esquecerSenha));
-// router.post('/recuperar_senha', (senhaController.redefinirSenha));
+router.post ('/solicitar_senha', (senhaController.solRedSenha));
+router.post ('/redefinir_senha', (senhaController.redefinirSenha));
 
 //UPDATE normal
 router.patch ('/livros/:liv_cod', (livrosController.editarLivros));

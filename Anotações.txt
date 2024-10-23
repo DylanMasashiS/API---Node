@@ -1,0 +1,11 @@
+ALTER TABLE livros MODIFY liv_foto_capa varchar(256) NULL; - Verificar se está NULL msm.
+
+CREATE TABLE reset_tokens (
+    token_cod INT AUTO_INCREMENT PRIMARY KEY, -- Chave primária
+    usu_email VARCHAR(50) NOT NULL, -- E-mail do usuário relacionado ao token
+    token VARCHAR(255) NOT NULL, -- Token gerado para a redefinição de senha
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Data de criação do token
+    expired_at TIMESTAMP DEFAULT NULL, -- Data de expiração do token (opcional)
+    FOREIGN KEY (usu_email) REFERENCES usuarios(usu_email) -- Chave estrangeira referenciando o e-mail da tabela usuarios
+        ON DELETE CASCADE -- Se o usuário for deletado, os tokens também serão deletados
+);
