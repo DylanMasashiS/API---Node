@@ -74,7 +74,8 @@ module.exports = {
             ) AS disponivel
              
             from recomendacao rec
-            inner join cursos cur on cur.cur_cod = rec.cur_cod
+            inner join usuarios_cursos ucu on ucu.usu_cod = rec.usu_cod
+            inner join cursos cur on cur.cur_cod = ucu.cur_cod
             inner join livros liv on liv.liv_cod = rec.liv_cod
             inner join exemplares exe on exe.liv_cod = liv.liv_cod 
             inner join usuarios usu on usu.usu_cod = rec.usu_cod 
@@ -86,7 +87,7 @@ module.exports = {
             ${whereClauses.length > 0 ? 'WHERE ' + whereClauses.join(' AND ') : ''}
             GROUP BY rec.rcm_cod, liv.liv_cod, liv.liv_nome, liv.liv_foto_capa, edt.edt_nome, 
             edt.edt_foto, aut.aut_nome, aut.aut_foto, gen.gen_nome, gen.gen_foto,
-            cur.cur_nome, cur.cur_cod
+            cur.cur_nome, cur.cur_cod, usu.usu_nome
             ${havingClauses.length > 0 ? 'HAVING ' + havingClauses.join(' AND ') : ''}`;
 
             // AND exe.exe_data_saida IS NULL
