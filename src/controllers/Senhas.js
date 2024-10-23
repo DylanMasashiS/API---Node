@@ -27,7 +27,7 @@ module.exports = {
             await db.query(sqlToken, [usu_email, token]);
 
             // Enviar o e-mail com o token
-            const resetLink = `${process.env.DOMINIO}/resetar_senha/${token}`;
+            const resetLink = `${process.env.DOMINIO}/form_senha/${token}`;
             await sendEmail({
                 from: process.env.EMAIL_USER,
                 to: usu_email,
