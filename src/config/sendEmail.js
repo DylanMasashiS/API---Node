@@ -6,11 +6,12 @@ const nodemailer = require('nodemailer');
 const smtp = nodemailer.createTransport({
   host: process.env.MAIL_HOST,
   port: process.env.MAIL_PORT,
-  secure: process.env.MAIL_PORT, // true para porta 465 (SSL), false para outras
+  secure: process.env.MAIL_PORT === '465', // true para porta 465 (SSL), false para outras
   auth: {
     user: process.env.EMAIL_USER,
     pass: process.env.EMAIL_PASS
-  }
+  },
+  connectionTimeout: 10000 // 10 segundos para timeout
 });
 
 // Função para enviar email
