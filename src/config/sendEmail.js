@@ -1,30 +1,50 @@
+// Carregar variáveis de ambiente
 require('dotenv').config();
 const nodemailer = require('nodemailer');
 
-// Configurando o transporte de e-mail
+// Configurar transporte de e-mail
 const smtp = nodemailer.createTransport({
   host: process.env.MAIL_HOST,
   port: process.env.MAIL_PORT,
-  secure: process.env.MAIL_PORT === '465', // true para porta 465, false para outras
+  secure: process.env.MAIL_PORT, // true para porta 465 (SSL), false para outras
   auth: {
     user: process.env.EMAIL_USER,
     pass: process.env.EMAIL_PASS
   }
 });
 
-// Função para enviar o email
+// Função para enviar email
 const sendEmail = (configEmail) => {
-    return new Promise((resolve, reject) => {
-        smtp.sendMail(configEmail)
-            .then(result => {
-                console.log('Email enviado:', result);
-                resolve(result);
-            })
-            .catch(error => {
-                console.error('Erro ao enviar email:', error);
-                reject(error);
-            });
-    });
+  return new Promise((resolve, reject) => {
+    smtp.sendMail(configEmail)
+      .then(result => {
+        console.log('Email enviado com sucesso:', result);
+        resolve(result);
+      })
+      .catch(error => {
+        console.error('Erro ao enviar email:', error);
+        reject(error);
+      });
+  });
 };
 
+// Configurações do email que será enviado
+const configEmail = {
+  from: `"Seu Nome ou App" <${process.env.EMAIL_USER}>`, // remetente
+  to: 'destinatario@gmail.com', // destinatário
+  subject: 'Assunto do email', // assunto
+  text: 'Texto simples do email', // corpo do email em texto puro
+  html: '<b>Corpo do email em HTML</b>' // corpo do email em HTML
+};
+
+// Chamar a função para enviar o email
+sendEmail(configEmail)
+  .then(result => {
+    console.log('Email enviado com sucesso:', result);
+  })
+  .catch(error => {
+    console.error('Erro ao enviar email:', error);
+  });
+
+// Exportando a função para que outros arquivos possam utilizá-la
 module.exports = { sendEmail };
