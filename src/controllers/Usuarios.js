@@ -1,6 +1,5 @@
 const db = require('../database/connection');
 const fs = require('fs-extra');
-const { compare } = require('bcrypt');
 const express = require('express');
 const router = express.Router();
 
