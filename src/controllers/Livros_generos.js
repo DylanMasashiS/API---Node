@@ -11,8 +11,8 @@ module.exports = {
             const {lge_cod} = request.body;
             // instruções SQL
             const sql = `SELECT 
-                lge_cod, gen_cod, liv_cod FROM livros_generos
-                WHERE lge_cod = ?;`;
+                lge_cod, gen_cod, liv_cod from livros_generos
+                where lge_cod = ?;`;
 
             const values = [lge_cod];
             // executa instruções SQL e armazena o resultado na variável usuários
@@ -51,7 +51,7 @@ module.exports = {
 
             return response.status(200).json({
                 sucesso: true,
-                mensagem: `Livros e Gêneros ${lge_cod} efetuado com sucesso.`,
+                mensagem: 'Cadastro de Livros e seus Gêneros efetuado com sucesso.',
                 dados: lge_cod
                 //mensSql: execSql
             });

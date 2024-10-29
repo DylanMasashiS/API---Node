@@ -72,7 +72,7 @@ module.exports = {
 
             return response.status(200).json({
                 sucesso: true,
-                mensagem: `Editora ${edt_cod} cadastrado com sucesso.`,
+                mensagem: 'Cadastro da editora efetuado com sucesso.',
                 dados
                 //mensSql: execSql
             });
