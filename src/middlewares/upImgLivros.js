@@ -1,12 +1,4 @@
-const multer = require('multer');
-const fs = require('fs');
-
-// Define o caminho onde as imagens serão armazenadas
-const path = './public/uploads/CapaLivros/';
-// Verifica se o diretório existe e cria se não existir
-if (!fs.existsSync(path)) {
-    fs.mkdirSync(path, { recursive: true });
-}
+const multer = require('multer'); 
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb)  {
