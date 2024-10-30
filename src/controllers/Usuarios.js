@@ -436,16 +436,7 @@ module.exports = {
 
             // Comparando a senha fornecida com o hash no banco de dados
             const usuario = usuarios[0];
-            const senhaValida = await bcrypt.compare(usu_senha, usuario.usu_senha);
-
-            if (!senhaValida) {
-                return response.status(403).json({
-                    sucesso: false,
-                    mensagem: 'Senha inválida.',
-                    dados: null,
-                });
-            }
-
+        
             // Login bem-sucedido
             return response.status(200).json({
                 sucesso: true,
