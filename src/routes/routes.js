@@ -41,6 +41,7 @@ router.post ('/liv_gerenciar', (livrosController.gerenciarLivros))
 router.post ('/emprestimos', (emprestimosController.listarEmprestimos));
 router.post ('/rec_listar', (recomendacaoController.listarRecomendacao));
 
+
 //CADASTRAR com imagem
 router.post ('/cursos', (cursosController.cadastrarCursos));
 router.post ('/usuarios', usuariosController.cadastrarUsuarios);

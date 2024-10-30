@@ -64,7 +64,6 @@ module.exports = {
             // Adicionar LIMIT e OFFSET aos parâmetros
             params.push(limitNum);
             params.push(offset);
-            console.log(params);
             // Instruções SQL com junção das tabelas usuarios, usuarios_cursos e cursos
             const sql = `
                 SELECT 
@@ -77,16 +76,16 @@ module.exports = {
                     usu.usu_sexo, 
                     usu.usu_foto, 
                     uc.ucu_cod,
-                    c.cur_cod, 
-                    c.cur_nome,
+                    cur.cur_cod, 
+                    cur.cur_nome,
                     CASE WHEN usu.usu_ativo = 1 THEN 'Ativo' ELSE 'Inativo' END AS status_ativo, 
                     CASE WHEN usu.usu_aprovado = 0 THEN 'Não Aprovado' ELSE 'Aprovado' END AS status_aprovado, 
                     CASE WHEN usu.usu_tipo = 4 THEN 'Pendente' ELSE 'Outro Tipo' END AS status_tipo
                 FROM usuarios usu
-                INNER JOIN usuarios_cursos uc ON usu.usu_cod = uc.usu_cod
-                INNER JOIN cursos c ON uc.cur_cod = c.cur_cod
+                INNER JOIN usuarios_cursos ucu ON usu.usu_cod = ucu.usu_cod
+                INNER JOIN cursos c ON ucu.cur_cod = c.cur_cod
                 ${whereClauses.length ? 'WHERE ' + whereClauses.join(' AND ') : ''}
-                GROUP BY usu.usu_cod, uc.ucu_cod, c.cur_cod
+                GROUP BY usu.usu_cod, ucu.ucu_cod, cur.cur_cod
                 ORDER BY usu.usu_cod
                 LIMIT ? OFFSET ?
             `;
@@ -160,8 +159,6 @@ module.exports = {
             // parâmetros recebidos no corpo da requisição
             const { usu_rm, usu_nome, usu_email, usu_senha, usu_tipo = 4, usu_sexo, usu_ativo = 1, usu_aprovado = 0, cur_cod, ucu_status, ucu_ativo, ucu_aprovado } = request.body;
 
-            const senhaHash = await bcrypt.hash(usu_senha, 10);
-
             // instrução SQL
             const sql = `
                             INSERT INTO usuarios 
@@ -170,7 +167,7 @@ module.exports = {
                             (?, ?, ?, ?, ?, ?, ?, ?);
                         `;
             // definição dos dados a serem inseridos em um array
-            const values = [usu_rm, usu_nome, usu_email, senhaHash, usu_tipo, usu_sexo, usu_ativo, usu_aprovado];
+            const values = [usu_rm, usu_nome, usu_email, usu_senha, usu_tipo, usu_sexo, usu_ativo, usu_aprovado];
 
             // execução da instrução sql passando os parâmetros
             const execSql = await db.query(sql, values);
