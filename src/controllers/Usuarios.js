@@ -75,7 +75,7 @@ module.exports = {
                     usu.usu_senha, 
                     usu.usu_sexo, 
                     usu.usu_foto, 
-                    uc.ucu_cod,
+                    ucu.ucu_cod,
                     cur.cur_cod, 
                     cur.cur_nome,
                     CASE WHEN usu.usu_ativo = 1 THEN 'Ativo' ELSE 'Inativo' END AS status_ativo, 
@@ -83,7 +83,7 @@ module.exports = {
                     CASE WHEN usu.usu_tipo = 4 THEN 'Pendente' ELSE 'Outro Tipo' END AS status_tipo
                 FROM usuarios usu
                 INNER JOIN usuarios_cursos ucu ON usu.usu_cod = ucu.usu_cod
-                INNER JOIN cursos c ON ucu.cur_cod = c.cur_cod
+                INNER JOIN cursos cur ON ucu.cur_cod = cur.cur_cod
                 ${whereClauses.length ? 'WHERE ' + whereClauses.join(' AND ') : ''}
                 GROUP BY usu.usu_cod, ucu.ucu_cod, cur.cur_cod
                 ORDER BY usu.usu_cod
