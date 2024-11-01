@@ -4,7 +4,7 @@ const router = express.Router();
 const uploadsA = require ('../middlewares/upImgAutores');
 const uploadsG = require ('../middlewares/upImgGeneros');
 const uploadsE = require ('../middlewares/upImgEditoras');
-// const uploadsU = require ('../middlewares/upImgUsuarios');
+const uploadsU = require ('../middlewares/upImgUsuarios');
 const uploadsL = require ('../middlewares/upImgLivros');
 
 const usuariosController = require ('../controllers/Usuarios');
@@ -44,7 +44,7 @@ router.post ('/rec_listar', (recomendacaoController.listarRecomendacao));
 
 //CADASTRAR com imagem
 router.post ('/cursos', (cursosController.cadastrarCursos));
-router.post ('/usuarios', usuariosController.cadastrarUsuarios);
+router.post ('/usu_cadastrar', (usuariosController.cadastrarUsuarios));
 router.post ('/generos', uploadsG.single('img'), generosController.cadastrarGeneros);
 router.post ('/autores', uploadsA.single('img'), autoresController.cadastrarAutores);
 router.post ('/editoras', uploadsE.single('img'), editorasController.cadastrarEditoras);

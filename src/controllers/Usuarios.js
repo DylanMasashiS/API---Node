@@ -156,49 +156,37 @@ module.exports = {
     },
     async cadastrarUsuarios(request, response) {
         try {
-            // parâmetros recebidos no corpo da requisição
-            const { usu_rm, usu_nome, usu_email, usu_senha, usu_tipo = 4, usu_sexo, usu_ativo = 1, usu_aprovado = 0, cur_cod, ucu_status, ucu_ativo, ucu_aprovado } = request.body;
-
-            // instrução SQL
-            const sql = `
-                            INSERT INTO usuarios 
-                            (usu_rm, usu_nome, usu_email, usu_senha, usu_tipo, usu_sexo, usu_ativo, usu_aprovado) 
-                            VALUES 
-                            (?, ?, ?, ?, ?, ?, ?, ?);
-                        `;
-            // definição dos dados a serem inseridos em um array
-            const values = [usu_rm, usu_nome, usu_email, usu_senha, usu_tipo, usu_sexo, usu_ativo, usu_aprovado];
-
-            // execução da instrução sql passando os parâmetros
-            const execSql = await db.query(sql, values);
-            // identificação do ID do registro inserido
+            // Parâmetros recebidos no corpo da requisição
+            const { 
+                usu_rm, usu_nome, usu_email, usu_senha, usu_tipo = 4, usu_sexo, 
+                usu_ativo = 1, usu_aprovado = 0, cur_cod, ucu_status = 0, 
+                ucu_ativo = 1, ucu_aprovado = 0 } = request.body;
+    
+            // Instrução SQL para inserção em `usuarios`
+            const sqlUsuarios = `
+                INSERT INTO usuarios 
+                (usu_rm, usu_nome, usu_email, usu_senha, usu_tipo, usu_sexo, usu_ativo, usu_aprovado) 
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?);
+            `;
+            const valuesUsuarios = [usu_rm, usu_nome, usu_email, usu_senha, usu_tipo, usu_sexo, usu_ativo, usu_aprovado];
+    
+            // Execução da instrução SQL para `usuarios`
+            const execSql = await db.query(sqlUsuarios, valuesUsuarios);
             const usu_cod = execSql[0].insertId;
-
-            // relaciona o usuário com o curso
-            const sqlUsuCurso = `
-                        INSERT INTO usuarios_cursos
-                        (usu_cod, cur_cod, ucu_status, ucu_ativo, ucu_aprovado) 
-                        VALUES (?, ?, ?, ?, ?);
-                        `;
-            // definição dos dados a serem inseridos em um array
-            const valuesUsuCurso = [usu_cod, cur_cod, ucu_status, ucu_ativo, ucu_aprovado];
-
-            // execução da instrução sql passando os parâmetros
-            const execSqlUsuCurso = await db.query(sqlUsuCurso, valuesUsuCurso);
-
-            const ucu_cod = execSqlUsuCurso[0].insertId;
-
-            // Execução da instrução SQL para usuários_cursos
-            try {
-                await db.query(sqlUsuCurso, valuesUsuCurso);
-            } catch (cursoError) {
-                return response.status(500).json({
-                    sucesso: false,
-                    mensagem: 'Erro ao associar o usuário ao curso.',
-                    dados: cursoError.message
-                });
-            }
-
+    
+            // Instrução SQL para associar usuário ao curso
+            const sqlUsuariosCursos = `
+                INSERT INTO usuarios_cursos
+                (usu_cod, cur_cod, ucu_status, ucu_ativo, ucu_aprovado) 
+                VALUES (?, ?, ?, ?, ?);
+            `;
+            const valuesUsuariosCursos = [usu_cod, cur_cod, ucu_status, ucu_ativo, ucu_aprovado];
+    
+            // Execução da instrução SQL para `usuarios_cursos`
+            const execSqlUsuariosCursos = await db.query(sqlUsuariosCursos, valuesUsuariosCursos);
+            const ucu_cod = execSqlUsuariosCursos[0].insertId;
+    
+            // Dados a serem retornados
             const dados = {
                 usu_cod,
                 usu_rm,
@@ -216,13 +204,14 @@ module.exports = {
                 ucu_ativo,
                 ucu_aprovado
             };
-
+    
+            // Resposta de sucesso
             return response.status(200).json({
                 sucesso: true,
                 mensagem: 'Cadastro do usuário efetuado com sucesso. Aguarde a confirmação do administrador.',
                 dados
-                //mensSql: execSql
             });
+    
         } catch (error) {
             return response.status(500).json({
                 sucesso: false,
@@ -231,7 +220,7 @@ module.exports = {
             });
         }
     },
-
+    
     async listarUsuariosPendentes(request, response) {
         try {
             const sqlUsP = `SELECT usu.usu_cod, usu.usu_nome, usu.usu_email, usu.usu_tipo, 
