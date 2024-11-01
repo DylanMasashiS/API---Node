@@ -55,15 +55,19 @@ module.exports = {
 
             const emprestimos = await db.query(sql, params);
 
-            const nItens = emprestimos[0].length;
-            
+            const nItens = emprestimos.length;
+
+            const resultado = emprestimos[0].map(emprestimos => ({
+                ...emprestimos,
+                liv_foto_capa: geraUrl(emprestimos.liv_foto_capa)
+            }));
+
             return response.status(200).json({
                 sucesso: true,
                 mensagem: 'Lista de empréstimos.',
-                dados: emprestimos[0],
+                dados: resultado,
                 nItens
             });
-            
             } catch (error) {
             return response.status(500).json({
                 sucesso: false,
