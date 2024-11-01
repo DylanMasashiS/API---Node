@@ -3,14 +3,6 @@ const fs = require('fs-extra');
 const express = require('express'); 
 const router = express.Router(); 
 
-function geraUrl (liv_foto_capa) {
-    let img = liv_foto_capa ? liv_foto_capa : 'default.jpg';
-    if (!fs.existsSync ('./public/uploads/CapaLivros/' + img)) {
-        img = 'livros.jpg';
-    }
-    return '/public/uploads/CapaLivros/' + img;
-}
-
 module.exports = {
     async listarEmprestimos(request, response) {
         try {
@@ -55,21 +47,16 @@ module.exports = {
 
             const emprestimos = await db.query(sql, params);
 
-            const nItens = emprestimos.length;
-
-            const resultado = emprestimos.map(emprestimo => ({
-                ...emprestimo,
-                liv_foto_capa: geraUrl(emprestimo.liv_foto_capa)
-            }));
+            const nItens = emprestimos[0].length;
 
             return response.status(200).json({
                 sucesso: true,
                 mensagem: 'Lista de empréstimos.',
-                dados: resultado,
+                dados: emprestimos[0],
                 nItens
             });
+            
             } catch (error) {
-            console.error(error);
             return response.status(500).json({
                 sucesso: false,
                 mensagem: 'Erro na requisição.',
