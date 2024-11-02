@@ -40,7 +40,7 @@ module.exports = {
             const sql = `SELECT emp.emp_cod, DATE_FORMAT(emp.emp_data_emp, '%d/%m/%Y') AS Empréstimo, 
                             DATE_FORMAT(emp.emp_data_devol, '%d/%m/%Y') AS Devolução , liv.liv_nome, 
                             liv.liv_foto_capa, exe.exe_cod, aut.aut_nome, usu.usu_cod, usu.usu_nome,
-                            gen.gen_nome, gen.gen_cod,
+                            gen.gen_nome, gen.gen_cod, cur.cur_nome,
                             (SELECT usu_nome FROM usuarios WHERE usu_cod = emp.func_cod) as Funcionario
                         FROM emprestimos emp
                         INNER JOIN exemplares exe ON exe.exe_cod = emp.exe_cod
@@ -50,6 +50,8 @@ module.exports = {
                         INNER JOIN usuarios usu ON usu.usu_cod = emp.usu_cod
                         INNER JOIN livros_generos lge ON lge.liv_cod = liv.liv_cod
                         INNER JOIN generos gen ON gen.gen_cod = lge.gen_cod
+                        INNER JOIN usuarios_cursos ucu ON ucu.usu_cod = usu.usu_cod
+                        INNER JOIN cursos cur ON cur.cur_cod = ucu.cur_cod
                         ${whereClauses.length > 0 ? 'WHERE ' + whereClauses.join(' AND ') : ''}
                         AND usu_ativo = 1`;
 
