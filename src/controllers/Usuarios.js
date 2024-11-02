@@ -164,7 +164,7 @@ module.exports = {
 
             // Verifica se o valor de usu_sexo é válido
             const sexosValidos = [0, 1, 2, 3];
-            if (!sexosValidos.includes(usu_sexo)) {
+            if (!sexosValidos.includes(Number(usu_sexo))) {
                 return response.status(400).json({
                     sucesso: false,
                     mensagem: "Sexo inválido. Deve ser 0 (feminino),1 (masculino) ou 3 (padrão).",
