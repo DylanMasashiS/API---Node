@@ -51,7 +51,7 @@ module.exports = {
 
             return response.status(200).json({
                 sucesso: true,
-                mensagem: 'Cadastro de Livros e seus Gêneros efetuado com sucesso.',
+                mensagem: `Cadastro de Livros e seus Gêneros ${lge_cod} efetuado com sucesso.`,
                 dados: lge_cod
                 //mensSql: execSql
             });

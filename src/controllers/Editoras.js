@@ -11,7 +11,7 @@ function geraUrl (edt_foto) {
         img = 'editora.jpg';
     }
 
-    return '/uploads/CapaEditoras/' + img;
+    return '/public/uploads/CapaEditoras/' + img;
 }
 
 module.exports = {
@@ -72,7 +72,7 @@ module.exports = {
 
             return response.status(200).json({
                 sucesso: true,
-                mensagem: 'Cadastro da editora efetuado com sucesso.',
+                mensagem: `Cadastro da editora ${edt_cod} efetuado com sucesso.`,
                 dados
                 //mensSql: execSql
             });

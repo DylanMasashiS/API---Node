@@ -51,7 +51,7 @@ module.exports = {
 
             return response.status(200).json({
                 sucesso: true,
-                mensagem: 'Cadastro do curso efetuado com sucesso.',
+                mensagem: `Cadastro do curso ${cur_cod} efetuado com sucesso.`,
                 dados: cur_cod
                 //mensSql: execSql
             });

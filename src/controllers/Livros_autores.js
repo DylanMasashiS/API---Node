@@ -51,7 +51,7 @@ module.exports = {
 
             return response.status(200).json({
                 sucesso: true,
-                mensagem: 'Cadastro de Livros e seus Autores efetuado com sucesso.',
+                mensagem: `Cadastro de Livros e seus Autores ${lau_cod} efetuado com sucesso.`,
                 dados: lau_cod
                 //mensSql: execSql
             });

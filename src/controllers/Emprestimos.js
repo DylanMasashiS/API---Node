@@ -96,7 +96,7 @@ module.exports = {
 
             return response.status(200).json({
                 sucesso: true,
-                mensagem: 'Cadastro do empréstimo efetuado com sucesso.',
+                mensagem: `Cadastro do empréstimo ${emp_cod} efetuado com sucesso.`,
                 dados: emp_cod
                 //mensSql: execSql
             });

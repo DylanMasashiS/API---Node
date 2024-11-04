@@ -69,7 +69,7 @@ module.exports = {
 
             return response.status(200).json({
                 sucesso: true,
-                mensagem: 'Cadastro do exemplar efetuado com sucesso.',
+                mensagem: `Cadastro do exemplar ${exe_cod} efetuado com sucesso.`,
                 dados: exe_cod
             });
         } catch (error) {

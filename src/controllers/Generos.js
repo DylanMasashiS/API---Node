@@ -11,7 +11,7 @@ function geraUrl (gen_foto) {
         img = 'genero.jpg';
     }
 
-    return '/uploads/CapaGeneros/' + img;
+    return '/public/uploads/CapaGeneros/' + img;
 }
 
 module.exports = {
@@ -74,7 +74,7 @@ module.exports = {
 
             return response.status(200).json({
                 sucesso: true,
-                mensagem: 'Cadastro do gênero efetuado com sucesso.',
+                mensagem: `Cadastro do gênero ${gen_cod} efetuado com sucesso.`,
                 dados
                 //mensSql: execSql
             });

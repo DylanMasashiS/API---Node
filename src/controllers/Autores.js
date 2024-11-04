@@ -10,7 +10,7 @@ function geraUrl (aut_foto) {
     if (!fs.existsSync ('./public/uploads/CapaAutores/' + img)) {
         img = 'autor.jpg';
     }
-    return '/uploads/CapaAutores/' + img;
+    return '/public/uploads/CapaAutores/' + img;
 }
 
 module.exports = {
@@ -74,7 +74,7 @@ module.exports = {
 
             return response.status(200).json({
                 sucesso: true,
-                mensagem: 'Cadastro do autor efetuado com sucesso.',
+                mensagem: `Cadastro do autor ${aut_cod} efetuado com sucesso.`,
                 dados 
                 //mensSql: execSql
             });

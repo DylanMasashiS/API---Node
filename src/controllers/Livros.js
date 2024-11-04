@@ -121,7 +121,7 @@ module.exports = {
             // Retorna o resultado da requisição
             return response.status(200).json({
                 sucesso: true,
-                mensagem: 'Status do Livro atualizado com sucesso.',
+                mensagem: `Status do Livro ${liv_cod} atualizado com sucesso.`,	
                 dados: execSql[0].affectedRows
             });
         } catch (error) {
@@ -256,7 +256,7 @@ module.exports = {
 
             return response.status(200).json({
                 sucesso: true,
-                mensagem: 'Cadastro do livro efetuado com sucesso.',
+                mensagem: `Cadastro do livro ${liv_cod} efetuado com sucesso.`,
                 dados
                 //mensSql: execSql
             });
