@@ -2,6 +2,7 @@ const db = require('../database/connection');
 const fs = require('fs-extra');
 const express = require('express');
 const router = express.Router();
+const nodemailer = require('nodemailer');
 
 function geraUrl(usu_foto) {
     let img = usu_foto ? usu_foto : 'usuarios.jpg';
@@ -214,48 +215,7 @@ module.exports = {
                 ucu_aprovado
             };
 
-            // Envia email para o usuário
-            let transport = nodemailer.createTransport({
-                host: process.env.MAIL_HOST,       
-                port: process.env.MAIL_PORT,     
-                auth: {
-                    user: process.env.MAIL_USER,    
-                    pass: process.env.MAIL_PASS
-                }    
-            });
-
-            // Configura o e-mail
-            let message = {
-                from: '',
-                to: usu_email,
-                subject: "Instruções para a ativação da conta.",
-                text: "Olá" + usu_nome + ",\n Sejam bem-vindos a nossa plataforma SmoakBook!\n Por favor, copie o link a seguir e cole na barra de pesquisa do navegador.\n Você será direcionado automaticamente para a página de autenticação de cadastro.\n" + process.env.DOMINIO + "/ativacao/usuarios/" + usu_cod,
-                html: `<img src = "cid:smoakBook" width = "320" height = "80"/>,
-                <h1>Ativação do usuário</h1>
-                <h2>Olá ${usu_nome},</h2>
-                <p>Sejam bem-vindos a nossa plataforma SmoakBook. Por favor, clique no link a seguir </p>
-                <a href = ${process.env.DOMINIO}/ativacao/usuarios/${usu_cod}></a>
-                </div>`,
-                attachments: [
-                    {
-                        filename: 'smoakBook.jpg',
-                        path:__dirname + '/public/uploads/Logo/smoakBook.jpg',
-                        cid: 'smoakBook'
-                    }
-                ]
-                
-            };
-            
-            // Tratamento de erro ao enviar email
-            transport.sendMail(message, function (err, info){
-                if(err){
-                    return response.status(400).json({message: 'Não foi possivel ativar seu email. Contate-nos.'});
-                } else {
-                    console.log("Mensagem enviada. Verifique seu email.");
-                }
-            });
-
-            // Resposta de sucesso
+            // Resposta de sucesso do cadastro todo
             return response.status(200).json({
                 sucesso: true,
                 mensagem: 'Cadastro do usuário efetuado com sucesso. Aguarde a confirmação do administrador.',
@@ -458,7 +418,7 @@ module.exports = {
                                  OR usu.usu_rm    = ?)
                             AND usu.usu_aprovado  = 1`;
 
-            const values = [usu_email_rm, usu_email_rm];
+            const values = [usu_email_rm, usu_email_rm, usu_senha];
 
             // Executando a consulta
             const result = await db.query(sql, values);
@@ -476,6 +436,52 @@ module.exports = {
             // Comparando a senha fornecida com o hash no banco de dados
             const usuario = usuarios[0];
 
+            // Configuração do transportador
+            const transport = nodemailer.createTransport({
+                host: process.env.MAIL_HOST,
+                port: process.env.MAIL_PORT,
+                auth: {
+                    user: process.env.MAIL_USER,
+                    pass: process.env.MAIL_PASS
+                }
+            });
+
+            // Função para enviar e-mails
+            function enviarEmail(usu_email_rm, usu_cod, usu_nome) {
+                let message = {
+                    from: process.env.MAIL_USER,
+                    to: usu_email_rm,
+                    subject: "Instruções para a ativação da conta.",
+                    text: `Olá ${usu_nome},\nSejam bem-vindos à nossa plataforma SmoakBook! Por favor, copie o link a seguir e cole na barra de pesquisa do navegador.\nVocê será direcionado automaticamente para a página de autenticação de cadastro.\n${process.env.DOMINIO}/ativacao/usuarios/${usu_cod}`,
+                    html: `<img src="cid:smoakBook" width="320" height="80"/>,
+                            <h1>Ativação do usuário</h1>
+                            <h2>Olá ${usu_nome},</h2>
+                            <p>Sejam bem-vindos à nossa plataforma SmoakBook. Por favor, clique no link a seguir </p>
+                            <a href=${process.env.DOMINIO}/ativacao/usuarios/${usu_cod}>Ativar Conta</a>
+                            </div>`,
+                    attachments: [
+                        {
+                            filename: 'smoakBook.jpg',
+                            path: __dirname + '/public/uploads/Logo/smoakBook.jpg',
+                            cid: 'smoakBook'
+                        }
+                    ]
+                };
+
+                // Envio do e-mail com tratamento de erro
+                transport.sendMail(message)
+                    .then(info => {
+                        console.log("Mensagem enviada: ", info.response);
+                        return { success: true };
+                    })
+                    .catch(err => {
+                        console.error("Erro ao enviar o e-mail: ", err);
+                        return { success: false, message: 'Não foi possível enviar o e-mail. Contate-nos.' };
+                    });
+                }
+                // Uso da função
+                enviarEmail(usu_email_rm, usu_nome, 'redefinicao');
+
             // Login bem-sucedido
             return response.status(200).json({
                 sucesso: true,
@@ -483,6 +489,31 @@ module.exports = {
                 dados: usuario
             });
 
+        } catch (error) {
+            return response.status(500).json({
+                sucesso: false,
+                mensagem: 'Erro na requisição.',
+                dados: error.message
+            });
+        }
+    },
+
+    async redSenha (request, response) {
+        try {
+            const { usu_email_rm, usu_senha } = request.body;
+
+            const sql = 'UPDATE usuarios SET usu_senha = ? WHERE usu_email = ? AND usu_cod = ?';
+
+            const values = [usu_senha, usu_email_rm, usu_cod];
+
+            const result = await db.query(sql, values);
+
+            return response.status(200).json({
+                sucesso: true,
+                mensagem: 'Senha alterada com sucesso.',
+                dados: result
+            });
+            
         } catch (error) {
             return response.status(500).json({
                 sucesso: false,

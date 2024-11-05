@@ -9,3 +9,16 @@ CREATE TABLE reset_tokens (
     FOREIGN KEY (usu_email) REFERENCES usuarios(usu_email) -- Chave estrangeira referenciando o e-mail da tabela usuarios
         ON DELETE CASCADE -- Se o usuário for deletado, os tokens também serão deletados
 );
+
+#Email
+MAIL_HOST = 'host e-mail' 
+MAIL_PORT = 'porta e-mail'  
+MAIL_USER = 'e-mail usuario' 
+MAIL_PASS = 'senha usuario' 
+
+Conta no MailTrap - Conta kian.sayuri123@gmail.com (Conta p/ testes).
+
+host: sandbox.smtp.mailtrap.io
+port: 2525
+user: 3ce40f784d716e
+pass: 33738389fcfa8a
