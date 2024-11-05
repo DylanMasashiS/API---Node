@@ -80,6 +80,7 @@ router.patch ('/usu_ocultar', (usuariosController.ocultarUsuarios));
 router.patch ('/emp_renovar/:emp_cod', (emprestimosController.renovarEmprestimos));
 router.patch ('/analizarUcu', (usuariosController.analizarUsuariosCursos)); 
 router.patch ('/liv_inativar', (livrosController.inativarLivros));
+// router.patch ('red_senha', (usuariosController.redSenha));
 
 //DELETE ou EXCLUIR
 router.delete ('/livros/:liv_cod', (livrosController.apagarLivros));
