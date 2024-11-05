@@ -214,6 +214,7 @@ module.exports = {
                 ucu_aprovado
             };
 
+            // Envia email para o usuário
             let transport = nodemailer.createTransport({
                 host: process.env.MAIL_HOST,       
                 port: process.env.MAIL_PORT,     
@@ -221,13 +222,15 @@ module.exports = {
                     user: process.env.MAIL_USER,    
                     pass: process.env.MAIL_PASS
                 }    
-              });
+            });
+
+            // Configura o e-mail
             let message = {
                 from: '',
                 to: usu_email,
                 subject: "Instruções para a ativação da conta.",
-                text: "Olá" + usu_nome + ",\n Sejam bem-vindos a nossa plataforma SmoakBook!\n Por favor, copie o link a seguir e cole na barra de pesquisa do navegador.\n Você será direcionado automaticamente para a página de autenticação de cadastro.\n" + process.env.DOMINIO + "/ativacao/usuarios/" + usu_cod
-                html: `<img src = "cid:smoakbook" width = "320" height = "80"/>,
+                text: "Olá" + usu_nome + ",\n Sejam bem-vindos a nossa plataforma SmoakBook!\n Por favor, copie o link a seguir e cole na barra de pesquisa do navegador.\n Você será direcionado automaticamente para a página de autenticação de cadastro.\n" + process.env.DOMINIO + "/ativacao/usuarios/" + usu_cod,
+                html: `<img src = "cid:smoakBook" width = "320" height = "80"/>,
                 <h1>Ativação do usuário</h1>
                 <h2>Olá ${usu_nome},</h2>
                 <p>Sejam bem-vindos a nossa plataforma SmoakBook. Por favor, clique no link a seguir </p>
@@ -235,14 +238,15 @@ module.exports = {
                 </div>`,
                 attachments: [
                     {
-                        filename: 'logo.png',
-                        path:__dirname + '../../../img/logo.png',
-                        cid: 'smoakbook'
+                        filename: 'smoakBook.jpg',
+                        path:__dirname + '/public/uploads/Logo/smoakBook.jpg',
+                        cid: 'smoakBook'
                     }
                 ]
                 
             };
             
+            // Tratamento de erro ao enviar email
             transport.sendMail(message, function (err, info){
                 if(err){
                     return response.status(400).json({message: 'Não foi possivel ativar seu email. Contate-nos.'});
