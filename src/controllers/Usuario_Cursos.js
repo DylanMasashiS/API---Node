@@ -10,8 +10,10 @@ module.exports = {
             // instruções SQL
             const sql = `SELECT 
                 ucu_cod, usu_cod, cur_cod
-                from usuarios_cursos
-                where ucu_cod = ?;`;
+                FROM usuarios_cursos
+                INNER JOIN cursos on cur_cod = cur_cod
+                WHERE ucu_cod = ?
+                ORDER BY cur_cod;`;
 
             const values = [ucu_cod];
             // executa instruções SQL e armazena o resultado na variável usuários
@@ -46,6 +48,7 @@ module.exports = {
                             SELECT ucu.cur_cod
                             FROM usuarios_cursos AS ucu
                             WHERE ucu.usu_cod = ?
+                            ORDER BY cur.cur_cod
                         );`;
     
             const values = [usu_cod];
@@ -73,8 +76,8 @@ module.exports = {
             const {usu_cod, cur_cod} = request.body;
             // instrução SQL
             const sql = `INSERT INTO usuarios_cursos
-                (usu_cod, cur_cod) 
-                VALUES (?, ?)`;
+                            (usu_cod, cur_cod) 
+                            VALUES (?, ?)`;
             // definição dos dados a serem inseridos em um array
             const values = [usu_cod, cur_cod];
             // execução da instrução sql passando os parâmetros
