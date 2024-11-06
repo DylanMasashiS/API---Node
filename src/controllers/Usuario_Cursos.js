@@ -11,7 +11,6 @@ module.exports = {
             const sql = `SELECT 
                 ucu_cod, usu_cod, cur_cod
                 FROM usuarios_cursos
-                INNER JOIN cursos on cur_cod = cur_cod
                 WHERE ucu_cod = ?
                 ORDER BY cur_cod;`;
 
