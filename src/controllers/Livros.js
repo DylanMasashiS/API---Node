@@ -179,9 +179,9 @@ module.exports = {
                                     WHERE subexe.liv_cod = liv.liv_cod AND emp.emp_devolvido = 0)) AS disponivel,
 
                                 CASE 
-                                    WHEN liv.liv_ativo = 1 THEN 'Ativo'
-                                    WHEN liv.liv_ativo = 0 THEN 'Inativo'
-                                    END AS Status
+                                    WHEN liv.liv_ativo = 1 THEN 1
+                                    WHEN liv.liv_ativo = 0 THEN 0
+                                    END AS liv_ativo
 
                                 FROM livros liv
                                 INNER JOIN editoras edt ON edt.edt_cod = liv.edt_cod
