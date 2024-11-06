@@ -436,52 +436,6 @@ module.exports = {
             // Comparando a senha fornecida com o hash no banco de dados
             const usuario = usuarios[0];
 
-            // Configuração do transportador
-            const transport = nodemailer.createTransport({
-                host: process.env.MAIL_HOST,
-                port: process.env.MAIL_PORT,
-                auth: {
-                    user: process.env.MAIL_USER,
-                    pass: process.env.MAIL_PASS
-                }
-            });
-
-            // Função para enviar e-mails
-            function enviarEmail(usu_email_rm, usu_cod, usu_nome) {
-                let message = {
-                    from: process.env.MAIL_USER,
-                    to: usu_email_rm,
-                    subject: "Instruções para a ativação da conta.",
-                    text: `Olá ${usu_nome},\nSejam bem-vindos à nossa plataforma SmoakBook! Por favor, copie o link a seguir e cole na barra de pesquisa do navegador.\nVocê será direcionado automaticamente para a página de autenticação de cadastro.\n${process.env.DOMINIO}/ativacao/usuarios/${usu_cod}`,
-                    html: `<img src="cid:smoakBook" width="320" height="80"/>,
-                            <h1>Ativação do usuário</h1>
-                            <h2>Olá ${usu_nome},</h2>
-                            <p>Sejam bem-vindos à nossa plataforma SmoakBook. Por favor, clique no link a seguir </p>
-                            <a href=${process.env.DOMINIO}/ativacao/usuarios/${usu_cod}>Ativar Conta</a>
-                            </div>`,
-                    attachments: [
-                        {
-                            filename: 'smoakBook.jpg',
-                            path: __dirname + '/public/uploads/Logo/smoakBook.jpg',
-                            cid: 'smoakBook'
-                        }
-                    ]
-                };
-
-                // Envio do e-mail com tratamento de erro
-                transport.sendMail(message)
-                    .then(info => {
-                        console.log("Mensagem enviada: ", info.response);
-                        return { success: true };
-                    })
-                    .catch(err => {
-                        console.error("Erro ao enviar o e-mail: ", err);
-                        return { success: false, message: 'Não foi possível enviar o e-mail. Contate-nos.' };
-                    });
-                }
-                // Uso da função
-                enviarEmail(usu_email_rm, usu_nome, 'redefinicao');
-
             // Login bem-sucedido
             return response.status(200).json({
                 sucesso: true,
@@ -498,7 +452,7 @@ module.exports = {
         }
     },
 
-    async redSenha (request, response) {
+    async redSenha(request, response) {
         try {
             const { usu_email_rm, usu_senha } = request.body;
 
@@ -513,7 +467,71 @@ module.exports = {
                 mensagem: 'Senha alterada com sucesso.',
                 dados: result
             });
-            
+
+        } catch (error) {
+            return response.status(500).json({
+                sucesso: false,
+                mensagem: 'Erro na requisição.',
+                dados: error.message
+            });
+        }
+    },
+    async envioEmailRedSenha(request, response) {
+        try {
+            const { usu_email } = request.body;
+            const sql = `SELECT usu_cod, usu_email, usu_nome FROM usuarios WHERE usu_email = ?;`;
+            const values = [usu_email];
+            const result = await db.query(sql, values);
+            const usu_cod = result[0][0].usu_cod;
+            const usu_nome = result[0][0].usu_nome;
+
+            if (result[0].length > 0) {
+                // envia email
+                const transport = nodemailer.createTransport({
+                    host: 'sandbox.smtp.mailtrap.io',
+                    port: 2525,
+                    auth: {
+                        user: '3ce40f784d716e',
+                        pass: '33738389fcfa8a'
+                    },
+                });
+
+                let message = {
+                    from: '3ce40f784d716e@sandbox.smtp.mailtrap.io',
+                    to: usu_email,
+                    subject: "Instruções para a ativação da conta.",
+                    text: `Olá ${usu_nome},\nSejam bem-vindos à nossa plataforma SmoakBook! Por favor, copie o link a seguir e cole na barra de pesquisa do navegador.\nVocê será direcionado automaticamente para a página de autenticação de cadastro.\nhttp://10.67.23.25:3333/ativacao/usuarios/${usu_cod}`,
+                    html: `<div>
+                    <h1>Ativação do usuário</h1>
+                    <h2>Olá ${usu_nome},</h2>
+                    <p>Sejam bem-vindos à nossa plataforma SmoakBook. Por favor, clique no link a seguir </p>
+                    <a href=http://10.67.23.25:3333/ativacao/usuarios/${usu_cod}>Ativar Conta</a>
+                    </div>`,
+                };
+
+                // Envio do e-mail com tratamento de erro
+                transport.sendMail(message)
+                    .then(info => {
+                        console.log("Mensagem enviada: ", info.response);
+                        return { success: true };
+                    })
+                    .catch(err => {
+                        console.error("Erro ao enviar o e-mail: ", err);
+                        return { success: false, message: 'Não foi possível enviar o e-mail. Contate-nos.' };
+                    });
+            } else {
+                return response.status(200).json({
+                    sucesso: true,
+                    mensagem: 'Email inválido.',
+                });
+            }
+
+
+            return response.status(200).json({
+                sucesso: true,
+                mensagem: 'Email enviado com sucesso.',
+            });
+
         } catch (error) {
             return response.status(500).json({
                 sucesso: false,

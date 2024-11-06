@@ -30,11 +30,6 @@ module.exports = {
             // armazena em uma variável o número de registros retornados
             const nItens = generos[0].length;
 
-            const resultado = generos[0].map(generos => ({
-                ...generos,
-                gen_foto: geraUrl(generos.gen_foto), 
-            }));
-
             return response.status(200).json({
                 sucesso: true,
                 mensagem: 'Lista de gêneros.',
@@ -53,8 +48,6 @@ module.exports = {
         try {
             // parâmetros recebidos no corpo da requisição
             const { gen_nome } = request.body;
-
-            const img = request.file.filename;
             // instrução SQL
             const sql = `INSERT INTO generos
                 (gen_nome, gen_foto) 
@@ -65,12 +58,6 @@ module.exports = {
             const execSql = await db.query(sql, values);
             // identificação do ID do registro inserido
             const gen_cod = execSql[0].insertId;
-
-            const dados = {
-                gen_cod,
-                gen_nome,
-                gen_foto: '/public/uploads/CapaGeneros/' + img
-            };
 
             return response.status(200).json({
                 sucesso: true,

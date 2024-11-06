@@ -52,8 +52,9 @@ router.post ('/liv_cadastrar', uploadsL.single('img'), livrosController.cadastra
 
 //CADASTRAR sem imagem
 router.post ('/usu_login', (usuariosController.loginUsuarios));
-router.post ('/usu_pendentes', (usuariosController.listarUsuariosPendentes));
+router.post ('/envio_email', (usuariosController.envioEmailRedSenha));
 router.post ('/exemplares', (exemplaresController.cadastrarExemplares));
+router.post ('/usu_pendentes', (usuariosController.listarUsuariosPendentes));
 router.post ('/emp_cadastrar', (emprestimosController.cadastrarEmprestimos));
 router.post ('/recomendacao', (recomendacaoController.cadastrarRecomendacao));
 router.post ('/livros_autores', (livros_autoresController.cadastrarLivros_Autores));

@@ -64,12 +64,6 @@ module.exports = {
             // identificação do ID do registro inserido
             const edt_cod = execSql[0].insertId;
 
-            const dados = {
-                edt_cod,
-                edt_nome,
-                edt_foto: 'public/uploads/CapaEditoras/' + img
-            };
-
             return response.status(200).json({
                 sucesso: true,
                 mensagem: `Cadastro da editora ${edt_cod} efetuado com sucesso.`,

@@ -66,16 +66,10 @@ module.exports = {
             // identificação do ID do registro inserido
             const aut_cod = execSql[0].insertId;
 
-            const dados = {
-                aut_cod,
-                aut_nome,
-                aut_foto: '/public/uploads/CapaAutores/' + img
-            };
-
             return response.status(200).json({
                 sucesso: true,
                 mensagem: `Cadastro do autor ${aut_cod} efetuado com sucesso.`,
-                dados 
+                dados: aut_cod
                 //mensSql: execSql
             });
         } catch (error) {
