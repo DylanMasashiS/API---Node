@@ -33,6 +33,40 @@ module.exports = {
             });
         }
     },
+
+    async dispUsucursos(request, response) {
+        try {
+            const { usu_cod } = request.body;
+            
+            // Consulta SQL que retorna cursos que o usuário ainda não possui
+            const sql = `
+                        SELECT cur.cur_cod, cur.nome
+                        FROM cursos AS cur
+                        WHERE cur.cur_cod NOT IN (
+                            SELECT ucu.cur_cod
+                            FROM usuarios_cursos AS ucu
+                            WHERE ucu.usu_cod = ?
+                        );`;
+    
+            const values = [usu_cod];
+
+            const cursos_disponiveis = await db.query(sql, values);
+    
+            return response.status(200).json({
+                sucesso: true,
+                mensagem: 'Lista de cursos disponíveis para o usuário.',
+                dados: cursos_disponiveis[0],
+            });
+            
+        } catch (error) {
+            return response.status(500).json({
+                sucesso: false,
+                mensagem: 'Erro ao listar cursos disponíveis.',
+                dados: error.message,
+            });
+        }
+    },
+    
     async cadastrarUsuarios_Cursos(request, response) {
         try {
             // parâmetros recebidos no corpo da requisição
