@@ -1,17 +1,7 @@
 const db = require('../database/connection');
 var fs = require('fs-extra');  
-
-
 const express = require('express'); 
 const router = express.Router(); 
-
-function geraUrl (aut_foto) {
-    let img = aut_foto ? aut_foto : 'default.jpg';
-    if (!fs.existsSync ('./public/uploads/CapaAutores/' + img)) {
-        img = 'autor.jpg';
-    }
-    return '/public/uploads/CapaAutores/' + img;
-}
 
 module.exports = {
     async listarAutores(request, response) {
@@ -29,16 +19,10 @@ module.exports = {
             // armazena em uma variável o número de registros retornados
             const nItens = autores[0].length;
 
-            const resultado = autores[0].map(autores => ({
-                ...autores,
-                aut_foto: geraUrl(autores.aut_foto)
-
-            }));
-
             return response.status(200).json({
                 sucesso: true,
                 mensagem: 'Lista de autores.',
-                dados: resultado,
+                dados: autores[0],
                 nItens
             });
         } catch (error) {

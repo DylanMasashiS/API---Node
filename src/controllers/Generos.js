@@ -1,18 +1,7 @@
 const db = require('../database/connection');
 const fs = require('fs-extra');
-
-
 const express = require('express'); 
 const router = express.Router(); 
-
-function geraUrl (gen_foto) {
-    let img = gen_foto ? gen_foto : 'default.jpg';
-    if (!fs.existsSync ('./public/uploads/CapaGeneros/' + img)) {
-        img = 'genero.jpg';
-    }
-
-    return '/public/uploads/CapaGeneros/' + img;
-}
 
 module.exports = {
     async listarGeneros(request, response) {
@@ -33,7 +22,7 @@ module.exports = {
             return response.status(200).json({
                 sucesso: true,
                 mensagem: 'Lista de gêneros.',
-                dados: resultado,
+                dados: generos[0],
                 nItens
             });
         } catch (error) {
@@ -62,7 +51,7 @@ module.exports = {
             return response.status(200).json({
                 sucesso: true,
                 mensagem: `Cadastro do gênero ${gen_cod} efetuado com sucesso.`,
-                dados
+                dados: gen_cod
                 //mensSql: execSql
             });
         } catch (error) {

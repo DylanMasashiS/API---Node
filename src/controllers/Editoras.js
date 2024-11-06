@@ -1,18 +1,7 @@
 const db = require('../database/connection');
 var fs = require('fs-extra');
-
-
 const express = require('express'); 
 const router = express.Router(); 
-
-function geraUrl (edt_foto) {
-    let img = edt_foto ? edt_foto : 'default.jpg';
-    if (!fs.existsSync ('./public/uploads/CapaEditoras/' + img)) {
-        img = 'editora.jpg';
-    }
-
-    return '/public/uploads/CapaEditoras/' + img;
-}
 
 module.exports = {
     async listarEditoras(request, response) {
@@ -30,15 +19,10 @@ module.exports = {
             // armazena em uma variável o número de registros retornados
             const nItens = editoras[0].length;
 
-            const resultado = editoras[0].map(editoras => ({
-                ...editoras,
-                edt_foto: geraUrl(editoras.edt_foto), 
-            }));
-
             return response.status(200).json({
                 sucesso: true,
                 mensagem: 'Lista de editoras.',
-                dados: resultado,
+                dados: editoras[0],
                 nItens
             });
         } catch (error) {
@@ -67,7 +51,7 @@ module.exports = {
             return response.status(200).json({
                 sucesso: true,
                 mensagem: `Cadastro da editora ${edt_cod} efetuado com sucesso.`,
-                dados
+                dados: edt_cod
                 //mensSql: execSql
             });
         } catch (error) {

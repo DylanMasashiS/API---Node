@@ -1,26 +1,27 @@
 const express = require ('express');
 const router = express.Router();
 
-const uploadsA = require ('../middlewares/upImgAutores');
-const uploadsG = require ('../middlewares/upImgGeneros');
-const uploadsE = require ('../middlewares/upImgEditoras');
-const uploadsU = require ('../middlewares/upImgUsuarios');
+//middlewares
 const uploadsL = require ('../middlewares/upImgLivros');
+// const uploadsA = require ('../middlewares/upImgAutores');
+// const uploadsG = require ('../middlewares/upImgGeneros');
+// const uploadsE = require ('../middlewares/upImgEditoras');
+// const uploadsU = require ('../middlewares/upImgUsuarios');
 
-const usuariosController = require ('../controllers/Usuarios');
 const livrosController = require ('../controllers/Livros');
-const autoresController = require ('../controllers/Autores');
-const editorasController = require ('../controllers/Editoras');
 const cursosController = require ('../controllers/Cursos');
 const generosController = require ('../controllers/Generos');
+const autoresController = require ('../controllers/Autores');
+const usuariosController = require ('../controllers/Usuarios');
+const editorasController = require ('../controllers/Editoras');
+const reservasController = require ('../controllers/Reservas');
+const contatosController = require ('../controllers/Contatos');
 const exemplaresController = require ('../controllers/Exemplares');
 const emprestimosController = require ('../controllers/Emprestimos');
 const recomendacaoController = require ('../controllers/Recomendacao');
-const usuarios_cursosController = require ('../controllers/Usuario_Cursos');
 const livros_autoresController = require ('../controllers/Livros_autores');
 const livros_generosController = require ('../controllers/Livros_generos');
-const reservasController = require ('../controllers/Reservas');
-const contatosController = require ('../controllers/Contatos');
+const usuarios_cursosController = require ('../controllers/Usuario_Cursos');
 
 //LISTAR sem pesquisa
 router.get ('/autores', (autoresController.listarAutores));
@@ -32,9 +33,9 @@ router.get ('/livros_generos', (livros_generosController.listarLivros_Generos));
 router.get ('/usuarios_cursos', (usuarios_cursosController.listarUsuarios_Cursos));
 
 //LISTAR com pesquisa
-router.post ('/usuarios', (usuariosController.listarUsuarios));
 router.post ('/cursos', (cursosController.listarCursos));
 router.post ('/livros', (livrosController.listarLivros));
+router.post ('/usuarios', (usuariosController.listarUsuarios));
 router.post ('/contatos', (contatosController.listarContatos));
 router.post ('/reservas', (reservasController.listarReservas));
 router.post ('/liv_gerenciar', (livrosController.gerenciarLivros))
@@ -43,16 +44,16 @@ router.post ('/rec_listar', (recomendacaoController.listarRecomendacao));
 
 
 //CADASTRAR com imagem
-router.post ('/cursos', (cursosController.cadastrarCursos));
-router.post ('/usu_cadastrar', (usuariosController.cadastrarUsuarios));
-router.post ('/generos', uploadsG.single('img'), generosController.cadastrarGeneros);
-router.post ('/autores', uploadsA.single('img'), autoresController.cadastrarAutores);
-router.post ('/editoras', uploadsE.single('img'), editorasController.cadastrarEditoras);
 router.post ('/liv_cadastrar', uploadsL.single('img'), livrosController.cadastrarLivros);
 
 //CADASTRAR sem imagem
+router.post ('/cursos', (cursosController.cadastrarCursos));
+router.post ('/generos',(generosController.cadastrarGeneros));
+router.post ('/autores', (autoresController.cadastrarAutores));
 router.post ('/usu_login', (usuariosController.loginUsuarios));
+router.post ('/editoras', (editorasController.cadastrarEditoras));
 router.post ('/envio_email', (usuariosController.envioEmailRedSenha));
+router.post ('/usu_cadastrar', (usuariosController.cadastrarUsuarios));
 router.post ('/exemplares', (exemplaresController.cadastrarExemplares));
 router.post ('/usu_pendentes', (usuariosController.listarUsuariosPendentes));
 router.post ('/emp_cadastrar', (emprestimosController.cadastrarEmprestimos));
@@ -63,12 +64,12 @@ router.post ('/usuarios_cursos', (usuarios_cursosController.cadastrarUsuarios_Cu
 
 //UPDATE normal
 router.patch ('/livros/:liv_cod', (livrosController.editarLivros));
-router.patch ('/cont_editar/:cont_cod', (contatosController.editarContatos));
 router.patch ('/cursos/:cur_cod', (cursosController.editarCursos));
 router.patch ('/autores/:aut_cod', (autoresController.editarAutores));
 router.patch ('/generos/:gen_cod', (generosController.editarGeneros));
 router.patch ('/usuarios/:usu_cod', (usuariosController.editarPerfil));
 router.patch ('/editoras/:edt_cod', (editorasController.editarEditoras));
+router.patch ('/cont_editar/:cont_cod', (contatosController.editarContatos));
 router.patch ('/exemplares/:exe_cod', (exemplaresController.editarExemplares));
 router.patch ('/emprestimos/:emp_cod', (emprestimosController.editarEmprestimos));
 router.patch ('/recomendacao/:rcm_cod', (recomendacaoController.editarRecomendacao));
@@ -77,10 +78,10 @@ router.patch ('/livros_generos/:lge_cod', (livros_generosController.editarLivros
 router.patch ('/usuarios_cursos/:ucu_cod', (usuarios_cursosController.editarUsuarios_Cursos));
 
 //UPDATE Personalizado
-router.patch ('/usu_ocultar', (usuariosController.ocultarUsuarios));
-router.patch ('/emp_renovar/:emp_cod', (emprestimosController.renovarEmprestimos));
-router.patch ('/analizarUcu', (usuariosController.analizarUsuariosCursos)); 
 router.patch ('/liv_inativar', (livrosController.inativarLivros));
+router.patch ('/usu_ocultar', (usuariosController.ocultarUsuarios));
+router.patch ('/analizarUcu', (usuariosController.analizarUsuariosCursos)); 
+router.patch ('/emp_renovar/:emp_cod', (emprestimosController.renovarEmprestimos));
 // router.patch ('red_senha', (usuariosController.redSenha));
 
 //DELETE ou EXCLUIR
