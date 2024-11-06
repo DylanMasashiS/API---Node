@@ -41,7 +41,7 @@ module.exports = {
 
             // Consulta SQL que retorna cursos que o usuário ainda não possui
             const sql = `
-                       SELECT cur.cur_cod, cur.cur_nome
+                       SELECT ucu.usu_cod, cur.cur_cod, cur.cur_nome
                        FROM cursos AS cur
                        LEFT JOIN usuarios_cursos AS ucu ON cur.cur_cod = ucu.cur_cod 
                        AND ucu.usu_cod = ?
