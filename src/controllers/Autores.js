@@ -69,7 +69,7 @@ module.exports = {
             const dados = {
                 aut_cod,
                 aut_nome,
-                img: '/public/uploads/CapaAutores/' + img
+                aut_foto: '/public/uploads/CapaAutores/' + img
             };
 
             return response.status(200).json({
