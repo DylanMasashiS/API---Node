@@ -1,12 +1,12 @@
 const db = require('../database/connection');
-const express = require('express'); 
-const router = express.Router(); 
+const express = require('express');
+const router = express.Router();
 
 module.exports = {
     async listarUsuarios_Cursos(request, response) {
         try {
 
-            const {ucu_cod} = request.body;
+            const { ucu_cod } = request.body;
             // instruções SQL
             const sql = `SELECT 
                 ucu_cod, usu_cod, cur_cod
@@ -38,28 +38,26 @@ module.exports = {
     async dispUsucursos(request, response) {
         try {
             const { usu_cod } = request.body;
-            
+
             // Consulta SQL que retorna cursos que o usuário ainda não possui
             const sql = `
-                        SELECT cur.cur_cod, cur.nome
-                        FROM cursos AS cur
-                        WHERE cur.cur_cod NOT IN (
-                            SELECT ucu.cur_cod
-                            FROM usuarios_cursos AS ucu
-                            WHERE ucu.usu_cod = ?
-                            ORDER BY cur.cur_cod
-                        );`;
-    
+                       SELECT cur.cur_cod, cur.cur_nome
+                       FROM cursos AS cur
+                       LEFT JOIN usuarios_cursos AS ucu ON cur.cur_cod = ucu.cur_cod 
+                       AND ucu.usu_cod = ?
+                       WHERE ucu.usu_cod IS NULL;
+            `;
+
             const values = [usu_cod];
 
             const cursos_disponiveis = await db.query(sql, values);
-    
+
             return response.status(200).json({
                 sucesso: true,
                 mensagem: 'Lista de cursos disponíveis para o usuário.',
                 dados: cursos_disponiveis[0],
             });
-            
+
         } catch (error) {
             return response.status(500).json({
                 sucesso: false,
@@ -68,11 +66,11 @@ module.exports = {
             });
         }
     },
-    
+
     async cadastrarUsuarios_Cursos(request, response) {
         try {
             // parâmetros recebidos no corpo da requisição
-            const {usu_cod, cur_cod} = request.body;
+            const { usu_cod, cur_cod } = request.body;
             // instrução SQL
             const sql = `INSERT INTO usuarios_cursos
                             (usu_cod, cur_cod) 
@@ -149,6 +147,6 @@ module.exports = {
                 mensagem: 'Erro na requisição.',
                 dados: error.message
             });
-        }    
+        }
     }
 }
