@@ -42,7 +42,7 @@ module.exports = {
                 (gen_nome, gen_foto) 
                 VALUES (?, ?)`;
             // definição dos dados a serem inseridos em um array
-            const values = [gen_nome, img];
+            const values = [gen_nome];
             // execução da instrução sql passando os parâmetros
             const execSql = await db.query(sql, values);
             // identificação do ID do registro inserido
