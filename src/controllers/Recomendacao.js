@@ -53,7 +53,7 @@ module.exports = {
             // instruções SQL
             const sql = `SELECT 
             rec.rcm_cod, cur.cur_nome, cur.cur_cod, liv.liv_cod, liv.liv_foto_capa, liv.liv_nome, liv.liv_desc,
-            usu.usu_nome, aut.aut_nome, aut.aut_foto, gen.gen_nome, gen.gen_foto, edt.edt_nome, edt.edt_foto, 
+            usu.usu_nome, aut.aut_nome, gen.gen_nome, edt.edt_nome, 
             rec.rcm_mod1 = 1 AS rcm_mod1, rec.rcm_mod2 = 1 AS rcm_mod2, 
             rec.rcm_mod3 = 1 AS rcm_mod3,  rec.rcm_mod4 = 1 AS rcm_mod4, 
             COUNT(exe.exe_cod) as exemplares,
@@ -85,7 +85,7 @@ module.exports = {
             inner join editoras edt on edt.edt_cod = liv.edt_cod
             ${whereClauses.length > 0 ? 'WHERE ' + whereClauses.join(' AND ') : ''}
             GROUP BY rec.rcm_cod, liv.liv_cod, liv.liv_nome, liv.liv_foto_capa, edt.edt_nome, 
-            edt.edt_foto, aut.aut_nome, aut.aut_foto, gen.gen_nome, gen.gen_foto,
+            aut.aut_nome, gen.gen_nome,
             cur.cur_nome, cur.cur_cod, usu.usu_nome
             ${havingClauses.length > 0 ? 'HAVING ' + havingClauses.join(' AND ') : ''}`;
 
