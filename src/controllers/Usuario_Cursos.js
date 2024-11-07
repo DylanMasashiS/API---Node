@@ -72,12 +72,12 @@ module.exports = {
             // parâmetros recebidos no corpo da requisição
             const { usu_cod, cur_cod } = request.body;
             const ucu_status = 1;
-             const ucu_ativo = 1; 
-             const ucu_aprovado = 1;
+            const ucu_ativo = 1; 
+            const ucu_aprovado = 1;
             // instrução SQL
             const sql = `INSERT INTO usuarios_cursos
                             (usu_cod, cur_cod, ucu_status, ucu_ativo, ucu_aprovado) 
-                            VALUES (?, ?, ? , ? , ?)`;
+                            VALUES (?, ?, ?, ?, ?)`;
             // definição dos dados a serem inseridos em um array
             const values = [usu_cod, cur_cod, ucu_status, ucu_ativo, ucu_aprovado];
             // execução da instrução sql passando os parâmetros

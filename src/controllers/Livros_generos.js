@@ -9,8 +9,10 @@ module.exports = {
             const {lge_cod} = request.body;
             // instruções SQL
             const sql = `SELECT 
-                lge_cod, gen_cod, liv_cod from livros_generos
-                where lge_cod = ?;`;
+                lge_cod, gen_cod, liv_cod 
+                FROM livros_generos
+                WHERE lge_cod = ?
+                ORDER BY gen_cod;`;
 
             const values = [lge_cod];
             // executa instruções SQL e armazena o resultado na variável usuários
