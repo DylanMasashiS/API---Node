@@ -42,9 +42,9 @@ module.exports = {
             // const img = request.file.filename;
 
             // instrução SQL
-            const sql = `INSERT INTO autores (aut_nome, aut_foto) VALUES (?, ?);`;
+            const sql = `INSERT INTO autores (aut_nome) VALUES (?);`;
             // definição dos dados a serem inseridos em um array com o insert de foto pela API
-            const values = [aut_nome, img];
+            const values = [aut_nome];
             // execução da instrução sql passando os parâmetros
             const execSql = await db.query(sql, values);
             // identificação do ID do registro inserido

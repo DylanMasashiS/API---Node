@@ -38,11 +38,10 @@ module.exports = {
             // parâmetros recebidos no corpo da requisição
             const {edt_nome} = request.body;
 
-            const img = request.file.filename;
             // instrução SQL
-            const sql = `INSERT INTO editoras (edt_nome, edt_foto) VALUES (?, ?)`;
+            const sql = `INSERT INTO editoras (edt_nome) VALUES (?)`;
             // definição dos dados a serem inseridos em um array
-            const values = [edt_nome, img];
+            const values = [edt_nome];
             // execução da instrução sql passando os parâmetros
             const execSql = await db.query(sql, values);
             // identificação do ID do registro inserido
