@@ -28,7 +28,6 @@ router.get ('/autores', (autoresController.listarAutores));
 router.get ('/generos', (generosController.listarGeneros));
 router.get ('/editoras', (editorasController.listarEditoras));
 router.get ('/exemplares', (exemplaresController.listarExemplares));
-router.post ('/dispUsucursos', (usuarios_cursosController.dispUsucursos));
 router.get ('/livros_autores', (livros_autoresController.listarLivros_Autores));
 router.get ('/livros_generos', (livros_generosController.listarLivros_Generos));
 router.get ('/usuarios_cursos', (usuarios_cursosController.listarUsuarios_Cursos));
@@ -42,7 +41,9 @@ router.post ('/reservas', (reservasController.listarReservas));
 router.post ('/liv_gerenciar', (livrosController.gerenciarLivros))
 router.post ('/emprestimos', (emprestimosController.listarEmprestimos));
 router.post ('/rec_listar', (recomendacaoController.listarRecomendacao));
-
+router.post ('/dispUsucursos', (usuarios_cursosController.dispUsucursos));
+router.post ('/dispAutores', (livros_autoresController.dispAutores));
+router.post ('/dispGeneros', (livros_generosController.dispGeneros));
 
 //CADASTRAR com imagem
 router.post ('/liv_cadastrar', uploadsL.single('img'), livrosController.cadastrarLivros);

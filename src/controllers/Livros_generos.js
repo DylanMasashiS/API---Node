@@ -34,6 +34,40 @@ module.exports = {
             });
         }
     },
+
+    async dispGeneros(request, response) {
+        try {
+            const { gen_cod } = request.body;
+
+            // Consulta SQL que retorna generos que o livro ainda não possui
+            const sql = `
+                       SELECT gen.gen_cod, gen.gen_nome
+                       FROM generos AS gen
+                       LEFT JOIN livros_generos AS lge 
+                       ON gen.gen_cod = lge.gen_cod
+                       AND lge.liv_cod = ?
+                       WHERE lge.liv_cod IS NULL;
+            `;
+
+            const values = [gen_cod];
+
+            const generos_disponiveis = await db.query(sql, values);
+
+            return response.status(200).json({
+                sucesso: true,
+                mensagem: 'Lista de cursos disponíveis para o usuário.',
+                dados: generos_disponiveis[0],
+            });
+
+        } catch (error) {
+            return response.status(500).json({
+                sucesso: false,
+                mensagem: 'Erro ao listar cursos disponíveis.',
+                dados: error.message,
+            });
+        }
+    },
+
     async cadastrarLivros_Generos(request, response) {
         try {
             // parâmetros recebidos no corpo da requisição
