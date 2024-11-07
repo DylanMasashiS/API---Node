@@ -28,7 +28,7 @@ router.get ('/autores', (autoresController.listarAutores));
 router.get ('/generos', (generosController.listarGeneros));
 router.get ('/editoras', (editorasController.listarEditoras));
 router.get ('/exemplares', (exemplaresController.listarExemplares));
-router.get ('/dispUsucursos', (usuarios_cursosController.dispUsucursos));
+router.post ('/dispUsucursos', (usuarios_cursosController.dispUsucursos));
 router.get ('/livros_autores', (livros_autoresController.listarLivros_Autores));
 router.get ('/livros_generos', (livros_generosController.listarLivros_Generos));
 router.get ('/usuarios_cursos', (usuarios_cursosController.listarUsuarios_Cursos));
