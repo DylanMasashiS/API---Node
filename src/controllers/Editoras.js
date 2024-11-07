@@ -10,7 +10,7 @@ module.exports = {
             const {edt_nome} = request.body;
             const edtPesq = edt_nome ? `%${edt_nome}%` : `%%`;
             // instruções SQL
-            const sql = `SELECT edt_cod, edt_nome, edt_foto from editoras
+            const sql = `SELECT edt_cod, edt_nome from editoras
                         where edt_nome like ? order by edt_nome;`;
 
             const values = [edtPesq];
@@ -64,15 +64,14 @@ module.exports = {
     async editarEditoras(request, response) {
         try {
             // parâmetros recebidos pelo corpo da requisição
-            const { edt_nome, edt_foto } = request.body;
+            const { edt_nome } = request.body;
             // parâmetro recebido pela URL via params ex: /usuario/1
             const { edt_cod } = request.params;
             // instruções SQL
-            const sql = `UPDATE editoras SET edt_nome = ?, 
-                        edt_foto = ?
+            const sql = `UPDATE editoras SET edt_nome = ?
                         WHERE edt_cod = ?;`;
             // preparo do array com dados que serão atualizados
-            const values = [edt_nome, edt_foto, edt_cod];
+            const values = [edt_nome,edt_cod];
             // execução e obtenção de confirmação da atualização realizada
             const atualizaDados = await db.query(sql, values);
 

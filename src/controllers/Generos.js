@@ -9,7 +9,7 @@ module.exports = {
             const {gen_nome} = request.body;
             const genPesq = gen_nome ? `%${gen_nome}%` : `%%`;
             // instruções SQL
-            const sql = `SELECT gen_cod, gen_nome, gen_foto 
+            const sql = `SELECT gen_cod, gen_nome
                         from generos
                         where gen_nome like ? order by gen_nome;`;
 
@@ -39,8 +39,8 @@ module.exports = {
             const { gen_nome } = request.body;
             // instrução SQL
             const sql = `INSERT INTO generos
-                (gen_nome, gen_foto) 
-                VALUES (?, ?)`;
+                (gen_nome) 
+                VALUES (?)`;
             // definição dos dados a serem inseridos em um array
             const values = [gen_nome];
             // execução da instrução sql passando os parâmetros
@@ -65,15 +65,14 @@ module.exports = {
     async editarGeneros(request, response) {
         try {
             // parâmetros recebidos pelo corpo da requisição
-            const { gen_nome, gen_foto } = request.body;
+            const { gen_nome} = request.body;
             // parâmetro recebido pela URL via params ex: /usuario/1
             const { gen_cod } = request.params;
             // instruções SQL
-            const sql = `UPDATE generos SET gen_nome = ?, 
-                        gen_foto = ?
+            const sql = `UPDATE generos SET gen_nome = ?
                         WHERE gen_cod = ?;`;
             // preparo do array com dados que serão atualizados
-            const values = [gen_nome, gen_foto, gen_cod];
+            const values = [gen_nome, gen_cod];
             // execução e obtenção de confirmação da atualização realizada
             const atualizaDados = await db.query(sql, values);
 

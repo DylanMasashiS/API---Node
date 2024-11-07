@@ -9,7 +9,7 @@ module.exports = {
             const {aut_nome} = request.body;
             const autPesq = aut_nome ? `%${aut_nome}%` : `%%`;
             // instruções SQL
-            const sql = `SELECT aut_cod, aut_nome, aut_foto 
+            const sql = `SELECT aut_cod, aut_nome
                         from autores
                         where aut_nome like ? order by aut_nome;`;
 
@@ -40,7 +40,7 @@ module.exports = {
 
             // instrução SQL
             const sql = `INSERT INTO autores (aut_nome) VALUES (?);`;
-            // definição dos dados a serem inseridos em um array com o insert de foto pela API
+
             const values = [aut_nome];
             // execução da instrução sql passando os parâmetros
             const execSql = await db.query(sql, values);
@@ -64,15 +64,14 @@ module.exports = {
     async editarAutores(request, response) {
         try {
             // parâmetros recebidos pelo corpo da requisição
-            const { aut_nome, aut_foto } = request.body;
+            const { aut_nome } = request.body;
             // parâmetro recebido pela URL via params ex: /usuario/1
             const { aut_cod } = request.params;
             // instruções SQL
-            const sql = `UPDATE autores SET aut_nome = ?, 
-                        aut_foto = ?
+            const sql = `UPDATE autores SET aut_nome = ?
                         WHERE aut_cod = ?;`;
             // preparo do array com dados que serão atualizados
-            const values = [aut_nome, aut_foto, aut_cod];
+            const values = [aut_nome, aut_cod];
             // execução e obtenção de confirmação da atualização realizada
             const atualizaDados = await db.query(sql, values);
 
