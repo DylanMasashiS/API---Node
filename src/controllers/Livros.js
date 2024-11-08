@@ -51,9 +51,9 @@ module.exports = {
             //liv.liv_ativo = 1 AS liv_ativo, (tirei porque farei outra rota para listar livros ativos)
 
             // Monta a consulta SQL dinamicamente com base nos critérios
-            const sql = `SELECT liv.liv_cod, liv.liv_nome, liv.liv_foto_capa, liv.liv_desc, 
-                                edt.edt_cod, edt.edt_nome, aut.aut_nome, 
-                                aut.aut_cod,
+            const sql = `SELECT liv.liv_cod, liv.liv_nome, liv.liv_pha_cod, liv.liv_categ_cod,
+                                liv.liv_foto_capa, liv.liv_desc, 
+                                edt.edt_cod, edt.edt_nome, aut.aut_nome, aut.aut_cod,
                                 GROUP_CONCAT(DISTINCT gen.gen_nome) AS Generos,
 
                                 COUNT(exe.exe_cod) as exemplares,
@@ -76,8 +76,8 @@ module.exports = {
                                 
                                 ${whereClauses.length > 0 ? 'WHERE ' + whereClauses.join(' AND ') : ''}
                                 AND exe.exe_data_saida IS NULL
-                                GROUP BY liv.liv_cod, liv.liv_nome, liv.liv_foto_capa, edt.edt_nome, 
-                                aut.aut_nome, aut.aut_cod
+                                GROUP BY liv.liv_cod, liv.liv_nome, liv.liv_pha_cod, liv.liv_categ_cod,
+                                liv.liv_foto_capa, edt.edt_nome, aut.aut_nome, aut.aut_cod
                                 ${havingClauses.length > 0 ? 'HAVING ' + havingClauses.join(' AND ') : ''}`;
 
             // Executa a consulta SQL
@@ -166,7 +166,8 @@ module.exports = {
             }
     
             // Monta a consulta SQL dinamicamente com base nos critérios
-            const sql = `SELECT liv.liv_cod, liv.liv_nome, liv.liv_foto_capa, liv.liv_desc, 
+            const sql = `SELECT liv.liv_cod, liv.liv_nome, liv.liv_pha_cod, liv.liv_categ_cod, 
+                                liv.liv_foto_capa, liv.liv_desc, 
                                 edt.edt_cod, edt.edt_nome, aut.aut_nome,
                                 GROUP_CONCAT(DISTINCT gen.gen_nome) AS generos,
 
@@ -192,7 +193,8 @@ module.exports = {
                                 INNER JOIN exemplares exe ON liv.liv_cod = exe.liv_cod 
 
                                 ${whereClauses.length > 0 ? 'WHERE ' + whereClauses.join(' AND ') : ''}
-                                GROUP BY liv.liv_cod, liv.liv_nome, liv.liv_foto_capa, edt.edt_nome, aut.aut_nome,
+                                GROUP BY liv.liv_cod, liv.liv_nome, liv.liv_pha_cod, liv.liv_categ_cod,
+                                liv.liv_foto_capa, edt.edt_nome, aut.aut_nome,
                                 ${havingClauses.length > 0 ? 'HAVING ' + havingClauses.join(' AND ') : ''}`;
     
             // Executa a consulta SQL
