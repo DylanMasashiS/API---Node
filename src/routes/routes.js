@@ -58,6 +58,7 @@ router.post ('/envio_email', (usuariosController.envioEmailRedSenha));
 router.post ('/usu_cadastrar', (usuariosController.cadastrarUsuarios));
 router.post ('/exemplares', (exemplaresController.cadastrarExemplares));
 router.post ('/usu_pendentes', (usuariosController.listarUsuariosPendentes));
+router.post ('/usu_reprovados', (usuariosController.listarUsuariosReprovados));
 router.post ('/emp_cadastrar', (emprestimosController.cadastrarEmprestimos));
 router.post ('/recomendacao', (recomendacaoController.cadastrarRecomendacao));
 router.post ('/livros_autores', (livros_autoresController.cadastrarLivros_Autores));
@@ -81,7 +82,6 @@ router.patch ('/usuarios_cursos/:ucu_cod', (usuarios_cursosController.editarUsua
 
 //UPDATE Personalizado
 router.patch ('/liv_inativar', (livrosController.inativarLivros));
-router.patch ('/usu_ocultar', (usuariosController.ocultarUsuarios));
 router.patch ('/analizarUcu', (usuariosController.analizarUsuariosCursos)); 
 router.patch ('/emp_renovar/:emp_cod', (emprestimosController.renovarEmprestimos));
 // router.patch ('red_senha', (usuariosController.redSenha));

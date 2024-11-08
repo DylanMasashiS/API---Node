@@ -238,7 +238,7 @@ module.exports = {
                             ucu.ucu_ativo, ucu.ucu_aprovado
                             FROM usuarios usu
                             INNER JOIN usuarios_cursos ucu ON usu.usu_cod = ucu.usu_cod
-                            WHERE usu.usu_tipo = 5
+                            WHERE usu.usu_tipo = 4
                             AND usu.usu_ativo = 1
                             AND usu.usu_aprovado = 0
                             AND ucu.ucu_status = 0; `;
@@ -268,9 +268,48 @@ module.exports = {
         }
     },
 
+    async listarUsuariosReprovados(request, response) {
+        try {
+            const sql = `SELECT usu.usu_cod, usu.usu_nome, usu.usu_email, usu.usu_tipo, 
+                        usu.usu_ativo, usu.usu_aprovado, ucu.ucu_status, ucu.ucu_cod,
+                        ucu.ucu_ativo, ucu.ucu_aprovado
+                        FROM usuarios usu
+                        INNER JOIN usuarios_cursos ucu ON usu.usu_cod = ucu.usu_cod
+                        WHERE usu.usu_tipo = 5
+                        AND usu.usu_ativo = 1
+                        AND usu.usu_aprovado = 0
+                        AND ucu.ucu_status = 0;`;
+
+            const [usuariosReprovados] = await db.query(sql);
+
+            // Converte campos de Buffer para número
+            const usuariosConvertidos = usuariosReprovados.map(usuario => ({
+                ...usuario,
+                usu_ativo: usuario.usu_ativo[0],
+                usu_aprovado: usuario.usu_aprovado[0],
+                ucu_status: usuario.ucu_status[0],
+                ucu_ativo: usuario.ucu_ativo[0],
+                ucu_aprovado: usuario.ucu_aprovado[0],
+            }));
+
+            return response.status(200).json({
+                sucesso: true,
+                mensagem: 'Usuários reprovados foram recuperados com sucesso',
+                dados: usuariosConvertidos
+            });
+        } catch (error) {
+            return response.status(500).json({
+                sucesso: false,
+                mensagem: 'Erro ao recuperar usuários reprovados.',
+                dados: error.message
+            });
+        }
+    },
+
     async analizarUsuariosCursos(request, response) {
         try {
             const usuarios = request.body.usuarios; // Expectando um array de usuários
+            const tipoAnalise = request.body.tipoAnalise; // 'tipoAnalise' pode ser 'pendentes' ou 'reprovados'
 
             // Resposta padrão
             const resultadoFinal = {
@@ -280,50 +319,41 @@ module.exports = {
             };
 
             for (const usuario of usuarios) {
-                const { usu_tipo, usu_ativo, usu_aprovado, usu_cod, ucu_status, ucu_ativo, ucu_aprovado, ucu_cod } = usuario;
+                const { usu_cod, usu_tipo, usu_ativo, usu_aprovado, ucu_status, ucu_ativo, ucu_aprovado, ucu_cod } = usuario;
 
-                //ucu_status: 0 = pendente, 1 = analisado (Para mostrar as solicitações pendentes de usuarios_cursos)
-                //ucu_ativo: 0 = inativo, 1 = ativo (Para mostrar os cursos desativados de alunos ou professores, uma vez que pode haver erro)
-                //ucu_aprovado: 0 = não aprovado, 1 = aprovado (Para mostrar os cursos de alunos ou professores que não foram aprovados)
-                //usu_ativo: 0 = pendente, 1 = aprovado (Para mostrar os usuários pendentes de aprovação)
-                //usu_aprovado: 0 = não aprovado, 1 = aprovado (Para mostrar os usuários que não foram aprovados)
-                //usu_tipo: 0 = aluno, 1 = professor, 2 = funcionario, 3 = manutenção, 4 = pendente, 5 = reprovado.
-
-                // Verifique se o novo tipo é válido
-                const tiposValidos = [0, 1, 2];
-                if (!tiposValidos.includes(usu_tipo)) {
-                    return response.status(400).json({
-                        sucesso: false,
-                        mensagem: `Tipo inválido para o usuário ${usu_cod}. Deve ser 0, 1 ou 2.`,
-                    });
+                // Lógica específica para 'pendentes' ou 'reprovados'
+                if (tipoAnalise === 'pendentes' && usu_aprovado === 0) {
+                    // Atualização para pendentes
+                } else if (tipoAnalise === 'reprovados' && usu_aprovado === 0 && usu_tipo === 5) {
+                    // Atualização para reprovados
                 }
 
                 // Atualização dos usuários
-                const sqlUsuarios =
-                    `UPDATE usuarios
-               SET usu_tipo     = ?, 
-                   usu_ativo    = ?, 
-                   usu_aprovado = ?
-               WHERE usu_cod = ?;`;
-
-                const values = [usu_tipo, usu_ativo, usu_aprovado, usu_cod];
-                const result = await db.query(sqlUsuarios, values);
+                const sqlUsuarios = `
+                    UPDATE usuarios
+                    SET usu_tipo = ?, 
+                        usu_ativo = ?, 
+                        usu_aprovado = ?
+                    WHERE usu_cod = ?;
+                `;
+                const valoresUsuarios = [usu_tipo, usu_ativo, usu_aprovado, usu_cod];
+                const resultUsuarios = await db.query(sqlUsuarios, valoresUsuarios);
 
                 // Atualização dos cursos
-                const sqlCursos =
-                    `UPDATE usuarios_cursos
-               SET ucu_status   = ?, 
-                   ucu_ativo    = ?, 
-                   ucu_aprovado = ?
-               WHERE ucu_cod = ?;`;
+                const sqlCursos = `
+                    UPDATE usuarios_cursos
+                    SET ucu_status = ?, 
+                        ucu_ativo = ?, 
+                        ucu_aprovado = ?
+                    WHERE ucu_cod = ?;
+                `;
+                const valoresCursos = [ucu_status, ucu_ativo, ucu_aprovado, ucu_cod];
+                const resultCursos = await db.query(sqlCursos, valoresCursos);
 
-                const valores = [ucu_status, ucu_ativo, ucu_aprovado, ucu_cod];
-                const resultado = await db.query(sqlCursos, valores);
-
-                // Adicionar informação ao resultado final
+                // Adicionar informações ao resultado final
                 resultadoFinal.dados[usu_cod] = {
-                    usuariosAtualizados: result[0].affectedRows,
-                    cursosAtualizados: resultado[0].affectedRows,
+                    usuariosAtualizados: resultUsuarios[0].affectedRows,
+                    cursosAtualizados: resultCursos[0].affectedRows,
                 };
             }
 
@@ -338,9 +368,6 @@ module.exports = {
             });
         }
     },
-
-
-
 
     async editarPerfil(request, response) {
         try {
@@ -372,32 +399,7 @@ module.exports = {
             });
         }
     },
-    async ocultarUsuarios(request, response) {
-        try {
-            const { usu_cod } = request.body;
 
-            const sql = `UPDATE usuarios 
-                SET usu.usu_ativo = ?, ucu.ucu_ativo = ?
-                INNER JOIN usuarios_cursos ucu ON ucu.usu_cod = usu.usu_cod
-                INNER JOIN cursos cur ON cur.cur_cod = ucu.cur_cod
-                WHERE usu_cod = ?;`;
-
-            const values = [usu_cod];
-            const atualizacao = await db.query(sql, values);
-
-            return response.status(200).json({
-                sucesso: true,
-                mensagem: `Usuário ${usu_cod} ocultado com sucesso`,
-                dados: atualizacao[0].affectedRows
-            });
-        } catch (error) {
-            return response.status(500).json({
-                sucesso: false,
-                mensagem: 'Erro na requisição.',
-                dados: error.message
-            });
-        }
-    },
     async loginUsuarios(request, response) {
         try {
             const { usu_email_rm, usu_senha } = request.body;
