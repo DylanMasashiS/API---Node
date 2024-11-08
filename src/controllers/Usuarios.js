@@ -79,9 +79,9 @@ module.exports = {
                     ucu.ucu_cod,
                     cur.cur_cod, 
                     cur.cur_nome,
-                    CASE WHEN usu.usu_ativo = 1 THEN 'Ativo' ELSE 'Inativo' END AS status_ativo, 
-                    CASE WHEN usu.usu_aprovado = 0 THEN 'Não Aprovado' ELSE 'Aprovado' END AS status_aprovado, 
-                    CASE WHEN usu.usu_tipo = 4 THEN 'Pendente' ELSE 'Outro Tipo' END AS status_tipo
+                    CASE WHEN usu.usu_ativo = 1 THEN 'Ativo' ELSE 'Inativo' END AS usu_ativo, 
+                    CASE WHEN usu.usu_aprovado = 0 THEN 'Não Aprovado' ELSE 'Aprovado' END AS usu_aprovado, 
+                    CASE WHEN usu.usu_tipo = 4 THEN 'Pendente' ELSE 'Pendente' END AS usu_tipo
                 FROM usuarios usu
                 INNER JOIN usuarios_cursos ucu ON usu.usu_cod = ucu.usu_cod
                 INNER JOIN cursos cur ON ucu.cur_cod = cur.cur_cod
@@ -120,9 +120,9 @@ module.exports = {
                         usu_email: row.usu_email,
                         usu_sexo: row.usu_sexo,
                         usu_foto: geraUrl(row.usu_foto),
-                        status_ativo: row.status_ativo,
-                        status_aprovado: row.status_aprovado,
-                        status_tipo: row.status_tipo,
+                        usu_ativo: row.usu_ativo,
+                        usu_aprovado: row.usu_aprovado,
+                        usu_tipo: row.usu_tipo,
                         cursos: []
                     };
                 }
@@ -345,16 +345,16 @@ module.exports = {
     async editarPerfil(request, response) {
         try {
             // parâmetros recebidos pelo corpo da requisição
-            const { usu_nome, usu_social, usu_email, usu_senha, usu_tipo, usu_sexo, usu_ativo } = request.body;
+            const { usu_nome, usu_social, usu_email, usu_sexo } = request.body;
             // parâmetro recebido pela URL via params ex: /usuario/1
             const { usu_cod } = request.params;
             // instruções SQL
             const sql = `UPDATE usuarios SET usu_nome = ?, usu_social = ?, 
-                        usu_email = ?, usu_senha = ?, usu_tipo = ?, 
-                        usu_sexo = ?, usu_ativo = ? 
+                        usu_email = ?,
+                        usu_sexo = ?
                         WHERE usu_cod = ?;`;
             // preparo do array com dados que serão atualizados
-            const values = [usu_nome, usu_social, usu_email, usu_senha, usu_tipo, usu_sexo, usu_ativo, usu_cod];
+            const values = [usu_nome, usu_social, usu_email, usu_sexo, usu_cod];
             // execução e obtenção de confirmação da atualização realizada
             const atualizaDados = await db.query(sql, values);
 
