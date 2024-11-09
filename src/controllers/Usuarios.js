@@ -271,31 +271,42 @@ module.exports = {
     async listarUsuariosReprovados(request, response) {
         try {
             const sql = `SELECT usu.usu_cod, usu.usu_nome, usu.usu_email, usu.usu_tipo, 
-                        usu.usu_ativo, usu.usu_aprovado, ucu.ucu_status, ucu.ucu_cod,
-                        ucu.ucu_ativo, ucu.ucu_aprovado
+                        usu.usu_ativo = 1 as usu_ativo, usu.usu_aprovado = 1 as usu_aprovado
                         FROM usuarios usu
-                        INNER JOIN usuarios_cursos ucu ON usu.usu_cod = ucu.usu_cod
                         WHERE usu.usu_tipo = 5
                         AND usu.usu_ativo = 1
-                        AND usu.usu_aprovado = 0
-                        AND ucu.ucu_status = 0;`;
-
+                        AND usu.usu_aprovado = 0;`;
+    
             const [usuariosReprovados] = await db.query(sql);
-
+    
+            // Log para depuração
+            console.log("Usuários reprovados retornados pela query:", usuariosReprovados);
+    
+            if (!usuariosReprovados.length) {
+                return response.status(200).json({
+                    sucesso: true,
+                    mensagem: 'Nenhum usuário reprovado encontrado.',
+                    dados: []
+                });
+            }
+    
             // Converte campos de Buffer para número
-            const usuariosConvertidos = usuariosReprovados.map(usuario => ({
-                ...usuario,
-                usu_ativo: usuario.usu_ativo[0],
-                usu_aprovado: usuario.usu_aprovado[0],
-                ucu_status: usuario.ucu_status[0],
-                ucu_ativo: usuario.ucu_ativo[0],
-                ucu_aprovado: usuario.ucu_aprovado[0],
-            }));
-
+            // const usuariosConvertidos = usuariosReprovados.map(usuario => ({
+            //     ...usuario,
+            //     usu_ativo: Buffer.isBuffer(usuario.usu_ativo) ? usuario.usu_ativo[0] : usuario.usu_ativo,
+            //     usu_aprovado: Buffer.isBuffer(usuario.usu_aprovado) ? usuario.usu_aprovado[0] : usuario.usu_aprovado,
+            //     ucu_status: Buffer.isBuffer(usuario.ucu_status) ? usuario.ucu_status[0] : usuario.ucu_status,
+            //     ucu_ativo: Buffer.isBuffer(usuario.ucu_ativo) ? usuario.ucu_ativo[0] : usuario.ucu_ativo,
+            //     ucu_aprovado: Buffer.isBuffer(usuario.ucu_aprovado) ? usuario.ucu_aprovado[0] : usuario.ucu_aprovado,
+            // }));
+    
+            // Log para depuração
+            // console.log("Usuários convertidos:", usuariosConvertidos);
+    
             return response.status(200).json({
                 sucesso: true,
                 mensagem: 'Usuários reprovados foram recuperados com sucesso',
-                dados: usuariosConvertidos
+                dados: usuariosReprovados
             });
         } catch (error) {
             return response.status(500).json({
@@ -305,29 +316,36 @@ module.exports = {
             });
         }
     },
-
+    
+    
     async analizarUsuariosCursos(request, response) {
         try {
-            const usuarios = request.body.usuarios; // Expectando um array de usuários
-            const tipoAnalise = request.body.tipoAnalise; // 'tipoAnalise' pode ser 'pendentes' ou 'reprovados'
-
+            const { usuarios, tipoAnalise } = request.body; // Destructuring expected fields
+    
+            if (!Array.isArray(usuarios) || !['pendentes', 'reprovados'].includes(tipoAnalise)) {
+                return response.status(400).json({
+                    sucesso: false,
+                    mensagem: 'Dados de entrada inválidos.'
+                });
+            }
+    
             // Resposta padrão
             const resultadoFinal = {
                 sucesso: true,
                 mensagem: '',
                 dados: {},
             };
-
+    
             for (const usuario of usuarios) {
                 const { usu_cod, usu_tipo, usu_ativo, usu_aprovado, ucu_status, ucu_ativo, ucu_aprovado, ucu_cod } = usuario;
-
+    
                 // Lógica específica para 'pendentes' ou 'reprovados'
                 if (tipoAnalise === 'pendentes' && usu_aprovado === 0) {
-                    // Atualização para pendentes
+                    // Atualização para pendentes (implement specific logic if needed)
                 } else if (tipoAnalise === 'reprovados' && usu_aprovado === 0 && usu_tipo === 5) {
-                    // Atualização para reprovados
+                    // Atualização para reprovados (implement specific logic if needed)
                 }
-
+    
                 // Atualização dos usuários
                 const sqlUsuarios = `
                     UPDATE usuarios
@@ -337,8 +355,8 @@ module.exports = {
                     WHERE usu_cod = ?;
                 `;
                 const valoresUsuarios = [usu_tipo, usu_ativo, usu_aprovado, usu_cod];
-                const resultUsuarios = await db.query(sqlUsuarios, valoresUsuarios);
-
+                const [resultUsuarios] = await db.query(sqlUsuarios, valoresUsuarios);
+    
                 // Atualização dos cursos
                 const sqlCursos = `
                     UPDATE usuarios_cursos
@@ -348,18 +366,18 @@ module.exports = {
                     WHERE ucu_cod = ?;
                 `;
                 const valoresCursos = [ucu_status, ucu_ativo, ucu_aprovado, ucu_cod];
-                const resultCursos = await db.query(sqlCursos, valoresCursos);
-
+                const [resultCursos] = await db.query(sqlCursos, valoresCursos);
+    
                 // Adicionar informações ao resultado final
                 resultadoFinal.dados[usu_cod] = {
-                    usuariosAtualizados: resultUsuarios[0].affectedRows,
-                    cursosAtualizados: resultCursos[0].affectedRows,
+                    usuariosAtualizados: resultUsuarios.affectedRows,
+                    cursosAtualizados: resultCursos.affectedRows,
                 };
             }
-
+    
             resultadoFinal.mensagem = 'Usuários analisados com sucesso';
             return response.status(200).json(resultadoFinal);
-
+    
         } catch (error) {
             return response.status(500).json({
                 sucesso: false,
@@ -368,7 +386,7 @@ module.exports = {
             });
         }
     },
-
+    
     async editarPerfil(request, response) {
         try {
             // parâmetros recebidos pelo corpo da requisição
