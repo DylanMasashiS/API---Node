@@ -15,7 +15,7 @@ function geraUrl (liv_foto_capa) {
 module.exports = {
     async listarExemplares(request, response) {
         try {
-            const {liv_nome} = request.body;
+            const {liv_nome, exe_cod} = request.body;
             const exePesq = liv_nome ? `%${liv_nome}%` : `%%`;
             // instruções SQL
             const sql = `SELECT exe.exe_cod, liv.liv_cod, liv.liv_nome, liv.liv_foto_capa, exe.exe_tombo, 
@@ -25,7 +25,7 @@ module.exports = {
                 INNER JOIN livros liv ON exe.liv_cod = liv.liv_cod
                 Where liv.liv_nome like ?;`;
 
-            const values = [exePesq];
+            const values = [exePesq, exe_cod];
             // executa instruções SQL e armazena o resultado na variável usuários
             const exemplares = await db.query(sql, values);
             // armazena em uma variável o número de registros retornados

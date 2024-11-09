@@ -1,11 +1,11 @@
 const db = require('../database/connection');
 const fs = require('fs-extra');
-const express = require('express'); 
-const router = express.Router(); 
+const express = require('express');
+const router = express.Router();
 
-function geraUrl (liv_foto_capa) {
+function geraUrl(liv_foto_capa) {
     let img = liv_foto_capa ? liv_foto_capa : 'default.jpg';
-    if (!fs.existsSync ('./public/uploads/CapaLivros/' + img)) {
+    if (!fs.existsSync('./public/uploads/CapaLivros/' + img)) {
         img = 'livros.jpg';
     }
     return '/public/uploads/CapaLivros/' + img;
@@ -14,31 +14,31 @@ function geraUrl (liv_foto_capa) {
 module.exports = {
     async listarEmprestimos(request, response) {
         try {
-            const { usu_nome, aut_nome, liv_nome, emp_data_emp } = request.body; // Adicionado usuarioId
+            const { usu_nome, aut_nome, liv_nome, emp_data_emp } = request.body;
 
             let params = [];
             let whereClauses = [];
 
-            
-                if (emp_data_emp) {
-                    whereClauses.push("emp.emp_data_emp = ?");
-                    params.push(emp_data_emp);
-                }
-                if (aut_nome) {
-                    whereClauses.push("aut.aut_nome LIKE ?");
-                    params.push(`%${aut_nome}%`);
-                }
-                if (liv_nome) {
-                    whereClauses.push("liv.liv_nome LIKE ?");
-                    params.push(`%${liv_nome}%`);
-                }
-                if (usu_nome) {
-                    whereClauses.push("usu.usu_nome LIKE ?"); // Alterado para LIKE
-                    params.push(`%${usu_nome}%`);
-                }
+            if (emp_data_emp) {
+                whereClauses.push("emp.emp_data_emp = ?");
+                params.push(emp_data_emp);
+            }
+
+            if (aut_nome) {
+                whereClauses.push("aut.aut_nome LIKE ?");
+                params.push(`%${aut_nome}%`);
+            }
+            if (liv_nome) {
+                whereClauses.push("liv.liv_nome LIKE ?");
+                params.push(`%${liv_nome}%`);
+            }
+            if (usu_nome) {
+                whereClauses.push("usu.usu_nome LIKE ?");
+                params.push(`%${usu_nome}%`);
+            }
 
             const sql = `SELECT emp.emp_cod, DATE_FORMAT(emp.emp_data_emp, '%d/%m/%Y') AS Empréstimo, 
-                            DATE_FORMAT(emp.emp_data_devol, '%d/%m/%Y') AS Devolução , liv.liv_nome, 
+                            DATE_FORMAT(emp.emp_data_devol, '%d/%m/%Y') AS Devolução, liv.liv_nome, 
                             liv.liv_foto_capa, exe.exe_cod, aut.aut_nome, usu.usu_cod, usu.usu_nome,
                             gen.gen_nome, gen.gen_cod, cur.cur_nome,
                             (SELECT usu_nome FROM usuarios WHERE usu_cod = emp.func_cod) as Funcionario
@@ -59,9 +59,9 @@ module.exports = {
 
             const nItens = emprestimos.length;
 
-            const resultado = emprestimos[0].map(emprestimos => ({
-                ...emprestimos,
-                liv_foto_capa: geraUrl(emprestimos.liv_foto_capa)
+            const resultado = emprestimos[0].map(emprestimo => ({
+                ...emprestimo,
+                liv_foto_capa: geraUrl(emprestimo.liv_foto_capa)
             }));
 
             return response.status(200).json({
@@ -69,36 +69,6 @@ module.exports = {
                 mensagem: 'Lista de empréstimos.',
                 dados: resultado,
                 nItens
-            });
-            } catch (error) {
-            return response.status(500).json({
-                sucesso: false,
-                mensagem: 'Erro na requisição.',
-                dados: error.message
-            });
-        }
-    },
-
-    async cadastrarEmprestimos(request, response) {
-        try {
-            // parâmetros recebidos no corpo da requisição
-            const { usu_cod, exe_cod, emp_data_emp, emp_data_devol, emp_devolvido, emp_renovacao, emp_data_renov, func_cod} = request.body;
-            // instrução SQL
-            const sql = `INSERT INTO emprestimos
-                (usu_cod, exe_cod, emp_data_emp, emp_data_devol, emp_devolvido, emp_renovacao, emp_data_renov, func_cod) 
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?);`;
-            // definição dos dados a serem inseridos em um array
-            const values = [usu_cod, exe_cod, emp_data_emp, emp_data_devol, emp_devolvido, emp_renovacao, emp_data_renov, func_cod];
-            // execução da instrução sql passando os parâmetros
-            const execSql = await db.query(sql, values);
-            // identificação do ID do registro inserido
-            const emp_cod = execSql[0].insertId;
-
-            return response.status(200).json({
-                sucesso: true,
-                mensagem: `Cadastro do empréstimo ${emp_cod} efetuado com sucesso.`,
-                dados: emp_cod
-                //mensSql: execSql
             });
         } catch (error) {
             return response.status(500).json({
@@ -108,6 +78,64 @@ module.exports = {
             });
         }
     },
+
+    async cadastrarEmprestimos(request, response) {
+
+        const { usu_cod, exe_cod, emp_data_emp, emp_data_devol, emp_devolvido, emp_renovacao, emp_data_renov, func_cod } = request.body;
+
+        try {
+            // Verificar se já existe um empréstimo para o exemplar (exe_cod) nas datas fornecidas
+            const verificaSql = `
+                SELECT COUNT(*) AS conflito 
+                FROM emprestimos
+                WHERE exe_cod = ?
+                AND (
+                    (emp_data_emp <= ? AND emp_data_devol >= ?)  -- Novo período de empréstimo se sobrepõe ao existente
+                    OR (emp_data_emp <= ? AND emp_data_devol >= ?)  -- Novo período de empréstimo se sobrepõe ao existente
+                    OR (emp_data_emp >= ? AND emp_data_devol <= ?)  -- Novo período está contido no existente
+                )
+                AND emp_devolvido = 0;  -- Verifica apenas empréstimos não devolvidos
+            `;
+
+            const [conflito] = await db.query(verificaSql, [
+                exe_cod,
+                emp_data_emp, emp_data_emp,
+                emp_data_devol, emp_data_devol,
+                emp_data_emp, emp_data_devol
+            ]);
+
+            if (conflito[0].conflito > 0) {
+                return response.status(400).json({
+                    sucesso: false,
+                    mensagem: 'Conflito de datas: o exemplar já está emprestado no período solicitado.'
+                });
+            }
+
+            // Se não há conflito, insere o novo empréstimo
+            const sql = `INSERT INTO emprestimos
+                        (usu_cod, exe_cod, emp_data_emp, emp_data_devol, emp_devolvido, emp_renovacao, emp_data_renov, func_cod) 
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?);`;
+
+            const values = [usu_cod, exe_cod, emp_data_emp, emp_data_devol, emp_devolvido, emp_renovacao, emp_data_renov, func_cod];
+
+            const execSql = await db.query(sql, values);
+
+            const emp_cod = execSql[0].insertId;
+
+            return response.status(200).json({
+                sucesso: true,
+                mensagem: `Cadastro do empréstimo ${emp_cod} efetuado com sucesso.`,
+                dados: emp_cod
+            });
+        } catch (error) {
+            return response.status(500).json({
+                sucesso: false,
+                mensagem: 'Erro na requisição.',
+                dados: error.message
+            });
+        }
+    },
+
     async editarEmprestimos(request, response) {
         try {
             // parâmetros recebidos pelo corpo da requisição
@@ -120,7 +148,7 @@ module.exports = {
                         emp_renovacao = ?, emp_data_renov = ?, func_cod = ?
                         WHERE emp_cod = ?;`;
             // preparo do array com dados que serão atualizados
-            const values = [usu_cod, exe_cod,emp_data_emp, emp_data_devol, emp_devolvido, emp_renovacao, emp_data_renov, func_cod, emp_cod];
+            const values = [usu_cod, exe_cod, emp_data_emp, emp_data_devol, emp_devolvido, emp_renovacao, emp_data_renov, func_cod, emp_cod];
             // execução e obtenção de confirmação da atualização realizada
             const atualizaDados = await db.query(sql, values);
 
@@ -160,12 +188,12 @@ module.exports = {
                 mensagem: 'Erro na requisição.',
                 dados: error.message
             });
-        }    
+        }
     },
     async renovarEmprestimos(request, response) {
         try {
             // parâmetros recebidos pelo corpo da requisição
-            const {emp_data_devol, emp_renovacao, emp_data_renov, func_cod } = request.body;
+            const { emp_data_devol, emp_renovacao, emp_data_renov, func_cod } = request.body;
             // parâmetro recebido pela URL via params ex: /usuario/1
             const { emp_cod } = request.params;
             // instruções SQL
