@@ -24,3 +24,39 @@ user: 3ce40f784d716e
 pass: 33738389fcfa8a
 
 Precisa de router? É patch/post?
+
+
+
+Para extrair apenas o nome do arquivo de uma URL, você pode usar uma função em JavaScript. No Next.js, basta criar uma função utilitária que você possa usar em qualquer parte do seu projeto.
+
+Aqui está como fazer isso:
+
+javascript
+Copiar código
+// utils/extractFileName.js
+
+export function extractFileName(url) {
+  // Verifica se a URL é uma string e se contém barras para fazer o split
+  if (typeof url === "string" && url.includes("/")) {
+    // Divide a URL usando a última barra e retorna o último elemento
+    return url.split("/").pop();
+  }
+  // Retorna uma string vazia se a URL for inválida
+  return "";
+}
+Explicação:
+typeof url === "string": Verifica se o parâmetro url é uma string.
+url.split("/"): Divide a string em uma lista de partes separadas pela barra /.
+.pop(): Pega o último elemento da lista, que será o nome do arquivo, como narnia.jpg.
+Como usar a função:
+Importe e chame a função onde for necessário em seu projeto Next.js:
+
+javascript
+Copiar código
+import { extractFileName } from "../utils/extractFileName";
+
+const url = "/public/uploads/CapaLivros/narnia.jpg";
+const fileName = extractFileName(url);
+
+console.log(fileName); // Saída: "narnia.jpg"
+Dessa forma, você obtém apenas o nome do arquivo, independentemente do caminho completo da URL.
