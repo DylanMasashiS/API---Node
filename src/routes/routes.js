@@ -84,6 +84,7 @@ router.patch ('/usuarios_cursos/:ucu_cod', (usuarios_cursosController.editarUsua
 router.patch ('/liv_inativar', (livrosController.inativarLivros));
 router.patch ('/analizarUcu', (usuariosController.analizarUsuariosCursos)); 
 router.patch ('/emp_renovar/:emp_cod', (emprestimosController.renovarEmprestimos));
+router.patch ('/usu_reprovar/:usu_cod', (usuariosController.analisarUsuariosReprovados));
 // router.patch ('red_senha', (usuariosController.redSenha));
 
 //DELETE ou EXCLUIR

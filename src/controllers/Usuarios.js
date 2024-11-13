@@ -317,6 +317,58 @@ module.exports = {
         }
     },
     
+    async analisarUsuariosReprovados(request, response) {
+        try {
+            const { usuarios } = request.body;
+    
+            // Validação inicial para assegurar que 'usuarios' seja uma lista
+            if (!Array.isArray(usuarios)) {
+                return response.status(400).json({
+                    sucesso: false,
+                    mensagem: 'Dados de entrada inválidos. Esperado uma lista de usuários.'
+                });
+            }
+    
+            const resultadoFinal = {
+                sucesso: true,
+                mensagem: '',
+                dados: {}
+            };
+    
+            for (const usuario of usuarios) {
+                const { usu_cod, usu_tipo, usu_ativo, usu_aprovado } = usuario;
+    
+                // Verifica se o usuário está reprovado e do tipo correto
+                if (usu_aprovado === 0 && usu_tipo === 5) {
+                    // Atualização do usuário na tabela 'usuarios'
+                    const sqlUsuarios = `
+                        UPDATE usuarios
+                        SET usu_tipo = ?, 
+                            usu_ativo = ?, 
+                            usu_aprovado = ?
+                        WHERE usu_cod = ?;
+                    `;
+                    const valoresUsuarios = [usu_tipo, usu_ativo, usu_aprovado, usu_cod];
+                    const [resultUsuarios] = await db.query(sqlUsuarios, valoresUsuarios);
+    
+                    // Adiciona informações ao resultado final
+                    resultadoFinal.dados[usu_cod] = {
+                        usuariosAtualizados: resultUsuarios.affectedRows
+                    };
+                }
+            }
+    
+            resultadoFinal.mensagem = 'Usuários reprovados analisados com sucesso.';
+            return response.status(200).json(resultadoFinal);
+    
+        } catch (error) {
+            return response.status(500).json({
+                sucesso: false,
+                mensagem: 'Erro ao processar análise dos usuários reprovados.',
+                dados: error.message
+            });
+        }
+    },
     
     async analizarUsuariosCursos(request, response) {
         try {
