@@ -1,11 +1,11 @@
 const db = require('../database/connection');
-const express = require('express'); 
-const router = express.Router(); 
+const express = require('express');
+const router = express.Router();
 const fs = require('fs-extra');
 
-function geraUrl (liv_foto_capa) {
+function geraUrl(liv_foto_capa) {
     let img = liv_foto_capa ? liv_foto_capa : 'default.jpg';
-    if (!fs.existsSync ('./public/uploads/CapaLivros/' + img)) {
+    if (!fs.existsSync('./public/uploads/CapaLivros/' + img)) {
         img = 'livros.jpg';
     }
     return '/public/uploads/CapaLivros/' + img;
@@ -15,7 +15,7 @@ function geraUrl (liv_foto_capa) {
 module.exports = {
     async listarExemplares(request, response) {
         try {
-            const {liv_nome, exe_cod} = request.body;
+            const { liv_nome, exe_cod } = request.body;
             const exePesq = liv_nome ? `%${liv_nome}%` : `%%`;
             // instruções SQL
             const sql = `SELECT exe.exe_cod, liv.liv_cod, liv.liv_nome, liv.liv_foto_capa, exe.exe_tombo, 
@@ -50,7 +50,7 @@ module.exports = {
                 dados: error.message
             });
         }
-    },  
+    },
 
 
     async cadastrarExemplares(request, response) {
@@ -86,7 +86,7 @@ module.exports = {
     async editarExemplares(request, response) {
         try {
             // parâmetros recebidos pelo corpo da requisição
-            const { liv_cod, exe_tombo, exe_data_aquis, exe_data_saida} = request.body;
+            const { liv_cod, exe_tombo, exe_data_aquis, exe_data_saida } = request.body;
             // parâmetro recebido pela URL via params ex: /usuario/1
             const { exe_cod } = request.params;
             // instruções SQL
@@ -94,7 +94,7 @@ module.exports = {
                         exe_tombo = ?, exe_data_aquis = ?, exe_data_saida = ?
                         WHERE exe_cod = ?;`;
             // preparo do array com dados que serão atualizados
-            const values = [ liv_cod, exe_tombo, exe_data_aquis, exe_data_saida, exe_cod];
+            const values = [liv_cod, exe_tombo, exe_data_aquis, exe_data_saida, exe_cod];
             // execução e obtenção de confirmação da atualização realizada
             const atualizaDados = await db.query(sql, values);
 
@@ -134,41 +134,37 @@ module.exports = {
                 mensagem: 'Erro na requisição.',
                 dados: error.message
             });
-        }    
-    }, 
+        }
+    },
+
     async verificarExemplaresReserva(request, response) {
         try {
-            const {liv_cod, dataConsulta} = request.body;
+            const { liv_cod, dataConsulta } = request.body;
             // instruções SQL
             const sql = `SELECT 
-    exe.exe_cod, 
-    liv.liv_cod, 
-    liv.liv_nome, 
-    liv.liv_foto_capa, 
-    exe.exe_tombo, 
-    DATE_FORMAT(exe.exe_data_aquis, '%d/%m/%Y') AS Aquisição, 
-    DATE_FORMAT(exe.exe_data_saida, '%d/%m/%Y') AS Saída, 
-    emp.emp_data_emp, 
-    emp.emp_data_devol, 
-    IF(emp.emp_data_emp IS NULL AND emp.emp_data_devol IS NULL, 0, 1) AS status_emprestimo
-FROM 
-    exemplares exe
-INNER JOIN 
-    livros liv ON exe.liv_cod = liv.liv_cod 
-LEFT JOIN 
-    emprestimos emp ON emp.exe_cod = exe.exe_cod 
-WHERE 
-    liv.liv_cod = ?
-    AND (
-        emp.emp_data_emp IS NULL -- Exemplar nunca emprestado
-        OR ? < emp.emp_data_emp -- Data antes do início do empréstimo
-        OR ? > emp.emp_data_devol -- Data depois do fim do empréstimo
-    );`;
+                        exe.exe_cod, liv.liv_cod, liv.liv_nome, 
+                        liv.liv_foto_capa, exe.exe_tombo, 
+                        DATE_FORMAT(exe.exe_data_aquis, '%d/%m/%Y') AS Aquisição, 
+                        DATE_FORMAT(exe.exe_data_saida, '%d/%m/%Y') AS Saída, 
+                        emp.emp_data_emp, 
+                        emp.emp_data_devol, 
+                        IF(emp.emp_data_emp IS NULL AND emp.emp_data_devol IS NULL, 0, 1) AS status_emprestimo
+                        FROM exemplares exe
+                        INNER JOIN livros liv ON exe.liv_cod = liv.liv_cod 
+                        LEFT JOIN emprestimos emp ON emp.exe_cod = exe.exe_cod 
+                        WHERE liv.liv_cod = ?
+                        AND (
+                            emp.emp_data_emp IS NULL -- Exemplar nunca emprestado
+                            OR ? < emp.emp_data_emp -- Data antes do início do empréstimo
+                            OR ? > emp.emp_data_devol -- Data depois do fim do empréstimo
+                        );`;
 
             const values = [liv_cod, dataConsulta, dataConsulta];
             // executa instruções SQL e armazena o resultado na variável usuários
+
             const exemplares = await db.query(sql, values);
             // armazena em uma variável o número de registros retornados
+            
             const nItens = exemplares[0].length;
 
             const resultado = exemplares[0].map(exemplares => ({
@@ -190,5 +186,5 @@ WHERE
                 dados: error.message
             });
         }
-    },  
+    },
 }

@@ -306,6 +306,7 @@ module.exports = {
             });
         }
     },
+    
     async apagarLivros(request, response) {
         try {
             // parâmetro passado via url na chamada da api pelo front-end

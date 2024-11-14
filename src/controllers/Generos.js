@@ -33,6 +33,7 @@ module.exports = {
             });
         }
     },
+
     async cadastrarGeneros(request, response) {
         try {
             // parâmetros recebidos no corpo da requisição
@@ -62,6 +63,7 @@ module.exports = {
             });
         }
     },
+
     async editarGeneros(request, response) {
         try {
             // parâmetros recebidos pelo corpo da requisição
@@ -90,6 +92,7 @@ module.exports = {
             });
         }
     },
+    
     async apagarGeneros(request, response) {
         try {
             // parâmetro passado via url na chamada da api pelo front-end

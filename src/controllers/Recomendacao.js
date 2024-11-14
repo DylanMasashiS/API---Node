@@ -117,6 +117,7 @@ module.exports = {
             });
         }
     },
+
     async cadastrarRecomendacao(request, response) {
         try {
             // parâmetros recebidos no corpo da requisição
@@ -146,6 +147,7 @@ module.exports = {
             });
         }
     },
+
     async editarRecomendacao(request, response) {
         try {
             // parâmetros recebidos pelo corpo da requisição
@@ -175,6 +177,7 @@ module.exports = {
             });
         }
     },
+    
     async apagarRecomendacao(request, response) {
         try {
             // parâmetro passado via url na chamada da api pelo front-end

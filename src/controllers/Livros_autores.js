@@ -36,33 +36,30 @@ module.exports = {
 
     async dispAutores(request, response) {
         try {
-            const { aut_cod } = request.body;
-
-            // Consulta SQL que retorna generos que o livro ainda não possui
+            const { liv_cod } = request.body;
+    
+            // Consulta SQL para retornar autores que o livro ainda não possui
             const sql = `
-                       SELECT aut.aut_cod, aut.aut_nome
-                       FROM autores AS aut
-                       LEFT JOIN livros_autores AS lau
-                       ON aut.aut_cod = lau.aut_cod
-                       AND lau.liv_cod = ?
-                       WHERE lau.liv_cod IS NULL;
-                       
+                SELECT aut.aut_cod, aut.aut_nome
+                FROM autores AS aut
+                LEFT JOIN livros_autores AS lau ON aut.aut_cod = lau.aut_cod AND lau.liv_cod = ?
+                WHERE lau.liv_cod IS NULL;
             `;
-
-            const values = [aut_cod];
-
-            const autores_disponiveis = await db.query(sql, values);
-
+    
+            const values = [liv_cod];
+    
+            const [autores_disponiveis] = await db.query(sql, values);
+    
             return response.status(200).json({
                 sucesso: true,
-                mensagem: 'Lista de cursos disponíveis para o usuário.',
-                dados: autores_disponiveis[0],
+                mensagem: 'Lista de autores disponíveis para o livro.',
+                dados: autores_disponiveis,
             });
-
+    
         } catch (error) {
             return response.status(500).json({
                 sucesso: false,
-                mensagem: 'Erro ao listar cursos disponíveis.',
+                mensagem: 'Erro ao listar autores disponíveis.',
                 dados: error.message,
             });
         }
