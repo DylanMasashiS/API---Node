@@ -44,6 +44,7 @@ router.post ('/rec_listar', (recomendacaoController.listarRecomendacao));
 router.post ('/dispUsucursos', (usuarios_cursosController.dispUsucursos));
 router.post ('/dispAutores', (livros_autoresController.dispAutores));
 router.post ('/dispGeneros', (livros_generosController.dispGeneros));
+router.post ('/consulta_exemplares', (exemplaresController.verificarExemplaresReserva));
 
 //CADASTRAR com imagem
 router.post ('/liv_cadastrar', uploadsL.single('img'), livrosController.cadastrarLivros);
