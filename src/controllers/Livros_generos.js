@@ -41,9 +41,10 @@ module.exports = {
     
             // Consulta SQL para retornar gêneros que o livro ainda não possui
             const sql = `
-                SELECT gen.gen_cod, gen.gen_nome
+                SELECT lge.liv_cod, gen.gen_cod, gen.gen_nome
                 FROM generos AS gen
-                LEFT JOIN livros_generos AS lge ON gen.gen_cod = lge.gen_cod AND lge.liv_cod = ?
+                LEFT JOIN livros_generos AS lge ON gen.gen_cod = lge.gen_cod 
+                AND lge.liv_cod = ?
                 WHERE lge.liv_cod IS NULL;
             `;
     
