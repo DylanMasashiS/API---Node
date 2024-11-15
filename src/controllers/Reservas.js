@@ -1,11 +1,11 @@
 const db = require('../database/connection');
 const fs = require('fs-extra');
-const express = require('express'); 
-const router = express.Router(); 
+const express = require('express');
+const router = express.Router();
 
-function geraUrl (liv_foto_capa) {
+function geraUrl(liv_foto_capa) {
     let img = liv_foto_capa ? liv_foto_capa : 'default.jpg';
-    if (!fs.existsSync ('./public/uploads/CapaLivros/' + img)) {
+    if (!fs.existsSync('./public/uploads/CapaLivros/' + img)) {
         img = 'livros.jpg';
     }
     return '/public/uploads/CapaLivros/' + img;
@@ -32,7 +32,7 @@ module.exports = {
                         WHERE usu.usu_cod = ? AND usu_ativo = 1
                         ORDER BY emp.emp_data_emp`;
 
-                        const values = [usu_cod];
+            const values = [usu_cod];
 
             const reservas = await db.query(sql, values);
 

@@ -28,8 +28,6 @@ router.get ('/autores', (autoresController.listarAutores));
 router.get ('/generos', (generosController.listarGeneros));
 router.get ('/editoras', (editorasController.listarEditoras));
 router.get ('/exemplares', (exemplaresController.listarExemplares));
-router.get ('/livros_autores', (livros_autoresController.listarLivros_Autores));
-router.get ('/livros_generos', (livros_generosController.listarLivros_Generos));
 router.get ('/usuarios_cursos', (usuarios_cursosController.listarUsuarios_Cursos));
 
 //LISTAR com pesquisa
@@ -44,6 +42,8 @@ router.post ('/rec_listar', (recomendacaoController.listarRecomendacao));
 router.post ('/dispUsucursos', (usuarios_cursosController.dispUsucursos));
 router.post ('/dispAutores', (livros_autoresController.dispAutores));
 router.post ('/dispGeneros', (livros_generosController.dispGeneros));
+router.post ('/livros_autores', (livros_autoresController.listarLivros_Autores));
+router.post ('/livros_generos', (livros_generosController.listarLivros_Generos));
 router.post ('/consulta_exemplares', (exemplaresController.verificarExemplaresReserva));
 
 //CADASTRAR com imagem
@@ -86,6 +86,7 @@ router.patch ('/liv_inativar', (livrosController.inativarLivros));
 router.patch ('/analizarUcu', (usuariosController.analizarUsuariosCursos)); 
 router.patch ('/emp_renovar/:emp_cod', (emprestimosController.renovarEmprestimos));
 router.patch ('/usu_reprovar/:usu_cod', (usuariosController.analisarUsuariosReprovados));
+router.patch('/emp_confirmar/:emp_cod', emprestimosController.confirmarRetirada);
 // router.patch ('red_senha', (usuariosController.redSenha));
 
 //DELETE ou EXCLUIR

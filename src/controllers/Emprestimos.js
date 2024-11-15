@@ -79,60 +79,82 @@ module.exports = {
         }
     },
 
-    async cadastrarEmprestimos(request, response) {
-
-        const { usu_cod, exe_cod, emp_data_emp, emp_data_devol, emp_devolvido, emp_renovacao, emp_data_renov, func_cod } = request.body;
+    async confirmarRetirada(req, res) {
+        const { emp_cod } = req.params;
 
         try {
-            // Verificar se já existe um empréstimo para o exemplar (exe_cod) nas datas fornecidas
-            const verificaSql = `
-                SELECT COUNT(*) AS conflito 
-                FROM emprestimos
-                WHERE exe_cod = ?
-                AND (
-                    (emp_data_emp <= ? AND emp_data_devol >= ?)  -- Novo período de empréstimo se sobrepõe ao existente
-                    OR (emp_data_emp <= ? AND emp_data_devol >= ?)  -- Novo período de empréstimo se sobrepõe ao existente
-                    OR (emp_data_emp >= ? AND emp_data_devol <= ?)  -- Novo período está contido no existente
-                )
-                AND emp_devolvido = 0;  -- Verifica apenas empréstimos não devolvidos
-            `;
+            // Atualiza o status do empréstimo para 'confirmado'
+            const [result] = await db.query('UPDATE emprestimos SET emp_status = "Confirmado" WHERE emp_cod = ? AND emp_status = "pendente"', [emp_cod]);
 
-            const [conflito] = await db.query(verificaSql, [
-                exe_cod,
-                emp_data_emp, emp_data_emp,
-                emp_data_devol, emp_data_devol,
-                emp_data_emp, emp_data_devol
-            ]);
-
-            if (conflito[0].conflito > 0) {
-                return response.status(400).json({
-                    sucesso: false,
-                    mensagem: 'Conflito de datas: o exemplar já está emprestado no período solicitado.'
-                });
+            if (result.affectedRows === 0) {
+                return res.status(404).json({ message: 'Empréstimo não encontrado ou já confirmado.' });
             }
 
-            // Se não há conflito, insere o novo empréstimo
-            const sql = `INSERT INTO emprestimos
-                        (usu_cod, exe_cod, emp_data_emp, emp_data_devol, emp_devolvido, emp_renovacao, emp_data_renov, func_cod) 
-                        VALUES (?, ?, ?, ?, ?, ?, ?, ?);`;
+            // Atualiza a data de retirada
+            const emp_data_retirada = new Date();
+            await db.query('UPDATE emprestimos SET emp_data_retirada = ? WHERE emp_cod = ?', [emp_data_retirada, emp_cod]);
 
-            const values = [usu_cod, exe_cod, emp_data_emp, emp_data_devol, emp_devolvido, emp_renovacao, emp_data_renov, func_cod];
+            // Atualiza o exemplar como não disponível
+            const [exemplar] = await db.query('SELECT exe_cod FROM emprestimos WHERE emp_cod = ?', [emp_cod]);
+            await db.query('UPDATE exemplares SET exe_devol = 0 WHERE exe_cod = ?', [exemplar.exe_cod]);
 
-            const execSql = await db.query(sql, values);
+            res.status(200).json({
+                message: 'Retirada confirmada com sucesso!',
+            });
+        } catch (err) {
+            res.status(500).json({ message: 'Erro ao confirmar retirada', error: err });
+        }
+    },
 
-            const emp_cod = execSql[0].insertId;
-
-            return response.status(200).json({
+    async cadastrarEmprestimos(req, res) {
+        const { usu_cod, exe_cod, emp_data_emp } = req.body;
+    
+        try {
+            // Verifica se o exemplar está disponível
+            const [exemplarDisponivel] = await db.query('SELECT * FROM exemplares WHERE exe_cod = ? AND exe_devol = 1', [exe_cod]);
+    
+            if (!exemplarDisponivel) {
+                return res.status(400).json({ message: 'Este exemplar não está disponível para empréstimo.' });
+            }
+    
+            // Calcula a data limite de retirada (3 dias após a solicitação)
+            const emp_data_limite_retirada = new Date();
+            emp_data_limite_retirada.setDate(emp_data_limite_retirada.getDate() + 3);  // 3 dias após a solicitação
+    
+            // Inicializa o status como "pendente" para aguardar a confirmação do administrador
+            const emp_status = 'pendente';
+    
+            // Define a data prevista de devolução (14 dias após a data de retirada confirmada)
+            const emp_data_prevista_devol = new Date();
+            emp_data_prevista_devol.setDate(emp_data_prevista_devol.getDate() + 17); // 3 dias de retirada + 14 dias de empréstimo
+    
+            // Cria o novo registro de empréstimo
+            const novoEmprestimo = {
+                usu_cod,
+                exe_cod,
+                emp_data_emp,
+                emp_data_limite_retirada,
+                emp_data_prevista_devol,
+                emp_status,
+                emp_reserva: true, // Reservado até confirmação
+            };
+    
+            // Insere o empréstimo na tabela
+            const [result] = await db.query('INSERT INTO emprestimos SET ?', novoEmprestimo);
+    
+            // Atualiza a disponibilidade do exemplar para "não disponível" até a retirada ou devolução
+            await db.query('UPDATE exemplares SET exe_devol = 0 WHERE exe_cod = ?', [exe_cod]);
+    
+            res.status(201).json({
                 sucesso: true,
-                mensagem: `Cadastro do empréstimo ${emp_cod} efetuado com sucesso.`,
-                dados: emp_cod
+                mensagem: 'Empréstimo solicitado com sucesso! A retirada será confirmada pelo administrador.',
+                data: {
+                    emp_cod: result.insertId,
+                    ...novoEmprestimo
+                }
             });
-        } catch (error) {
-            return response.status(500).json({
-                sucesso: false,
-                mensagem: 'Erro na requisição.',
-                dados: error.message
-            });
+        } catch (err) {
+            res.status(500).json({ sucesso: false, mensagem: 'Erro ao cadastrar empréstimo', error: err.message });
         }
     },
 
