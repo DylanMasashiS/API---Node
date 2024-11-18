@@ -281,22 +281,31 @@ module.exports = {
         try {
             // parâmetros recebidos pelo corpo da requisição
             const { liv_pha_cod, liv_categ_cod, liv_nome, liv_desc, edt_cod, liv_foto_capa } = request.body;
-            // parâmetro recebido pela URL via params ex: /usuario/1
             const { liv_cod } = request.params;
-            // instruções SQL
-            const sql = `UPDATE livros SET liv_pha_cod = ?, liv_categ_cod = ?, liv_nome = ?, 
-                        liv_desc = ?, edt_cod = ?, liv_foto_capa = ?
-                        WHERE liv_cod = ?;`;
-            // preparo do array com dados que serão atualizados
-            const values = [liv_pha_cod, liv_categ_cod, liv_nome, liv_desc, edt_cod, liv_foto_capa, liv_cod];
-            // execução e obtenção de confirmação da atualização realizada
+    
+            // verifica se liv_foto_capa foi fornecido
+            let sql;
+            let values;
+    
+            if (liv_foto_capa) {
+                // Atualiza todos os campos, incluindo a foto
+                sql = `UPDATE livros SET liv_pha_cod = ?, liv_categ_cod = ?, liv_nome = ?, 
+                       liv_desc = ?, edt_cod = ?, liv_foto_capa = ? WHERE liv_cod = ?;`;
+                values = [liv_pha_cod, liv_categ_cod, liv_nome, liv_desc, edt_cod, liv_foto_capa, liv_cod];
+            } else {
+                // Atualiza todos os campos, exceto a foto
+                sql = `UPDATE livros SET liv_pha_cod = ?, liv_categ_cod = ?, liv_nome = ?, 
+                       liv_desc = ?, edt_cod = ? WHERE liv_cod = ?;`;
+                values = [liv_pha_cod, liv_categ_cod, liv_nome, liv_desc, edt_cod, liv_cod];
+            }
+    
+            // execução da atualização
             const atualizaDados = await db.query(sql, values);
-
+    
             return response.status(200).json({
                 sucesso: true,
                 mensagem: `Livro ${liv_cod} atualizado com sucesso!`,
                 dados: atualizaDados[0].affectedRows
-                // mensSql: atualizaDados
             });
         } catch (error) {
             return response.status(500).json({
