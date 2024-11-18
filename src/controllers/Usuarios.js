@@ -316,6 +316,40 @@ module.exports = {
             });
         }
     },
+
+    async buscarUsuariosAprovados(request, response) {
+        try {
+            // Consulta para buscar usuários com usu_tipo = 0 (Aluno) ou usu_tipo = 1 (Professor)
+            const sqlConsulta = `
+                SELECT usu_cod, usu_nome, usu_email, usu_tipo
+                FROM usuarios
+                WHERE usu_tipo IN (0, 1)
+                AND usu_aprovado = 1;
+            `;
+            
+            const [resultados] = await db.query(sqlConsulta);
+    
+            if (resultados.length === 0) {
+                return response.status(200).json({
+                    sucesso: true,
+                    mensagem: 'Nenhum usuário aprovado encontrado.',
+                    dados: [],
+                });
+            }
+    
+            return response.status(200).json({
+                sucesso: true,
+                mensagem: 'Usuários aprovados encontrados com sucesso.',
+                dados: resultados,
+            });
+        } catch (error) {
+            return response.status(500).json({
+                sucesso: false,
+                mensagem: 'Erro ao buscar usuários aprovados.',
+                dados: error.message,
+            });
+        }
+    },   
     
     async analisarUsuariosReprovados(request, response) {
         try {
