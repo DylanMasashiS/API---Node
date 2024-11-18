@@ -83,7 +83,7 @@ router.patch ('/usuarios_cursos/:ucu_cod', (usuarios_cursosController.editarUsua
 
 //UPDATE Personalizado
 router.patch ('/liv_inativar', (livrosController.inativarLivros));
-router.patch ('/analizarUcu', (usuariosController.analizarUsuariosCursos)); 
+router.patch ('/analisarUcu', (usuariosController.analisarUsuariosCursos)); 
 router.patch ('/emp_renovar/:emp_cod', (emprestimosController.renovarEmprestimos));
 router.patch ('/usu_reprovar/:usu_cod', (usuariosController.analisarUsuariosReprovados));
 router.patch('/emp_confirmar/:emp_cod', emprestimosController.confirmarRetirada);

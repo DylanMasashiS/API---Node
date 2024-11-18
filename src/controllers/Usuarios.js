@@ -370,14 +370,16 @@ module.exports = {
         }
     },
     
-    async analizarUsuariosCursos(request, response) {
+    async analisarUsuariosCursos(request, response) {
         try {
-            const { usuarios, tipoAnalise } = request.body; // Destructuring expected fields
+            const { usuarios, novoTipo } = request.body; // Expecting an array of users and the new type
     
-            if (!Array.isArray(usuarios) || !['pendentes', 'reprovados'].includes(tipoAnalise)) {
+            // Validar o tipo fornecido
+            const tiposValidos = [0, 1, 2, 3, 5];
+            if (!Array.isArray(usuarios) || !tiposValidos.includes(novoTipo)) {
                 return response.status(400).json({
                     sucesso: false,
-                    mensagem: 'Dados de entrada inválidos.'
+                    mensagem: 'Dados de entrada inválidos ou tipo de usuário não permitido.',
                 });
             }
     
@@ -389,47 +391,34 @@ module.exports = {
             };
     
             for (const usuario of usuarios) {
-                const { usu_cod, usu_tipo, usu_ativo, usu_aprovado, ucu_status, ucu_ativo, ucu_aprovado, ucu_cod } = usuario;
+                const { usu_cod, usu_tipo } = usuario;
     
-                // Lógica específica para 'pendentes' ou 'reprovados'
-                if (tipoAnalise === 'pendentes' && usu_aprovado === 0) {
-                    // Atualização para pendentes (implement specific logic if needed)
-                } else if (tipoAnalise === 'reprovados' && usu_aprovado === 0 && usu_tipo === 5) {
-                    // Atualização para reprovados (implement specific logic if needed)
+                // Garantir que apenas pendentes (usu_tipo = 4) sejam alterados
+                if (usu_tipo === 4) {
+                    const sql = `
+                        UPDATE usuarios
+                        SET usu_tipo = ?
+                        WHERE usu_cod = ?;
+                    `;
+                    const valores = [novoTipo, usu_cod];
+                    const [result] = await db.query(sql, valores);
+    
+                    // Adicionar informações ao resultado final
+                    resultadoFinal.dados[usu_cod] = {
+                        alterado: result.affectedRows > 0,
+                        novoTipo,
+                    };
+                } else {
+                    // Usuário não pendente
+                    resultadoFinal.dados[usu_cod] = {
+                        alterado: false,
+                        motivo: 'Usuário não está pendente.',
+                    };
                 }
-    
-                // Atualização dos usuários
-                const sqlUsuarios = `
-                    UPDATE usuarios
-                    SET usu_tipo = ?, 
-                        usu_ativo = ?, 
-                        usu_aprovado = ?
-                    WHERE usu_cod = ?;
-                `;
-                const valoresUsuarios = [usu_tipo, usu_ativo, usu_aprovado, usu_cod];
-                const [resultUsuarios] = await db.query(sqlUsuarios, valoresUsuarios);
-    
-                // Atualização dos cursos
-                const sqlCursos = `
-                    UPDATE usuarios_cursos
-                    SET ucu_status = ?, 
-                        ucu_ativo = ?, 
-                        ucu_aprovado = ?
-                    WHERE ucu_cod = ?;
-                `;
-                const valoresCursos = [ucu_status, ucu_ativo, ucu_aprovado, ucu_cod];
-                const [resultCursos] = await db.query(sqlCursos, valoresCursos);
-    
-                // Adicionar informações ao resultado final
-                resultadoFinal.dados[usu_cod] = {
-                    usuariosAtualizados: resultUsuarios.affectedRows,
-                    cursosAtualizados: resultCursos.affectedRows,
-                };
             }
     
-            resultadoFinal.mensagem = 'Usuários analisados com sucesso';
+            resultadoFinal.mensagem = 'Usuários processados com sucesso.';
             return response.status(200).json(resultadoFinal);
-    
         } catch (error) {
             return response.status(500).json({
                 sucesso: false,
@@ -438,7 +427,7 @@ module.exports = {
             });
         }
     },
-    
+     
     async editarPerfil(request, response) {
         try {
             // parâmetros recebidos pelo corpo da requisição

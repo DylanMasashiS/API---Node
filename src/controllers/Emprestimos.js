@@ -84,7 +84,7 @@ module.exports = {
 
         try {
             // Atualiza o status do empréstimo para 'confirmado'
-            const [result] = await db.query('UPDATE emprestimos SET emp_status = "Retirado" WHERE emp_cod = ? AND emp_status = "pendente"', [emp_cod]);
+            const [result] = await db.query('UPDATE emprestimos SET emp_status = "Retirado" WHERE emp_cod = ? AND emp_status = "Pendente"', [emp_cod]);
 
             if (result.affectedRows === 0) {
                 return res.status(404).json({ message: 'Empréstimo não encontrado ou já confirmado.' });
