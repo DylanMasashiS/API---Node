@@ -11,11 +11,12 @@ module.exports = {
                         ucu.ucu_status, ucu.ucu_cod, ucu.ucu_ativo, ucu.ucu_aprovado
                         FROM usuarios usu
                         INNER JOIN usuarios_cursos ucu ON usu.usu_cod = ucu.usu_cod
+                        INNER JOIN cursos cur ON ucu.cur_cod = cur.cur_cod
                         WHERE usu.usu_tipo = 4
-                        AND usu.usu_ativo = 1
                         AND usu.usu_aprovado = 0
+                        AND usu.usu_ativo = 1
+                        AND ucu.ucu_ativo = 1
                         AND ucu.ucu_status = 0
-                        AND ucu.ucu_ativo = 0
                         AND ucu.ucu_aprovado = 0; `;
 
             const [usuariosPendentes] = await db.query(sqlUsP)
@@ -49,7 +50,8 @@ module.exports = {
                     usu.usu_ativo = 1 as usu_ativo, usu.usu_aprovado = 1 as usu_aprovado,
                     cur.cur_cod, cur.cur_nome
                     FROM usuarios usu
-                    INNER JOIN cursos cur ON usu.cur_cod = cur.cur_cod
+                    INNER JOIN usuarios_cursos ucu ON usu.usu_cod = ucu.usu_cod
+                    INNER JOIN cursos cur ON ucu.cur_cod = cur.cur_cod
                     WHERE usu.usu_tipo = 5
                     AND usu.usu_ativo = 0
                     AND usu.usu_aprovado = 0
@@ -84,42 +86,60 @@ module.exports = {
         }
     },
 
-    async listarUsuariosAprovados(request, response) {
+    async listarUsuariosAprovados (req, res) {
         try {
-            // Consulta para buscar usuários com usu_tipo = 0 (Aluno) ou usu_tipo = 1 (Professor)
-            const sqlConsulta = `
-                        SELECT usu.usu_cod, usu.usu_rm, usu.usu_nome, usu.usu_email, usu.usu_tipo, 
-                        usu.usu_ativo, usu.usu_aprovado, cur.cur_nome, cur.cur_cod, 
-                        ucu.ucu_status, ucu.ucu_cod, ucu.ucu_ativo, ucu.ucu_aprovado
-                        FROM usuarios usu
-                        INNER JOIN usuarios_cursos ucu ON usu.usu_cod = ucu.usu_cod
-                        WHERE usu.usu_tipo IN (0, 1)
-                        AND usu.usu_ativo = 1
-                        AND usu.usu_aprovado = 1
-                        AND ucu.ucu_status = 1
-                        AND ucu.ucu_ativo = 1
-                        AND ucu.ucu_aprovado = 1; `;
-
-            const [resultados] = await db.query(sqlConsulta);
-
-            if (resultados.length === 0) {
-                return response.status(200).json({
-                    sucesso: true,
-                    mensagem: 'Nenhum usuário aprovado encontrado.',
-                    dados: [],
-                });
-            }
-
-            return response.status(200).json({
+            // SQL para obter os dados
+            const sql = `
+                SELECT 
+                    usu.usu_cod, 
+                    usu.usu_rm, 
+                    usu.usu_nome, 
+                    usu.usu_email, 
+                    usu.usu_tipo, 
+                    CAST(usu.usu_ativo AS UNSIGNED) AS usu_ativo, 
+                    CAST(usu.usu_aprovado AS UNSIGNED) AS usu_aprovado, 
+                    cur.cur_nome, 
+                    cur.cur_cod, 
+                    CAST(ucu.ucu_status AS UNSIGNED) AS ucu_status, 
+                    ucu.ucu_cod, 
+                    CAST(ucu.ucu_ativo AS UNSIGNED) AS ucu_ativo, 
+                    CAST(ucu.ucu_aprovado AS UNSIGNED) AS ucu_aprovado
+                FROM 
+                    usuarios usu
+                JOIN 
+                    usuarios_cursos ucu ON usu.usu_cod = ucu.usu_cod
+                JOIN 
+                    cursos cur ON cur.cur_cod = ucu.cur_cod
+                WHERE 
+                    usu.usu_aprovado = 1; -- Exemplo de condição para listar aprovados
+            `;
+    
+            // Execução da consulta
+            const [resultados] = await db.query(sql);
+    
+            // Processamento dos dados para garantir booleans no retorno
+            const dadosAjustados = resultados.map(item => ({
+                ...item,
+                usu_ativo: Boolean(item.usu_ativo),
+                usu_aprovado: Boolean(item.usu_aprovado),
+                ucu_status: Boolean(item.ucu_status),
+                ucu_ativo: Boolean(item.ucu_ativo),
+                ucu_aprovado: Boolean(item.ucu_aprovado),
+            }));
+    
+            // Resposta ao cliente
+            return res.status(200).json({
                 sucesso: true,
                 mensagem: 'Usuários aprovados encontrados com sucesso.',
-                dados: resultados,
+                dados: dadosAjustados,
             });
+    
         } catch (error) {
-            return response.status(500).json({
+            console.error(error);
+            return res.status(500).json({
                 sucesso: false,
-                mensagem: 'Erro ao buscar usuários aprovados.',
-                dados: error.message,
+                mensagem: 'Erro ao listar usuários aprovados.',
+                erro: error.message,
             });
         }
     },
@@ -128,10 +148,8 @@ module.exports = {
         try {
             const { usuarios, novoTipo } = request.body;
     
-            // Lista de tipos permitidos: 0 e 1 (evitando 2 e 3 por segurança)
             const tiposValidos = [0, 1];
     
-            // Validação de entrada
             if (!Array.isArray(usuarios) || !tiposValidos.includes(novoTipo)) {
                 return response.status(400).json({
                     sucesso: false,
@@ -148,34 +166,43 @@ module.exports = {
             for (const usuario of usuarios) {
                 const { usu_cod, usu_tipo } = usuario;
     
-                // Processar apenas usuários reprovados (usu_tipo = 5)
+                // Verificar se o usuário está reprovado (usu_tipo = 5)
                 if (usu_tipo === 5) {
                     // Atualiza a tabela 'usuarios'
                     const sqlUsuarios = `
                         UPDATE usuarios
                         SET usu_tipo = ?, usu_aprovado = 1, usu_ativo = 1
-                        WHERE usu_cod = ?
+                        WHERE usu_cod = ? AND usu_tipo = 5
                     `;
                     const valoresUsuarios = [novoTipo, usu_cod];
                     const [resultUsuarios] = await db.query(sqlUsuarios, valoresUsuarios);
     
-                    // Atualiza a tabela 'usuarios_cursos'
-                    const sqlUcu = `
-                        UPDATE usuarios_cursos
-                        SET ucu_status = 1, ucu_ativo = 1, ucu_aprovado = 1
-                        WHERE usu_cod = ?
-                    `;
-                    const [resultUcu] = await db.query(sqlUcu, [usu_cod]);
+                    // Atualiza cursos apenas se o usuário foi atualizado
+                    if (resultUsuarios.affectedRows > 0) {
+                        const sqlUcu = `
+                            UPDATE usuarios_cursos
+                            SET ucu_status = 1, ucu_ativo = 1, ucu_aprovado = 1
+                            WHERE usu_cod = ?
+                        `;
+                        const [resultUcu] = await db.query(sqlUcu, [usu_cod]);
     
-                    resultadoFinal.dados[usu_cod] = {
-                        usuariosAtualizados: resultUsuarios.affectedRows > 0,
-                        cursosAtualizados: resultUcu.affectedRows > 0,
-                        novoTipo,
-                    };
+                        resultadoFinal.dados[usu_cod] = {
+                            usuariosAtualizados: true,
+                            cursosAtualizados: resultUcu.affectedRows > 0,
+                            novoTipo,
+                        };
+                    } else {
+                        resultadoFinal.dados[usu_cod] = {
+                            usuariosAtualizados: false,
+                            cursosAtualizados: false,
+                            motivo: 'Usuário já atualizado ou não encontrado como reprovado.',
+                        };
+                    }
                 } else {
                     resultadoFinal.dados[usu_cod] = {
-                        alterado: false,
-                        motivo: 'Usuário não está reprovado.',
+                        usuariosAtualizados: false,
+                        cursosAtualizados: false,
+                        motivo: 'Usuário não está reprovado (usu_tipo != 5).',
                     };
                 }
             }
