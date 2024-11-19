@@ -339,5 +339,18 @@ module.exports = {
                 dados: error.message
             });
         }
-    }
+    },
+
+    async cadastrarImagemLivro(request, response) {
+        try {
+            const img = request.file.filename;
+            return response.status(200).json({
+                confirm: 'Upload realizado com sucesso.', message: img
+            });
+        } catch (error) {
+            return response.status(500).json({
+                confirm: 'Erro', message: error.message
+            });
+        }
+    },
 }

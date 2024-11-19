@@ -6,7 +6,7 @@ const uploadsL = require ('../middlewares/upImgLivros');
 // const uploadsA = require ('../middlewares/upImgAutores');
 // const uploadsG = require ('../middlewares/upImgGeneros');
 // const uploadsE = require ('../middlewares/upImgEditoras');
-// const uploadsU = require ('../middlewares/upImgUsuarios');
+const uploadsU = require ('../middlewares/upImgUsuarios');
 
 const livrosController = require ('../controllers/Livros');
 const cursosController = require ('../controllers/Cursos');
@@ -48,7 +48,8 @@ router.post ('/consulta_exemplares', (exemplaresController.verificarExemplaresRe
 router.post ('/buscarUsuariosAprovados', (usuariosController.buscarUsuariosAprovados));
 
 //CADASTRAR com imagem
-router.post ('/liv_cadastrar', uploadsL.single('img'), livrosController.cadastrarLivros);
+router.post ('/upload_usuario', uploadsU.single('img'), usuariosController.cadastrarImagemUsuario);
+router.post ('/upload_livro', uploadsL.single('img'), livrosController.cadastrarImagemLivro);
 
 //CADASTRAR sem imagem
 router.post ('/cursos', (cursosController.cadastrarCursos));
@@ -57,6 +58,7 @@ router.post ('/autores', (autoresController.cadastrarAutores));
 router.post ('/usu_login', (usuariosController.loginUsuarios));
 router.post ('/editoras', (editorasController.cadastrarEditoras));
 router.post ('/envio_email', (usuariosController.envioEmailRedSenha));
+router.post ('/liv_cadastrar', (livrosController.cadastrarLivros));
 router.post ('/usu_cadastrar', (usuariosController.cadastrarUsuarios));
 router.post ('/exemplares', (exemplaresController.cadastrarExemplares));
 router.post ('/usu_pendentes', (usuariosController.listarUsuariosPendentes));
