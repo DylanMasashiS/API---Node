@@ -3,10 +3,10 @@ const router = express.Router();
 
 //middlewares
 const uploadsL = require ('../middlewares/upImgLivros');
+const uploadsU = require ('../middlewares/upImgUsuarios');
 // const uploadsA = require ('../middlewares/upImgAutores');
 // const uploadsG = require ('../middlewares/upImgGeneros');
 // const uploadsE = require ('../middlewares/upImgEditoras');
-const uploadsU = require ('../middlewares/upImgUsuarios');
 
 const livrosController = require ('../controllers/Livros');
 const cursosController = require ('../controllers/Cursos');
@@ -17,6 +17,7 @@ const editorasController = require ('../controllers/Editoras');
 const reservasController = require ('../controllers/Reservas');
 const contatosController = require ('../controllers/Contatos');
 const exemplaresController = require ('../controllers/Exemplares');
+const solicitacaoController = require ('../controllers/Solicitacao');
 const emprestimosController = require ('../controllers/Emprestimos');
 const recomendacaoController = require ('../controllers/Recomendacao');
 const livros_autoresController = require ('../controllers/Livros_autores');
@@ -39,17 +40,19 @@ router.post ('/reservas', (reservasController.listarReservas));
 router.post ('/liv_gerenciar', (livrosController.gerenciarLivros))
 router.post ('/emprestimos', (emprestimosController.listarEmprestimos));
 router.post ('/rec_listar', (recomendacaoController.listarRecomendacao));
-router.post ('/dispUsucursos', (usuarios_cursosController.dispUsucursos));
-router.post ('/dispAutores', (livros_autoresController.dispAutores));
-router.post ('/dispGeneros', (livros_generosController.dispGeneros));
+router.post ('/Usuc_disp', (usuarios_cursosController.dispUsucursos));
+router.post ('/Aut_disp', (livros_autoresController.dispAutores));
+router.post ('/Gen_disp', (livros_generosController.dispGeneros));
+router.post ('/usu_Aprovados', (solicitacaoController.listarUsuariosAprovados));
 router.post ('/livros_autores', (livros_autoresController.listarLivros_Autores));
 router.post ('/livros_generos', (livros_generosController.listarLivros_Generos));
 router.post ('/consulta_exemplares', (exemplaresController.verificarExemplaresReserva));
-router.post ('/buscarUsuariosAprovados', (usuariosController.buscarUsuariosAprovados));
 
-//CADASTRAR com imagem
-router.post ('/upload_usuario', uploadsU.single('img'), usuariosController.cadastrarImagemUsuario);
+//CADASTRAR e atualização de imagem
+router.post ('/liv_cadastrar', (livrosController.cadastrarLivros));
+router.post ('/usu_cadastrar', (usuariosController.cadastrarUsuarios));
 router.post ('/upload_livro', uploadsL.single('img'), livrosController.cadastrarImagemLivro);
+router.post ('/upload_usuario', uploadsU.single('img'), usuariosController.cadastrarImagemUsuario);
 
 //CADASTRAR sem imagem
 router.post ('/cursos', (cursosController.cadastrarCursos));
@@ -58,13 +61,11 @@ router.post ('/autores', (autoresController.cadastrarAutores));
 router.post ('/usu_login', (usuariosController.loginUsuarios));
 router.post ('/editoras', (editorasController.cadastrarEditoras));
 router.post ('/envio_email', (usuariosController.envioEmailRedSenha));
-router.post ('/liv_cadastrar', (livrosController.cadastrarLivros));
-router.post ('/usu_cadastrar', (usuariosController.cadastrarUsuarios));
 router.post ('/exemplares', (exemplaresController.cadastrarExemplares));
-router.post ('/usu_pendentes', (usuariosController.listarUsuariosPendentes));
-router.post ('/usu_reprovados', (usuariosController.listarUsuariosReprovados));
 router.post ('/emp_cadastrar', (emprestimosController.cadastrarEmprestimos));
 router.post ('/recomendacao', (recomendacaoController.cadastrarRecomendacao));
+router.post ('/usu_pendentes', (solicitacaoController.listarUsuariosPendentes));
+router.post ('/usu_reprovados', (solicitacaoController.listarUsuariosReprovados));
 router.post ('/livros_autores', (livros_autoresController.cadastrarLivros_Autores));
 router.post ('/livros_generos', (livros_generosController.cadastrarLivros_Generos));
 router.post ('/usuarios_cursos', (usuarios_cursosController.cadastrarUsuarios_Cursos));
@@ -86,12 +87,12 @@ router.patch ('/usuarios_cursos/:ucu_cod', (usuarios_cursosController.editarUsua
 
 //UPDATE Personalizado
 router.patch ('/liv_inativar', (livrosController.inativarLivros));
-router.patch ('/analisarUcu', (usuariosController.analisarUsuariosCursos)); 
+router.patch ('/rev_cancelar/:emp_cod', (reservasController.cancelarReservas));
+router.patch ('/rev_confirmar/:emp_cod', (reservasController.confirmarReservas));
 router.patch ('/emp_renovar/:emp_cod', (emprestimosController.renovarEmprestimos));
-router.patch ('/usu_reprovar/:usu_cod', (usuariosController.analisarUsuariosReprovados));
-router.patch('/emp_confirmar/:emp_cod', (emprestimosController.confirmarRetirada));
-router.patch('/rev_confirmar/:emp_cod', (reservasController.confirmarReservas));
-router.patch('/rev_cancelar/:emp_cod', (reservasController.cancelarReservas));
+router.patch ('/emp_confirmar/:emp_cod', (emprestimosController.confirmarRetirada));
+router.patch ('/usuc_aprovar/:usu_cod', (solicitacaoController.analisarUsuariosCursos));
+router.patch ('/usu_reprovar/:usu_cod', (solicitacaoController.analisarUsuariosReprovados));
 // router.patch ('red_senha', (usuariosController.redSenha));
 
 //DELETE ou EXCLUIR

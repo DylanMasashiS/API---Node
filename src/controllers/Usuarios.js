@@ -155,6 +155,7 @@ module.exports = {
             });
         }
     },
+
     async cadastrarUsuarios(request, response) {
         try {
             // Parâmetros recebidos no corpo da requisição
@@ -227,237 +228,6 @@ module.exports = {
                 sucesso: false,
                 mensagem: 'Erro na requisição.',
                 dados: error.message
-            });
-        }
-    },
-
-    async listarUsuariosPendentes(request, response) {
-        try {
-            const sqlUsP = `SELECT usu.usu_cod, usu.usu_nome, usu.usu_email, usu.usu_tipo, 
-                            usu.usu_ativo, usu.usu_aprovado, ucu.ucu_status, ucu.ucu_cod,
-                            ucu.ucu_ativo, ucu.ucu_aprovado
-                            FROM usuarios usu
-                            INNER JOIN usuarios_cursos ucu ON usu.usu_cod = ucu.usu_cod
-                            WHERE usu.usu_tipo = 4
-                            AND usu.usu_ativo = 1
-                            AND usu.usu_aprovado = 0
-                            AND ucu.ucu_status = 0; `;
-
-            const [usuariosPendentes] = await db.query(sqlUsP)
-            // Converte campos de Buffer para número
-            const usuariosConvertidos = usuariosPendentes.map(usuario => ({
-                ...usuario,
-                usu_ativo: usuario.usu_ativo[0], // Converte Buffer para número
-                usu_aprovado: usuario.usu_aprovado[0], // Converte Buffer para número
-                ucu_status: usuario.ucu_status[0], // Converte Buffer para número
-                ucu_ativo: usuario.ucu_ativo[0], // Converte Buffer para número
-                ucu_aprovado: usuario.ucu_aprovado[0], // Converte Buffer para número
-            }));
-
-            return response.status(200).json({
-                sucesso: true,
-                mensagem: 'Usuários pendentes recuperados com sucesso',
-                dados: usuariosConvertidos
-            });
-        } catch (error) {
-            return response.status(500).json({
-                sucesso: false,
-                mensagem: 'Erro ao recuperar usuários pendentes.',
-                dados: error.message
-            });
-        }
-    },
-
-    async listarUsuariosReprovados(request, response) {
-        try {
-            const sql = `SELECT usu.usu_cod, usu.usu_nome, usu.usu_email, usu.usu_tipo, 
-                        usu.usu_ativo = 1 as usu_ativo, usu.usu_aprovado = 1 as usu_aprovado
-                        FROM usuarios usu
-                        WHERE usu.usu_tipo = 5
-                        AND usu.usu_ativo = 1
-                        AND usu.usu_aprovado = 0;`;
-    
-            const [usuariosReprovados] = await db.query(sql);
-    
-            // Log para depuração
-            console.log("Usuários reprovados retornados pela query:", usuariosReprovados);
-    
-            if (!usuariosReprovados.length) {
-                return response.status(200).json({
-                    sucesso: true,
-                    mensagem: 'Nenhum usuário reprovado encontrado.',
-                    dados: []
-                });
-            }
-    
-            // Converte campos de Buffer para número
-            // const usuariosConvertidos = usuariosReprovados.map(usuario => ({
-            //     ...usuario,
-            //     usu_ativo: Buffer.isBuffer(usuario.usu_ativo) ? usuario.usu_ativo[0] : usuario.usu_ativo,
-            //     usu_aprovado: Buffer.isBuffer(usuario.usu_aprovado) ? usuario.usu_aprovado[0] : usuario.usu_aprovado,
-            //     ucu_status: Buffer.isBuffer(usuario.ucu_status) ? usuario.ucu_status[0] : usuario.ucu_status,
-            //     ucu_ativo: Buffer.isBuffer(usuario.ucu_ativo) ? usuario.ucu_ativo[0] : usuario.ucu_ativo,
-            //     ucu_aprovado: Buffer.isBuffer(usuario.ucu_aprovado) ? usuario.ucu_aprovado[0] : usuario.ucu_aprovado,
-            // }));
-    
-            // Log para depuração
-            // console.log("Usuários convertidos:", usuariosConvertidos);
-    
-            return response.status(200).json({
-                sucesso: true,
-                mensagem: 'Usuários reprovados foram recuperados com sucesso',
-                dados: usuariosReprovados
-            });
-        } catch (error) {
-            return response.status(500).json({
-                sucesso: false,
-                mensagem: 'Erro ao recuperar usuários reprovados.',
-                dados: error.message
-            });
-        }
-    },
-
-    async buscarUsuariosAprovados(request, response) {
-        try {
-            // Consulta para buscar usuários com usu_tipo = 0 (Aluno) ou usu_tipo = 1 (Professor)
-            const sqlConsulta = `
-                SELECT usu_cod, usu_nome, usu_email, usu_tipo
-                FROM usuarios
-                WHERE usu_tipo IN (0, 1)
-                AND usu_aprovado = 1;
-            `;
-            
-            const [resultados] = await db.query(sqlConsulta);
-    
-            if (resultados.length === 0) {
-                return response.status(200).json({
-                    sucesso: true,
-                    mensagem: 'Nenhum usuário aprovado encontrado.',
-                    dados: [],
-                });
-            }
-    
-            return response.status(200).json({
-                sucesso: true,
-                mensagem: 'Usuários aprovados encontrados com sucesso.',
-                dados: resultados,
-            });
-        } catch (error) {
-            return response.status(500).json({
-                sucesso: false,
-                mensagem: 'Erro ao buscar usuários aprovados.',
-                dados: error.message,
-            });
-        }
-    },   
-    
-    async analisarUsuariosReprovados(request, response) {
-        try {
-            const { usuarios } = request.body;
-    
-            // Validação inicial para assegurar que 'usuarios' seja uma lista
-            if (!Array.isArray(usuarios)) {
-                return response.status(400).json({
-                    sucesso: false,
-                    mensagem: 'Dados de entrada inválidos. Esperado uma lista de usuários.'
-                });
-            }
-    
-            const resultadoFinal = {
-                sucesso: true,
-                mensagem: '',
-                dados: {}
-            };
-    
-            for (const usuario of usuarios) {
-                const { usu_cod, usu_tipo, usu_ativo, usu_aprovado } = usuario;
-    
-                // Verifica se o usuário está reprovado e do tipo correto
-                if (usu_aprovado === 0 && usu_tipo === 5) {
-                    // Atualização do usuário na tabela 'usuarios'
-                    const sqlUsuarios = `
-                        UPDATE usuarios
-                        SET usu_tipo = ?, 
-                            usu_ativo = ?, 
-                            usu_aprovado = ?
-                        WHERE usu_cod = ?;
-                    `;
-                    const valoresUsuarios = [usu_tipo, usu_ativo, usu_aprovado, usu_cod];
-                    const [resultUsuarios] = await db.query(sqlUsuarios, valoresUsuarios);
-    
-                    // Adiciona informações ao resultado final
-                    resultadoFinal.dados[usu_cod] = {
-                        usuariosAtualizados: resultUsuarios.affectedRows
-                    };
-                }
-            }
-    
-            resultadoFinal.mensagem = 'Usuários reprovados analisados com sucesso.';
-            return response.status(200).json(resultadoFinal);
-    
-        } catch (error) {
-            return response.status(500).json({
-                sucesso: false,
-                mensagem: 'Erro ao processar análise dos usuários reprovados.',
-                dados: error.message
-            });
-        }
-    },
-    
-    async analisarUsuariosCursos(request, response) {
-        try {
-            const { usuarios, novoTipo } = request.body; // Expecting an array of users and the new type
-    
-            // Validar o tipo fornecido
-            const tiposValidos = [0, 1, 2, 3, 5];
-            if (!Array.isArray(usuarios) || !tiposValidos.includes(novoTipo)) {
-                return response.status(400).json({
-                    sucesso: false,
-                    mensagem: 'Dados de entrada inválidos ou tipo de usuário não permitido.',
-                });
-            }
-    
-            // Resposta padrão
-            const resultadoFinal = {
-                sucesso: true,
-                mensagem: '',
-                dados: {},
-            };
-    
-            for (const usuario of usuarios) {
-                const { usu_cod, usu_tipo } = usuario;
-    
-                // Garantir que apenas pendentes (usu_tipo = 4) sejam alterados
-                if (usu_tipo === 4) {
-                    const sql = `
-                        UPDATE usuarios
-                        SET usu_tipo = ?
-                        WHERE usu_cod = ?;
-                    `;
-                    const valores = [novoTipo, usu_cod];
-                    const [result] = await db.query(sql, valores);
-    
-                    // Adicionar informações ao resultado final
-                    resultadoFinal.dados[usu_cod] = {
-                        alterado: result.affectedRows > 0,
-                        novoTipo,
-                    };
-                } else {
-                    // Usuário não pendente
-                    resultadoFinal.dados[usu_cod] = {
-                        alterado: false,
-                        motivo: 'Usuário não está pendente.',
-                    };
-                }
-            }
-    
-            resultadoFinal.mensagem = 'Usuários processados com sucesso.';
-            return response.status(200).json(resultadoFinal);
-        } catch (error) {
-            return response.status(500).json({
-                sucesso: false,
-                mensagem: 'Erro na requisição.',
-                dados: error.message,
             });
         }
     },
@@ -547,30 +317,6 @@ module.exports = {
         }
     },
 
-    async redSenha(request, response) {
-        try {
-            const { usu_email_rm, usu_senha } = request.body;
-
-            const sql = 'UPDATE usuarios SET usu_senha = ? WHERE usu_email = ? AND usu_cod = ?';
-
-            const values = [usu_senha, usu_email_rm, usu_cod];
-
-            const result = await db.query(sql, values);
-
-            return response.status(200).json({
-                sucesso: true,
-                mensagem: 'Senha alterada com sucesso.',
-                dados: result
-            });
-
-        } catch (error) {
-            return response.status(500).json({
-                sucesso: false,
-                mensagem: 'Erro na requisição.',
-                dados: error.message
-            });
-        }
-    },
     async envioEmailRedSenha(request, response) {
         try {
             const { usu_email } = request.body;
@@ -635,6 +381,31 @@ module.exports = {
             });
         }
     },
+
+    // async redSenha(request, response) {
+    //     try {
+    //         const { usu_email_rm, usu_senha } = request.body;
+
+    //         const sql = 'UPDATE usuarios SET usu_senha = ? WHERE usu_email = ? AND usu_cod = ?';
+
+    //         const values = [usu_senha, usu_email_rm, usu_cod];
+
+    //         const result = await db.query(sql, values);
+
+    //         return response.status(200).json({
+    //             sucesso: true,
+    //             mensagem: 'Senha alterada com sucesso.',
+    //             dados: result
+    //         });
+
+    //     } catch (error) {
+    //         return response.status(500).json({
+    //             sucesso: false,
+    //             mensagem: 'Erro na requisição.',
+    //             dados: error.message
+    //         });
+    //     }
+    // },
 
     async cadastrarImagemUsuario(request, response) {
         try {
