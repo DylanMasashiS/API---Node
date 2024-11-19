@@ -1,0 +1,31 @@
+{
+    "sucesso": true,
+    "mensagem": "Lista de exemplares.",
+    "dados": [
+        {
+            "exe_cod": 38,
+            "liv_cod": 74,
+            "liv_nome": "A Culpa é das Estrelas",
+            "liv_foto_capa": "/public/uploads/CapaLivros/a culpa e das estrelas.jpg",
+            "exe_tombo": "0.078",
+            "Aquisição": "23/01/2024",
+            "Saída": null,
+            "emp_data_emp": null,
+            "emp_data_devol": null,
+            "status_emprestimo": 0
+        },
+        {
+            "exe_cod": 39,
+            "liv_cod": 74,
+            "liv_nome": "A Culpa é das Estrelas",
+            "liv_foto_capa": "/public/uploads/CapaLivros/a culpa e das estrelas.jpg",
+            "exe_tombo": "0.079",
+            "Aquisição": "23/01/2024",
+            "Saída": null,
+            "emp_data_emp": null,
+            "emp_data_devol": null,
+            "status_emprestimo": 0
+        }
+    ],
+    "nItens": 4
+}
