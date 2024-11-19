@@ -87,7 +87,9 @@ router.patch ('/liv_inativar', (livrosController.inativarLivros));
 router.patch ('/analisarUcu', (usuariosController.analisarUsuariosCursos)); 
 router.patch ('/emp_renovar/:emp_cod', (emprestimosController.renovarEmprestimos));
 router.patch ('/usu_reprovar/:usu_cod', (usuariosController.analisarUsuariosReprovados));
-router.patch('/emp_confirmar/:emp_cod', emprestimosController.confirmarRetirada);
+router.patch('/emp_confirmar/:emp_cod', (emprestimosController.confirmarRetirada));
+router.patch('/rev_confirmar/:emp_cod', (reservasController.confirmarReservas));
+router.patch('/rev_cancelar/:emp_cod', (reservasController.cancelarReservas));
 // router.patch ('red_senha', (usuariosController.redSenha));
 
 //DELETE ou EXCLUIR
