@@ -173,10 +173,17 @@ module.exports = {
 
             }));
 
+            const resultadoDisp = [];
+            resultado.map((item) => {
+                if (item.status_emprestimo == 0)  {
+                    resultadoDisp.push(item);
+                }
+            });
+
             return response.status(200).json({
                 sucesso: true,
                 mensagem: 'Lista de exemplares.',
-                dados: resultado,
+                dados: resultadoDisp,
                 nItens
             });
         } catch (error) {
