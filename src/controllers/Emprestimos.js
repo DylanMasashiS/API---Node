@@ -79,41 +79,26 @@ module.exports = {
         }
     },
 
-    async confirmarRetirada(req, res) {
-        const { emp_cod } = req.params;
-
-        try {
-            // Atualiza o status do empréstimo para 'confirmado'
-            const [result] = await db.query('UPDATE emprestimos SET emp_status = "Reservado" WHERE emp_cod = ? AND emp_status = "Pendente"', [emp_cod]);
-
-            if (result.affectedRows === 0) {
-                return res.status(404).json({ message: 'Empréstimo não encontrado ou já confirmado.' });
-            }
-
-            // Atualiza a data de retirada
-            const emp_data_retirada = new Date();
-            await db.query('UPDATE emprestimos SET emp_data_retirada = ? WHERE emp_cod = ?', [emp_data_retirada, emp_cod]);
-
-            // Atualiza o exemplar como não disponível
-            const [exemplar] = await db.query('SELECT exe_cod FROM emprestimos WHERE emp_cod = ?', [emp_cod]);
-            await db.query('UPDATE exemplares SET exe_devol = 0 WHERE exe_cod = ?', [exemplar.exe_cod]);
-
-            res.status(200).json({
-                message: 'Retirada confirmada com sucesso!',
-            });
-        } catch (err) {
-            res.status(500).json({ message: 'Erro ao confirmar retirada', error: err });
-        }
-    },
-
     async cadastrarEmprestimos(req, res) {
         const { usu_cod, exe_cod, emp_data_emp } = req.body;
     
         try {
-            // Verifica se o exemplar está disponível
-            const [exemplarDisponivel] = await db.query('SELECT * FROM exemplares WHERE exe_cod = ? AND exe_devol = 1', [exe_cod]);
+            // Verifica se o exemplar está disponível (não emprestado e não reservado)
+            const [exemplarDisponivel] = await db.query(
+                `SELECT * FROM emprestimos 
+                 WHERE exe_cod = ? AND emp_status IN ('Pendente', 'Reservado') 
+                 AND (emp_data_limite_retirada >= NOW() OR emp_data_prevista_devol >= NOW())`,
+                [exe_cod]
+            );
     
-            if (!exemplarDisponivel) {
+            if (exemplarDisponivel.length > 0) {
+                return res.status(400).json({ message: 'Este exemplar já está reservado ou emprestado no período solicitado.' });
+            }
+    
+            // Verifica se o exemplar está disponível para empréstimo
+            const [exemplar] = await db.query('SELECT * FROM exemplares WHERE exe_cod = ? AND exe_devol = 1', [exe_cod]);
+    
+            if (!exemplar) {
                 return res.status(400).json({ message: 'Este exemplar não está disponível para empréstimo.' });
             }
     
@@ -122,7 +107,7 @@ module.exports = {
             emp_data_limite_retirada.setDate(emp_data_limite_retirada.getDate() + 3);  // 3 dias após a solicitação
     
             // Inicializa o status como "pendente" para aguardar a confirmação do administrador
-            const emp_status = 'pendente';
+            const emp_status = 'Pendente';
     
             // Define a data prevista de devolução (14 dias após a data de retirada confirmada)
             const emp_data_prevista_devol = new Date();
@@ -145,12 +130,23 @@ module.exports = {
             // Atualiza a disponibilidade do exemplar para "não disponível" até a retirada ou devolução
             await db.query('UPDATE exemplares SET exe_devol = 0 WHERE exe_cod = ?', [exe_cod]);
     
+            // Formatando as datas para o formato 'YYYY-MM-DD'
+            const formatDate = (date) => {
+                return date.toISOString().split('T')[0];  // Retorna no formato 'YYYY-MM-DD'
+            };
+    
             res.status(201).json({
                 sucesso: true,
                 mensagem: 'Empréstimo solicitado com sucesso! A retirada será confirmada pelo administrador.',
                 data: {
                     emp_cod: result.insertId,
-                    ...novoEmprestimo
+                    usu_cod,
+                    exe_cod,
+                    emp_data_emp: formatDate(new Date(emp_data_emp)),  // Formata a data de empréstimo
+                    emp_data_limite_retirada: formatDate(emp_data_limite_retirada),  // Formata a data limite de retirada
+                    emp_data_prevista_devol: formatDate(emp_data_prevista_devol),  // Formata a data prevista de devolução
+                    emp_status,
+                    emp_reserva: true,
                 }
             });
         } catch (err) {
@@ -214,24 +210,25 @@ module.exports = {
     },
     async renovarEmprestimos(request, response) {
         try {
-            // parâmetros recebidos pelo corpo da requisição
-            const { emp_data_devol, emp_renovacao, emp_data_renov, func_cod } = request.body;
-            // parâmetro recebido pela URL via params ex: /usuario/1
+            const { usu_cod, emp_data_devol, emp_data_renov, func_cod } = request.body;
             const { emp_cod } = request.params;
-            // instruções SQL
-            const sql = `UPDATE emprestimos SET emp_data_devol = ?,
-                        emp_renovacao = ?, emp_data_renov = ?, func_cod = ?
-                        WHERE emp_cod = ?;`;
-            // preparo do array com dados que serão atualizados
-            const values = [emp_data_devol, emp_renovacao, emp_data_renov, func_cod, emp_cod];
-            // execução e obtenção de confirmação da atualização realizada
+    
+            // Formatar datas para o formato aceito pelo MySQL
+            const formattedEmpDataDevol = new Date(emp_data_devol).toISOString().split('T')[0];
+            const formattedEmpDataRenov = new Date(emp_data_renov).toISOString().split('T')[0];
+    
+            const sql = `UPDATE emprestimos 
+                         SET emp_data_devol = ?, emp_renovacao = 1, emp_devolvido = 1, 
+                             emp_data_renov = ?, func_cod = ?
+                         WHERE emp_cod = ? AND usu_cod = ?;`;
+    
+            const values = [formattedEmpDataDevol, formattedEmpDataRenov, func_cod, emp_cod, usu_cod];
             const atualizaDados = await db.query(sql, values);
-
+    
             return response.status(200).json({
                 sucesso: true,
-                mensagem: `Renovação do empréstimo ${emp_cod} atualizado com sucesso!`,
+                mensagem: `Renovação do empréstimo ${emp_cod} atualizada com sucesso!`,
                 dados: atualizaDados[0].affectedRows
-                // mensSql: atualizaDados
             });
         } catch (error) {
             return response.status(500).json({
@@ -240,6 +237,6 @@ module.exports = {
                 dados: error.message
             });
         }
-    }
+    }    
 }
 
