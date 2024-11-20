@@ -214,24 +214,25 @@ module.exports = {
     },
     async renovarEmprestimos(request, response) {
         try {
-            // parâmetros recebidos pelo corpo da requisição
-            const { emp_data_devol, emp_renovacao, emp_data_renov, func_cod } = request.body;
-            // parâmetro recebido pela URL via params ex: /usuario/1
+            const { usu_cod, emp_data_devol, emp_data_renov, func_cod } = request.body;
             const { emp_cod } = request.params;
-            // instruções SQL
-            const sql = `UPDATE emprestimos SET emp_data_devol = ?,
-                        emp_renovacao = ?, emp_data_renov = ?, func_cod = ?
-                        WHERE emp_cod = ?;`;
-            // preparo do array com dados que serão atualizados
-            const values = [emp_data_devol, emp_renovacao, emp_data_renov, func_cod, emp_cod];
-            // execução e obtenção de confirmação da atualização realizada
+    
+            // Formatar datas para o formato aceito pelo MySQL
+            const formattedEmpDataDevol = new Date(emp_data_devol).toISOString().split('T')[0];
+            const formattedEmpDataRenov = new Date(emp_data_renov).toISOString().split('T')[0];
+    
+            const sql = `UPDATE emprestimos 
+                         SET emp_data_devol = ?, emp_renovacao = 1, emp_devolvido = 1, 
+                             emp_data_renov = ?, func_cod = ?
+                         WHERE emp_cod = ? AND usu_cod = ?;`;
+    
+            const values = [formattedEmpDataDevol, formattedEmpDataRenov, func_cod, emp_cod, usu_cod];
             const atualizaDados = await db.query(sql, values);
-
+    
             return response.status(200).json({
                 sucesso: true,
-                mensagem: `Renovação do empréstimo ${emp_cod} atualizado com sucesso!`,
+                mensagem: `Renovação do empréstimo ${emp_cod} atualizada com sucesso!`,
                 dados: atualizaDados[0].affectedRows
-                // mensSql: atualizaDados
             });
         } catch (error) {
             return response.status(500).json({
@@ -240,6 +241,6 @@ module.exports = {
                 dados: error.message
             });
         }
-    }
+    }    
 }
 
