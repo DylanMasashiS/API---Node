@@ -79,33 +79,6 @@ module.exports = {
         }
     },
 
-    async confirmarRetirada(req, res) {
-        const { emp_cod } = req.params;
-
-        try {
-            // Atualiza o status do empréstimo para 'confirmado'
-            const [result] = await db.query('UPDATE emprestimos SET emp_status = "Reservado" WHERE emp_cod = ? AND emp_status = "Pendente"', [emp_cod]);
-
-            if (result.affectedRows === 0) {
-                return res.status(404).json({ message: 'Empréstimo não encontrado ou já confirmado.' });
-            }
-
-            // Atualiza a data de retirada
-            const emp_data_retirada = new Date();
-            await db.query('UPDATE emprestimos SET emp_data_retirada = ? WHERE emp_cod = ?', [emp_data_retirada, emp_cod]);
-
-            // Atualiza o exemplar como não disponível
-            const [exemplar] = await db.query('SELECT exe_cod FROM emprestimos WHERE emp_cod = ?', [emp_cod]);
-            await db.query('UPDATE exemplares SET exe_devol = 0 WHERE exe_cod = ?', [exemplar.exe_cod]);
-
-            res.status(200).json({
-                message: 'Retirada confirmada com sucesso!',
-            });
-        } catch (err) {
-            res.status(500).json({ message: 'Erro ao confirmar retirada', error: err });
-        }
-    },
-
     async cadastrarEmprestimos(req, res) {
         const { usu_cod, exe_cod, emp_data_emp } = req.body;
     
