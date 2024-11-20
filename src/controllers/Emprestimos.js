@@ -83,10 +83,22 @@ module.exports = {
         const { usu_cod, exe_cod, emp_data_emp } = req.body;
     
         try {
-            // Verifica se o exemplar está disponível
-            const [exemplarDisponivel] = await db.query('SELECT * FROM exemplares WHERE exe_cod = ? AND exe_devol = 1', [exe_cod]);
+            // Verifica se o exemplar está disponível (não emprestado e não reservado)
+            const [exemplarDisponivel] = await db.query(
+                `SELECT * FROM emprestimos 
+                 WHERE exe_cod = ? AND emp_status IN ('Pendente', 'Reservado') 
+                 AND (emp_data_limite_retirada >= NOW() OR emp_data_prevista_devol >= NOW())`,
+                [exe_cod]
+            );
     
-            if (!exemplarDisponivel) {
+            if (exemplarDisponivel.length > 0) {
+                return res.status(400).json({ message: 'Este exemplar já está reservado ou emprestado no período solicitado.' });
+            }
+    
+            // Verifica se o exemplar está disponível para empréstimo
+            const [exemplar] = await db.query('SELECT * FROM exemplares WHERE exe_cod = ? AND exe_devol = 1', [exe_cod]);
+    
+            if (!exemplar) {
                 return res.status(400).json({ message: 'Este exemplar não está disponível para empréstimo.' });
             }
     
@@ -95,7 +107,7 @@ module.exports = {
             emp_data_limite_retirada.setDate(emp_data_limite_retirada.getDate() + 3);  // 3 dias após a solicitação
     
             // Inicializa o status como "pendente" para aguardar a confirmação do administrador
-            const emp_status = 'pendente';
+            const emp_status = 'Pendente';
     
             // Define a data prevista de devolução (14 dias após a data de retirada confirmada)
             const emp_data_prevista_devol = new Date();
@@ -118,12 +130,23 @@ module.exports = {
             // Atualiza a disponibilidade do exemplar para "não disponível" até a retirada ou devolução
             await db.query('UPDATE exemplares SET exe_devol = 0 WHERE exe_cod = ?', [exe_cod]);
     
+            // Formatando as datas para o formato 'YYYY-MM-DD'
+            const formatDate = (date) => {
+                return date.toISOString().split('T')[0];  // Retorna no formato 'YYYY-MM-DD'
+            };
+    
             res.status(201).json({
                 sucesso: true,
                 mensagem: 'Empréstimo solicitado com sucesso! A retirada será confirmada pelo administrador.',
                 data: {
                     emp_cod: result.insertId,
-                    ...novoEmprestimo
+                    usu_cod,
+                    exe_cod,
+                    emp_data_emp: formatDate(new Date(emp_data_emp)),  // Formata a data de empréstimo
+                    emp_data_limite_retirada: formatDate(emp_data_limite_retirada),  // Formata a data limite de retirada
+                    emp_data_prevista_devol: formatDate(emp_data_prevista_devol),  // Formata a data prevista de devolução
+                    emp_status,
+                    emp_reserva: true,
                 }
             });
         } catch (err) {
