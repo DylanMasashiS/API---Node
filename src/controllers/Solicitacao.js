@@ -98,35 +98,52 @@ module.exports = {
     },
 
     // Listar usuários aprovados
-    async listarUsuariosAprovados(req, res) {
+    async listarUsuariosAprovados(request, response) {
         try {
             const sql = `SELECT usu.usu_cod, usu.usu_rm, usu.usu_nome, usu.usu_email, usu.usu_tipo, 
-                        usu.usu_ativo, usu.usu_aprovado, cur.cur_nome, cur.cur_cod, 
-                        ucu.ucu_status, ucu.ucu_cod, ucu.ucu_ativo, ucu.ucu_aprovado
+                            usu.usu_ativo, usu.usu_aprovado, ucu.ucu_status AS ucu_status,
+                            ucu.ucu_cod AS ucu_cod, ucu.ucu_ativo AS ucu_ativo, 
+                            ucu.ucu_aprovado AS ucu_aprovado, cur.cur_cod, cur.cur_nome
                         FROM usuarios usu
                         INNER JOIN usuarios_cursos ucu ON usu.usu_cod = ucu.usu_cod
                         INNER JOIN cursos cur ON ucu.cur_cod = cur.cur_cod
                         WHERE usu.usu_tipo = 4
-                        AND usu.usu_aprovado = 1
                         AND usu.usu_ativo = 1
-                        AND ucu.ucu_ativo = 1
+                        AND usu.usu_aprovado = 1
                         AND ucu.ucu_status = 1
+                        AND ucu.ucu_ativo = 1
                         AND ucu.ucu_aprovado = 1;`;
-
-            const [resultados] = await db.query(sql);
-
-            return res.status(200).json({
+    
+            const [usuariosAprovados] = await db.query(sql);
+    
+            if (!usuariosAprovados.length) {
+                return response.status(200).json({
+                    sucesso: true,
+                    mensagem: 'Nenhum usuário aprovado encontrado.',
+                    dados: []
+                });
+            }
+    
+            // Transformar valores binários em booleanos
+            const usuariosFormatados = usuariosAprovados.map(usuario => ({
+                ...usuario,
+                usu_ativo: usuario.usu_ativo === 1,
+                usu_aprovado: usuario.usu_aprovado === 1,
+                ucu_ativo: usuario.ucu_ativo === 1,
+                ucu_aprovado: usuario.ucu_aprovado === 1,
+                ucu_status: usuario.ucu_status === 1
+            }));
+    
+            return response.status(200).json({
                 sucesso: true,
                 mensagem: 'Usuários aprovados encontrados com sucesso.',
-                dados: resultados,
+                dados: usuariosFormatados
             });
-
         } catch (error) {
-            console.error(error);
-            return res.status(500).json({
+            return response.status(500).json({
                 sucesso: false,
-                mensagem: 'Erro ao listar usuários aprovados.',
-                erro: error.message,
+                mensagem: 'Erro ao recuperar usuários aprovados.',
+                dados: error.message
             });
         }
     },
