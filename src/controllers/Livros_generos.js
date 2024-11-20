@@ -99,15 +99,15 @@ module.exports = {
     async editarLivros_Generos(request, response) {
         try {
             // parâmetros recebidos pelo corpo da requisição
-            const { gen_cod, liv_cod } = request.body;
+            const { liv_cod, gen_cod } = request.body;
             // parâmetro recebido pela URL via params ex: /usuario/1
             const { lge_cod } = request.params;
             // instruções SQL
-            const sql = `UPDATE livros_generos SET gen_cod = ?, 
-                        liv_cod = ?
+            const sql = `UPDATE livros_generos SET liv_cod = ?, 
+                        gen_cod = ?
                         WHERE lge_cod = ?;`;
             // preparo do array com dados que serão atualizados
-            const values = [gen_cod, liv_cod, lge_cod];
+            const values = [liv_cod, gen_cod, lge_cod];
             // execução e obtenção de confirmação da atualização realizada
             const atualizaDados = await db.query(sql, values);
 

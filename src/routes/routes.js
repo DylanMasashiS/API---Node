@@ -44,8 +44,8 @@ router.post ('/Usuc_disp', (usuarios_cursosController.dispUsucursos));
 router.post ('/Aut_disp', (livros_autoresController.dispAutores));
 router.post ('/Gen_disp', (livros_generosController.dispGeneros));
 router.post ('/usu_aprovados', (solicitacaoController.listarUsuariosAprovados));
-router.post ('/livros_autores', (livros_autoresController.listarLivros_Autores));
-router.post ('/livros_generos', (livros_generosController.listarLivros_Generos));
+router.post ('/livros_aut', (livros_autoresController.listarLivros_Autores));
+router.post ('/livros_gen', (livros_generosController.listarLivros_Generos));
 router.post ('/consulta_exemplares', (exemplaresController.verificarExemplaresReserva));
 
 //CADASTRAR e atualização de imagem

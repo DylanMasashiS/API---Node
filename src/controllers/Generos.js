@@ -67,7 +67,7 @@ module.exports = {
     async editarGeneros(request, response) {
         try {
             // parâmetros recebidos pelo corpo da requisição
-            const { gen_nome} = request.body;
+            const { gen_nome } = request.body;
             // parâmetro recebido pela URL via params ex: /usuario/1
             const { gen_cod } = request.params;
             // instruções SQL
