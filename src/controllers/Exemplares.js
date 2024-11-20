@@ -141,23 +141,23 @@ module.exports = {
         try {
             const { liv_cod, dataConsulta } = request.body;
             // instruções SQL
-            const sql = `SELECT 
-                        exe.exe_cod, liv.liv_cod, liv.liv_nome, 
-                        liv.liv_foto_capa, exe.exe_tombo, 
-                        DATE_FORMAT(exe.exe_data_aquis, '%d/%m/%Y') AS Aquisição, 
-                        DATE_FORMAT(exe.exe_data_saida, '%d/%m/%Y') AS Saída, 
-                        emp.emp_data_emp, 
-                        emp.emp_data_devol, 
-                        IF(emp.emp_data_emp IS NULL AND emp.emp_data_devol IS NULL, 0, 1) AS status_emprestimo
-                        FROM exemplares exe
-                        INNER JOIN livros liv ON exe.liv_cod = liv.liv_cod 
-                        LEFT JOIN emprestimos emp ON emp.exe_cod = exe.exe_cod 
-                        WHERE liv.liv_cod = ?
-                        AND (
-                            emp.emp_data_emp IS NULL -- Exemplar nunca emprestado
-                            OR ? < emp.emp_data_emp -- Data antes do início do empréstimo
-                            OR ? > emp.emp_data_devol -- Data depois do fim do empréstimo
-                        );`;
+                const sql = `SELECT 
+                    exe.exe_cod,
+                    liv.liv_cod,
+                    liv.liv_nome,
+                    liv.liv_foto_capa,
+                    exe.exe_tombo,
+                    DATE_FORMAT(exe.exe_data_aquis, '%d/%m/%Y') AS Aquisição,
+                    DATE_FORMAT(exe.exe_data_saida, '%d/%m/%Y') AS Saída
+                FROM exemplares exe
+                INNER JOIN livros liv ON exe.liv_cod = liv.liv_cod
+                LEFT JOIN emprestimos emp ON emp.exe_cod = exe.exe_cod
+                WHERE liv.liv_cod = ? -- Filtrar pelo livro específico
+                AND (
+                    emp.emp_data_emp IS NULL -- Nunca foi emprestado
+                    OR ? < emp.emp_data_emp -- Data antes do início do empréstimo
+                    OR ? > emp.emp_data_prevista_devol -- Data após o fim do empréstimo
+                );`;
 
             const values = [liv_cod, dataConsulta, dataConsulta];
             // executa instruções SQL e armazena o resultado na variável usuários
@@ -173,17 +173,17 @@ module.exports = {
 
             }));
 
-            const resultadoDisp = [];
-            resultado.map((item) => {
-                if (item.status_emprestimo == 0)  {
-                    resultadoDisp.push(item);
-                }
-            });
+            // const resultadoDisp = [];
+            // resultado.map((item) => {
+            //     if (item.status_emprestimo == 0)  {
+            //         resultadoDisp.push(item);
+            //     }
+            // });
 
             return response.status(200).json({
                 sucesso: true,
                 mensagem: 'Lista de exemplares.',
-                dados: resultadoDisp,
+                dados: resultado,
                 nItens
             });
         } catch (error) {
