@@ -1,81 +1,10 @@
 {
     "sucesso": true,
-    "mensagem": "Usuários reprovados foram recuperados com sucesso.",
-    "dados": [
-        {
-            "usu_cod": 51,
-            "usu_rm": 44444444,
-            "usu_nome": "Donavan",
-            "usu_email": "donavani@etec.sp.gov.br",
-            "usu_tipo": 5,
-            "usu_ativo": 0,
-            "usu_aprovado": 0,
-            "ucu_status": 0,
-            "ucu_cod": 34,
-            "ucu_ativo": 0,
-            "ucu_aprovado": 0,
-            "cur_cod": 95,
-            "cur_nome": "Redes de Computadores"
-        },
-        {
-            "usu_cod": 53,
-            "usu_rm": 44444444,
-            "usu_nome": "Marcelo Pereira",
-            "usu_email": "marc@etec.sp.gov.br",
-            "usu_tipo": 5,
-            "usu_ativo": 0,
-            "usu_aprovado": 0,
-            "ucu_status": 0,
-            "ucu_cod": 26,
-            "ucu_ativo": 0,
-            "ucu_aprovado": 0,
-            "cur_cod": 85,
-            "cur_nome": "Administração"
-        },
-        {
-            "usu_cod": 54,
-            "usu_rm": 785426,
-            "usu_nome": "Gabriela Monteiro Oliveira",
-            "usu_email": "Monteiro@gmail.com",
-            "usu_tipo": 5,
-            "usu_ativo": 0,
-            "usu_aprovado": 0,
-            "ucu_status": 0,
-            "ucu_cod": 27,
-            "ucu_ativo": 0,
-            "ucu_aprovado": 0,
-            "cur_cod": 94,
-            "cur_nome": "Recursos Humanos"
-        },
-        {
-            "usu_cod": 55,
-            "usu_rm": 44444444,
-            "usu_nome": "Marcelo Pereira",
-            "usu_email": "marce@etec.sp.gov.br",
-            "usu_tipo": 5,
-            "usu_ativo": 0,
-            "usu_aprovado": 0,
-            "ucu_status": 0,
-            "ucu_cod": 28,
-            "ucu_ativo": 0,
-            "ucu_aprovado": 0,
-            "cur_cod": 85,
-            "cur_nome": "Administração"
-        },
-        {
-            "usu_cod": 56,
-            "usu_rm": 274365,
-            "usu_nome": "Sofia Carvalho",
-            "usu_email": "carvalho@gmail.com",
-            "usu_tipo": 5,
-            "usu_ativo": 0,
-            "usu_aprovado": 0,
-            "ucu_status": 0,
-            "ucu_cod": 29,
-            "ucu_ativo": 0,
-            "ucu_aprovado": 0,
-            "cur_cod": 99,
-            "cur_nome": "Itinerário de Ciências Humanas"
+    "mensagem": "Atualizações de usuários e cursos concluídas.",
+    "dados": {
+        "30": {
+            "usuariosAtualizados": true,
+            "cursosAtualizados": true
         }
-    ]
+    }
 }
