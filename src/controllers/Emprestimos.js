@@ -80,7 +80,11 @@ module.exports = {
     },
 
     async cadastrarEmprestimos(req, res) {
-        const { usu_cod, exe_cod, emp_data_emp } = req.body;
+        const { usu_cod, exe_cod, emp_data_emp, func_cod } = req.body;  // Adiciona func_cod
+        
+        if (!func_cod) {
+            return res.status(400).json({ message: 'Código do funcionário (func_cod) é obrigatório.' });
+        }
     
         try {
             // Verifica se o exemplar está disponível (não emprestado e não reservado)
@@ -122,13 +126,14 @@ module.exports = {
                 emp_data_prevista_devol,
                 emp_status,
                 emp_reserva: true, // Reservado até confirmação
+                func_cod  // Adiciona o código do funcionário no novo empréstimo
             };
     
             // Insere o empréstimo na tabela
             const [result] = await db.query('INSERT INTO emprestimos SET ?', novoEmprestimo);
     
             // Atualiza a disponibilidade do exemplar para "não disponível" até a retirada ou devolução
-            await db.query('UPDATE exemplares SET exe_devol = 0 WHERE exe_cod = ?', [exe_cod]);
+            await db.query('UPDATE exemplares SET exe_status = "Indisponível", exe_devol = 0 WHERE exe_cod = ?', [exe_cod]);
     
             // Formatando as datas para o formato 'YYYY-MM-DD'
             const formatDate = (date) => {
@@ -137,7 +142,7 @@ module.exports = {
     
             res.status(201).json({
                 sucesso: true,
-                mensagem: 'Empréstimo solicitado com sucesso! A retirada será confirmada pelo administrador.',
+                mensagem: 'Empréstimo solicitado com sucesso! A retirada será confirmada pelo administrador. 😊',
                 data: {
                     emp_cod: result.insertId,
                     usu_cod,
@@ -147,10 +152,11 @@ module.exports = {
                     emp_data_prevista_devol: formatDate(emp_data_prevista_devol),  // Formata a data prevista de devolução
                     emp_status,
                     emp_reserva: true,
+                    func_cod  // Retorna o código do funcionário que fez a operação
                 }
             });
         } catch (err) {
-            res.status(500).json({ sucesso: false, mensagem: 'Erro ao cadastrar empréstimo', error: err.message });
+            res.status(500).json({ sucesso: false, mensagem: 'Erro ao cadastrar empréstimo. 😔', error: err.message });
         }
     },
 
@@ -184,6 +190,66 @@ module.exports = {
             });
         }
     },
+
+    async devolverEmprestimos(req, res) {
+        const { emp_cod, exe_cod } = req.body;
+    
+        try {
+            // Verifica se há uma reserva e o limite de retirada
+            const [resultadoEmprestimo] = await db.query(
+                `SELECT * FROM emprestimos
+                 WHERE emp_cod = ? AND emp_status IN ('Pendente', 'Reservado') 
+                 AND emp_data_limite_retirada >= NOW()`, 
+                [emp_cod]
+            );
+    
+            if (resultadoEmprestimo.length === 0) {
+                return res.status(400).json({ message: 'Empréstimo não encontrado ou já devolvido, ou limite de retirada expirado.' });
+            }
+    
+            // Atualiza o status do empréstimo para "Devolvido"
+            const [resultadoDevolucao] = await db.query(
+                `UPDATE emprestimos 
+                 SET emp_status = 'Devolvido' 
+                 WHERE emp_cod = ? AND emp_status = 'Pendente'`, 
+                [emp_cod]
+            );
+    
+            // Verifica se o empréstimo foi atualizado
+            if (resultadoDevolucao.affectedRows === 0) {
+                return res.status(400).json({ message: 'Erro ao devolver o empréstimo.' });
+            }
+    
+            // Atualiza o status do exemplar
+            const [exemplar] = await db.query(
+                `SELECT * FROM exemplares WHERE exe_cod = ?`, 
+                [exe_cod]
+            );
+    
+            if (!exemplar) {
+                return res.status(400).json({ message: 'Exemplar não encontrado.' });
+            }
+    
+            if (exemplar.exe_reservado) {
+                // Se houver reserva, muda o status para "indisponível"
+                await db.query('UPDATE exemplares SET exe_status = "Indisponível" WHERE exe_cod = ?', [exe_cod]);
+    
+                // Se houver a reserva, podemos definir o status de devolução para "reservado" até o limite de retirada
+                await db.query('UPDATE emprestimos SET emp_status = "Reservado" WHERE exe_cod = ? AND emp_status = "Pendente"', [exe_cod]);
+            } else {
+                // Se não houver reserva, deixa o exemplar disponível
+                await db.query('UPDATE exemplares SET exe_status = "Disponível" WHERE exe_cod = ?', [exe_cod]);
+            }
+    
+            res.status(200).json({
+                sucesso: true,
+                mensagem: 'Empréstimo devolvido e exemplar atualizado. 😊',
+            });
+        } catch (err) {
+            res.status(500).json({ sucesso: false, mensagem: 'Erro ao processar devolução. 😔', error: err.message });
+        }
+    },
+
     async apagarEmprestimos(request, response) {
         try {
             // parâmetro passado via url na chamada da api pelo front-end

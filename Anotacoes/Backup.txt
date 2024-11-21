@@ -10,7 +10,14 @@ liv_cod: 66/69/80/69
 usu_cod: 24/23/22/21
 
 Emprestimos:
-emp_cod: 1/11/12/22
+emp_cod: 
+1 - usu_cod: 18, liv_cod: 65, exe_cod: 25
+12 - usu_cod: 21, liv_cod: 65, exe_cod: 26
+22 - usu_cod: 21, liv_cod: 80, exe_cod: 48
+26 - usu_cod: 19, liv_cod: 68, exe_cod: 29
+27 - usu_cod: 19, liv_cod: 68, exe_cod: 30
+28 - usu_cod: 19, liv_cod: 68, exe_cod: 29
+29 - usu_cod: 19, liv_cod: 67, exe_cod: 28
 
 --------------------------------------
 Update emprestimos

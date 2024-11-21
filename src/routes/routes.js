@@ -37,12 +37,12 @@ router.post ('/livros', (livrosController.listarLivros));
 router.post ('/usuarios', (usuariosController.listarUsuarios));
 router.post ('/contatos', (contatosController.listarContatos));
 router.post ('/reservas', (reservasController.listarReservas));
-router.post ('/liv_gerenciar', (livrosController.gerenciarLivros))
+router.post ('/Gen_disp', (livros_generosController.dispGeneros));
+router.post ('/Aut_disp', (livros_autoresController.dispAutores));
+router.post ('/liv_gerenciar', (livrosController.gerenciarLivros));
 router.post ('/emprestimos', (emprestimosController.listarEmprestimos));
 router.post ('/rec_listar', (recomendacaoController.listarRecomendacao));
 router.post ('/Usuc_disp', (usuarios_cursosController.dispUsucursos));
-router.post ('/Aut_disp', (livros_autoresController.dispAutores));
-router.post ('/Gen_disp', (livros_generosController.dispGeneros));
 router.post ('/usu_aprovados', (solicitacaoController.listarUsuariosAprovados));
 router.post ('/livros_aut', (livros_autoresController.listarLivros_Autores));
 router.post ('/livros_gen', (livros_generosController.listarLivros_Generos));
@@ -88,6 +88,7 @@ router.patch ('/usuarios_cursos/:ucu_cod', (usuarios_cursosController.editarUsua
 //UPDATE Personalizado
 router.patch ('/liv_inativar', (livrosController.inativarLivros));
 router.patch ('/res_cancelar/:emp_cod', (reservasController.cancelarReservas));
+router.patch ('/devolver/:emp_cod', (emprestimosController.devolverEmprestimos));
 router.patch ('/res_confirmar/:emp_cod', (reservasController.confirmarReservas));
 router.patch ('/emp_renovar/:emp_cod', (emprestimosController.renovarEmprestimos));
 router.patch ('/usuc_aprovar/:usu_cod', (solicitacaoController.analisarUsuariosCursos));
