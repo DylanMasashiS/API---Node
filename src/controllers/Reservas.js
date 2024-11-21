@@ -59,41 +59,6 @@ module.exports = {
         }
     },
 
-    async confirmarReservas(req, res) {
-        const { emp_cod } = req.params;
-    
-        try {
-            const [emprestimo] = await db.query('SELECT * FROM emprestimos WHERE emp_cod = ? AND emp_status = "Pendente"', [emp_cod]);
-    
-            if (!emprestimo) {
-                return res.status(404).json({ message: 'Reserva não encontrada ou já confirmada/cancelada.' });
-            }
-    
-            const emp_data_retirada = new Date();
-            await db.query(
-                `UPDATE emprestimos 
-                 SET emp_status = "Reservado", emp_data_retirada = ? 
-                 WHERE emp_cod = ?`,
-                [emp_data_retirada, emp_cod]
-            );
-    
-            // Atualiza o exemplar como não disponível
-            await db.query(
-                `UPDATE exemplares 
-                 SET exe_reservado = 0, exe_devol = 0 
-                 WHERE exe_cod = ?`,
-                [emprestimo.exe_cod]
-            );
-    
-            res.status(200).json({
-                message: 'Reserva confirmada com sucesso!',
-                data: { emp_cod, emp_status: 'Reservado' }
-            });
-        } catch (err) {
-            res.status(500).json({ message: 'Erro ao confirmar reserva', error: err });
-        }
-    },
-
     async cancelarReservas(req, res) {
         const { emp_cod } = req.params;
     

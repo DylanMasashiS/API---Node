@@ -142,7 +142,7 @@ module.exports = {
     
             res.status(201).json({
                 sucesso: true,
-                mensagem: 'Empréstimo solicitado com sucesso! A retirada será confirmada pelo administrador. 😊',
+                mensagem: 'Empréstimo solicitado com sucesso! A retirada será confirmada pelo administrador.',
                 data: {
                     emp_cod: result.insertId,
                     usu_cod,
@@ -156,7 +156,42 @@ module.exports = {
                 }
             });
         } catch (err) {
-            res.status(500).json({ sucesso: false, mensagem: 'Erro ao cadastrar empréstimo. 😔', error: err.message });
+            res.status(500).json({ sucesso: false, mensagem: 'Erro ao cadastrar empréstimo.', error: err.message });
+        }
+    },
+
+    async confirmarEmprestimos(req, res) {
+        const { emp_cod } = req.params;
+    
+        try {
+            const [emprestimo] = await db.query('SELECT * FROM emprestimos WHERE emp_cod = ? AND emp_status = "Pendente"', [emp_cod]);
+    
+            if (!emprestimo) {
+                return res.status(404).json({ message: 'Reserva não encontrada ou já confirmada/cancelada.' });
+            }
+    
+            const emp_data_retirada = new Date();
+            await db.query(
+                `UPDATE emprestimos 
+                 SET emp_status = "Reservado", emp_data_retirada = ? 
+                 WHERE emp_cod = ?`,
+                [emp_data_retirada, emp_cod]
+            );
+    
+            // Atualiza o exemplar como não disponível
+            await db.query(
+                `UPDATE exemplares 
+                 SET exe_reservado = 0, exe_devol = 0 
+                 WHERE exe_cod = ?`,
+                [emprestimo.exe_cod]
+            );
+    
+            res.status(200).json({
+                message: 'Reserva confirmada com sucesso!',
+                data: { emp_cod, emp_status: 'Reservado' }
+            });
+        } catch (err) {
+            res.status(500).json({ message: 'Erro ao confirmar reserva', error: err });
         }
     },
 
@@ -243,37 +278,13 @@ module.exports = {
     
             res.status(200).json({
                 sucesso: true,
-                mensagem: 'Empréstimo devolvido e exemplar atualizado. 😊',
+                mensagem: 'Empréstimo devolvido e exemplar atualizado.',
             });
         } catch (err) {
-            res.status(500).json({ sucesso: false, mensagem: 'Erro ao processar devolução. 😔', error: err.message });
+            res.status(500).json({ sucesso: false, mensagem: 'Erro ao processar devolução.', error: err.message });
         }
     },
 
-    async apagarEmprestimos(request, response) {
-        try {
-            // parâmetro passado via url na chamada da api pelo front-end
-            const { emp_cod } = request.params;
-            // comando de exclusão
-            const sql = `DELETE FROM emprestimos WHERE emp_cod = ?`;
-            // array com parâmetros da exclusão
-            const values = [emp_cod];
-            // executa instrução no banco de dados
-            const excluir = await db.query(sql, values);
-
-            return response.status(200).json({
-                sucesso: true,
-                mensagem: `Empréstimo ${emp_cod} excluído com sucesso`,
-                dados: excluir[0].affectedRows
-            });
-        } catch (error) {
-            return response.status(500).json({
-                sucesso: false,
-                mensagem: 'Erro na requisição.',
-                dados: error.message
-            });
-        }
-    },
     async renovarEmprestimos(request, response) {
         try {
             const { usu_cod, emp_data_devol, emp_data_renov, func_cod } = request.body;
@@ -303,6 +314,31 @@ module.exports = {
                 dados: error.message
             });
         }
-    }    
+    },
+
+    async apagarEmprestimos(request, response) {
+        try {
+            // parâmetro passado via url na chamada da api pelo front-end
+            const { emp_cod } = request.params;
+            // comando de exclusão
+            const sql = `DELETE FROM emprestimos WHERE emp_cod = ?`;
+            // array com parâmetros da exclusão
+            const values = [emp_cod];
+            // executa instrução no banco de dados
+            const excluir = await db.query(sql, values);
+
+            return response.status(200).json({
+                sucesso: true,
+                mensagem: `Empréstimo ${emp_cod} excluído com sucesso`,
+                dados: excluir[0].affectedRows
+            });
+        } catch (error) {
+            return response.status(500).json({
+                sucesso: false,
+                mensagem: 'Erro na requisição.',
+                dados: error.message
+            });
+        }
+    }
 }
 
