@@ -17,13 +17,11 @@ module.exports = {
     async listarLivros(request, response) {
         try {
             const { liv_nome, aut_nome, edt_nome, gen_nome, liv_cod } = request.body;
-
-            // Cria um array de parâmetros para a consulta
+    
             let params = [];
             let whereClauses = [];
             let havingClauses = [];
-
-            // Adiciona cláusulas de pesquisa baseadas nos critérios fornecidos
+    
             if (liv_nome) {
                 whereClauses.push("liv.liv_nome LIKE ?");
                 params.push(`%${liv_nome}%`);
@@ -40,55 +38,56 @@ module.exports = {
                 havingClauses.push("GROUP_CONCAT(DISTINCT gen.gen_nome) LIKE ?");
                 params.push(`%${gen_nome}%`);
             }
-            if (liv_cod){
+            if (liv_cod) {
                 whereClauses.push("liv.liv_cod = ?");
                 params.push(liv_cod);
             }
-
-            whereClauses.push("liv.liv_ativo = 1");
-            
-            //tirei a clausula do liv_ativo e tirei gen_cod do select pois estava agrupando com o concat
-            //liv.liv_ativo = 1 AS liv_ativo, (tirei porque farei outra rota para listar livros ativos)
-
-            // Monta a consulta SQL dinamicamente com base nos critérios
+    
             const sql = `SELECT liv.liv_cod, liv.liv_nome, liv.liv_pha_cod, liv.liv_categ_cod,
                                 liv.liv_foto_capa, liv.liv_desc, 
                                 edt.edt_cod, edt.edt_nome, aut.aut_nome, aut.aut_cod,
                                 GROUP_CONCAT(DISTINCT gen.gen_nome) AS Generos,
-
+    
                                 COUNT(exe.exe_cod) as exemplares,
                                 (SELECT COUNT(*) FROM emprestimos emp 
-                     		    INNER JOIN exemplares  subexe ON emp.exe_cod = subexe.exe_cod            
-                     		    WHERE subexe.liv_cod = liv.liv_cod
-                                AND emp.emp_devolvido = 0) as emprestados,
-                                (COUNT(exe.exe_cod) - (SELECT COUNT(*) FROM emprestimos emp 
-                     			INNER JOIN exemplares  subexe ON emp.exe_cod = subexe.exe_cod            
-                     			WHERE subexe.liv_cod = liv.liv_cod
-                     			AND emp.emp_devolvido = 0)) AS disponivel
-                         
-                                FROM livros         liv
-                                INNER JOIN editoras       edt ON edt.edt_cod = liv.edt_cod
-                                INNER JOIN livros_autores lau ON lau.liv_cod = liv.liv_cod
-                                INNER JOIN autores        aut ON aut.aut_cod = lau.aut_cod
-                                INNER JOIN livros_generos lge ON lge.liv_cod = liv.liv_cod
-                                INNER JOIN generos        gen ON gen.gen_cod = lge.gen_cod 
-                                INNER JOIN exemplares     exe ON liv.liv_cod = exe.liv_cod
-                                
-                                ${whereClauses.length > 0 ? 'WHERE ' + whereClauses.join(' AND ') : ''}
-                                AND exe.exe_data_saida IS NULL
-                                GROUP BY liv.liv_cod, liv.liv_nome, liv.liv_pha_cod, liv.liv_categ_cod,
-                                liv.liv_foto_capa, edt.edt_nome, aut.aut_nome, aut.aut_cod
-                                ${havingClauses.length > 0 ? 'HAVING ' + havingClauses.join(' AND ') : ''}`;
-
-            // Executa a consulta SQL
+                                     INNER JOIN exemplares  subexe ON emp.exe_cod = subexe.exe_cod            
+                                     WHERE subexe.liv_cod = liv.liv_cod
+                                    AND emp.emp_devolvido = 0) as emprestados,
+                                CASE 
+                                    WHEN (COUNT(exe.exe_cod) - (SELECT COUNT(*) FROM emprestimos emp 
+                                        INNER JOIN exemplares subexe ON emp.exe_cod = subexe.exe_cod            
+                                        WHERE subexe.liv_cod = liv.liv_cod
+                                        AND emp.emp_devolvido = 0)) > 0 
+                                    THEN (COUNT(exe.exe_cod) - (SELECT COUNT(*) FROM emprestimos emp 
+                                        INNER JOIN exemplares subexe ON emp.exe_cod = subexe.exe_cod            
+                                        WHERE subexe.liv_cod = liv.liv_cod
+                                        AND emp.emp_devolvido = 0))
+                                    ELSE 0
+                                END AS disponivel
+                             
+                            FROM livros         liv
+                            INNER JOIN editoras       edt ON edt.edt_cod = liv.edt_cod
+                            INNER JOIN livros_autores lau ON lau.liv_cod = liv.liv_cod
+                            INNER JOIN autores        aut ON aut.aut_cod = lau.aut_cod
+                            INNER JOIN livros_generos lge ON lge.liv_cod = liv.liv_cod
+                            INNER JOIN generos        gen ON gen.gen_cod = lge.gen_cod 
+                            INNER JOIN exemplares     exe ON liv.liv_cod = exe.liv_cod
+                            
+                            ${whereClauses.length > 0 ? 'WHERE ' + whereClauses.join(' AND ') : ''}
+                            AND exe.exe_data_saida IS NULL
+                            GROUP BY liv.liv_cod, liv.liv_nome, liv.liv_pha_cod, liv.liv_categ_cod,
+                            liv.liv_foto_capa, edt.edt_nome, aut.aut_nome, aut.aut_cod
+                            ${havingClauses.length > 0 ? 'HAVING ' + havingClauses.join(' AND ') : ''}`;
+    
             const livros = await db.query(sql, params);
             const nItens = livros[0].length;
-
-            const resultado = livros[0].map(livros => ({
-                ...livros,
-                liv_foto_capa: geraUrl(livros.liv_foto_capa)
+    
+            const resultado = livros[0].map(livro => ({
+                ...livro,
+                liv_foto_capa: geraUrl(livro.liv_foto_capa),
+                disponivel: livro.disponivel === 0 ? 'Indisponível' : livro.disponivel
             }));
-
+    
             return response.status(200).json({
                 sucesso: true,
                 mensagem: 'Lista de livros.',
@@ -96,7 +95,7 @@ module.exports = {
                 nItens
             });
         } catch (error) {
-            console.error('Erro na requisição:', error);  // Registra o erro para depuração
+            console.error('Erro na requisição:', error);
             return response.status(500).json({
                 sucesso: false,
                 mensagem: 'Erro na requisição.',

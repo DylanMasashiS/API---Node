@@ -49,19 +49,21 @@ module.exports = {
     // Listar usuários reprovados
     async listarUsuariosReprovados(request, response) {
         try {
-            const sql = `SELECT usu.usu_cod, usu.usu_rm, usu.usu_nome, usu.usu_email, usu.usu_tipo, 
-                            usu.usu_ativo, usu.usu_aprovado, ucu.ucu_status AS ucu_status,
-                            ucu.ucu_cod AS ucu_cod, ucu.ucu_ativo AS ucu_ativo, 
-                            ucu.ucu_aprovado AS ucu_aprovado, cur.cur_cod, cur.cur_nome
-                        FROM usuarios usu
-                        INNER JOIN usuarios_cursos ucu ON usu.usu_cod = ucu.usu_cod
-                        INNER JOIN cursos cur ON ucu.cur_cod = cur.cur_cod
-                        WHERE usu.usu_tipo = 5
-                        AND usu.usu_ativo = 0
-                        AND usu.usu_aprovado = 0
-                        AND ucu.ucu_status = 0
-                        AND ucu.ucu_ativo = 0
-                        AND ucu.ucu_aprovado = 0;`;
+            const sql = `
+                SELECT usu.usu_cod, usu.usu_rm, usu.usu_nome, usu.usu_email, usu.usu_tipo, 
+                       usu.usu_ativo, usu.usu_aprovado, ucu.ucu_status AS ucu_status,
+                       ucu.ucu_cod AS ucu_cod, ucu.ucu_ativo AS ucu_ativo, 
+                       ucu.ucu_aprovado AS ucu_aprovado, cur.cur_cod, cur.cur_nome
+                       FROM usuarios usu
+                       INNER JOIN usuarios_cursos ucu ON usu.usu_cod = ucu.usu_cod
+                       INNER JOIN cursos cur ON ucu.cur_cod = cur.cur_cod
+                       WHERE usu.usu_tipo = 5
+                       AND usu.usu_ativo = 0
+                       AND usu.usu_aprovado = 0
+                       AND ucu.ucu_status = 0
+                       AND ucu.ucu_ativo = 0
+                       AND ucu.ucu_aprovado = 0;
+            `;
     
             const [usuariosReprovados] = await db.query(sql);
     
@@ -73,22 +75,23 @@ module.exports = {
                 });
             }
     
-            // Transformar valores binários em booleanos
+            // Converte buffers para números
             const usuariosFormatados = usuariosReprovados.map(usuario => ({
                 ...usuario,
-                usu_ativo: usuario.usu_ativo === 1,
-                usu_aprovado: usuario.usu_aprovado === 1,
-                ucu_ativo: usuario.ucu_ativo === 1,
-                ucu_aprovado: usuario.ucu_aprovado === 1,
-                ucu_status: usuario.ucu_status === 1
+                usu_ativo: usuario.usu_ativo ? usuario.usu_ativo[0] : 0,
+                usu_aprovado: usuario.usu_aprovado ? usuario.usu_aprovado[0] : 0,
+                ucu_status: usuario.ucu_status ? usuario.ucu_status[0] : 0,
+                ucu_ativo: usuario.ucu_ativo ? usuario.ucu_ativo[0] : 0,
+                ucu_aprovado: usuario.ucu_aprovado ? usuario.ucu_aprovado[0] : 0,
             }));
     
             return response.status(200).json({
                 sucesso: true,
-                mensagem: 'Usuários reprovados foram recuperados com sucesso',
+                mensagem: 'Usuários reprovados foram recuperados com sucesso.',
                 dados: usuariosFormatados
             });
         } catch (error) {
+            console.error('Erro ao listar usuários reprovados:', error);
             return response.status(500).json({
                 sucesso: false,
                 mensagem: 'Erro ao recuperar usuários reprovados.',
@@ -100,22 +103,25 @@ module.exports = {
     // Listar usuários aprovados
     async listarUsuariosAprovados(request, response) {
         try {
-            const sql = `SELECT usu.usu_cod, usu.usu_rm, usu.usu_nome, usu.usu_email, usu.usu_tipo, 
-                            usu.usu_ativo, usu.usu_aprovado, ucu.ucu_status AS ucu_status,
-                            ucu.ucu_cod AS ucu_cod, ucu.ucu_ativo AS ucu_ativo, 
-                            ucu.ucu_aprovado AS ucu_aprovado, cur.cur_cod, cur.cur_nome
-                        FROM usuarios usu
-                        INNER JOIN usuarios_cursos ucu ON usu.usu_cod = ucu.usu_cod
-                        INNER JOIN cursos cur ON ucu.cur_cod = cur.cur_cod
-                        WHERE usu.usu_tipo = 4
-                        AND usu.usu_ativo = 1
-                        AND usu.usu_aprovado = 1
-                        AND ucu.ucu_status = 1
-                        AND ucu.ucu_ativo = 1
-                        AND ucu.ucu_aprovado = 1;`;
+            const sql = `
+                SELECT usu.usu_cod, usu.usu_rm, usu.usu_nome, usu.usu_email, usu.usu_tipo,
+                       usu.usu_ativo, usu.usu_aprovado,
+                       ucu.ucu_status, ucu.ucu_cod, ucu.ucu_ativo, ucu.ucu_aprovado,
+                       cur.cur_cod, cur.cur_nome
+                FROM usuarios usu
+                INNER JOIN usuarios_cursos ucu ON usu.usu_cod = ucu.usu_cod
+                INNER JOIN cursos cur ON ucu.cur_cod = cur.cur_cod
+                WHERE usu.usu_tipo IN (0, 1)
+                  AND usu.usu_ativo = 1
+                  AND usu.usu_aprovado = 1
+                  AND ucu.ucu_status = 1
+                  AND ucu.ucu_ativo = 1
+                  AND ucu.ucu_aprovado = 1;
+            `;
     
             const [usuariosAprovados] = await db.query(sql);
     
+            // Verifica se não há resultados
             if (!usuariosAprovados.length) {
                 return response.status(200).json({
                     sucesso: true,
@@ -124,14 +130,14 @@ module.exports = {
                 });
             }
     
-            // Transformar valores binários em booleanos
+            // Converte buffers para números
             const usuariosFormatados = usuariosAprovados.map(usuario => ({
                 ...usuario,
-                usu_ativo: usuario.usu_ativo === 1,
-                usu_aprovado: usuario.usu_aprovado === 1,
-                ucu_ativo: usuario.ucu_ativo === 1,
-                ucu_aprovado: usuario.ucu_aprovado === 1,
-                ucu_status: usuario.ucu_status === 1
+                usu_ativo: usuario.usu_ativo ? usuario.usu_ativo[0] : 0,
+                usu_aprovado: usuario.usu_aprovado ? usuario.usu_aprovado[0] : 0,
+                ucu_status: usuario.ucu_status ? usuario.ucu_status[0] : 0,
+                ucu_ativo: usuario.ucu_ativo ? usuario.ucu_ativo[0] : 0,
+                ucu_aprovado: usuario.ucu_aprovado ? usuario.ucu_aprovado[0] : 0,
             }));
     
             return response.status(200).json({
@@ -140,6 +146,7 @@ module.exports = {
                 dados: usuariosFormatados
             });
         } catch (error) {
+            console.error('Erro ao listar usuários aprovados:', error);
             return response.status(500).json({
                 sucesso: false,
                 mensagem: 'Erro ao recuperar usuários aprovados.',

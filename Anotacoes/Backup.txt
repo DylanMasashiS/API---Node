@@ -1,0 +1,212 @@
+select * from recomendacao;
+select * from emprestimos;
+select * from usuarios;
+select * from usuarios_cursos;
+select * from livros;
+select * from cursos;
+
+Recomendações:
+liv_cod: 66/69/80/69
+usu_cod: 24/23/22/21
+
+Emprestimos:
+emp_cod: 1/11/12/22
+
+--------------------------------------
+Update emprestimos
+set func_cod = 49
+where emp_cod = 1;
+
+Update emprestimos
+set emp_data_limite_retirada = null
+where emp_cod = 11;
+
+Update emprestimos
+set emp_data_prevista_devol = null
+where emp_cod = 22;
+---------------------------------------
+
+Update emprestimos
+set emp_data_devol = "2024-04-24"
+where emp_cod = 12;
+
+Update emprestimos
+set usu_cod = 21
+where emp_cod = 22;
+
+Update emprestimos
+set emp_data_emp = "2024-05-29"
+where emp_cod = 22;
+
+Update emprestimos
+set emp_data_retirada = "2024-06-27"
+where emp_cod = 22;
+
+Update emprestimos
+set emp_data_devol = "2024-06-13"
+where emp_cod = 22;
+
+----Deletes----
+
+Emprestimos:
+
+delete from emprestimos
+where emp_cod IN (2,3,4,5,7,8,9,10,13,14,15,16,17,18);
+
+Generos:
+
+delete from generos
+where gen_cod IN (94,95);
+
+Autores:
+
+delete from autores
+where aut_cod IN (78,79);
+
+Editoras:
+
+delete from editoras
+where edt_cod IN (41,42);
+
+Livros:
+
+delete from livros
+where liv_cod IN (85,86,87,88,89);
+
+49 -> ADM (Email, não mexer)!!
+
+Update usuarios
+set usu_tipo = 2
+where usu_cod = 49;
+
+Update usuarios
+set usu_ativo = 1
+where usu_cod = 49;
+
+Update usuarios
+set usu_aprovado = 1
+where usu_cod = 49;
+
+Update usuarios_cursos
+set ucu_aprovado = 1
+where usu_cod = 49;
+
+Update usuarios_cursos
+set ucu_status = 1
+where usu_cod = 49;
+
+Update usuarios_cursos
+set ucu_ativo = 1
+where usu_cod = 49;
+
+50 -> Manutenção (Não Mexer)!!
+
+Update usuarios
+set usu_tipo = 3
+where usu_cod = 50;
+
+Update usuarios
+set usu_ativo = 1
+where usu_cod = 50;
+
+Update usuarios
+set usu_aprovado = 1
+where usu_cod = 50;
+
+Update usuarios_cursos
+set ucu_aprovado = 1
+where usu_cod = 50;
+
+Update usuarios_cursos
+set ucu_status = 1
+where usu_cod = 50;
+
+Update usuarios_cursos
+set ucu_ativo = 1
+where usu_cod = 50;
+
+19 e 20 -> Cobaias de Teste !!
+
+//Usuarios Aprovados Teste
+Professores_Recomendacao: 21, 22, 23, 24;
+Professores: 25, 29
+
+Update usuarios
+set usu_tipo = 1
+where usu_cod = 21;
+
+Update usuarios
+set usu_ativo = 1
+where usu_cod = 21;
+
+Update usuarios
+set usu_aprovado = 1
+where usu_cod = 21;
+
+Update usuarios_cursos
+set ucu_aprovado = 1
+where usu_cod = 21;
+
+Update usuarios_cursos
+set ucu_status = 1
+where usu_cod = 21;
+
+Update usuarios_cursos
+set ucu_ativo = 1
+where usu_cod = 21;
+
+
+//Usuario Reprovado Teste
+51,53,54,55,56
+(Adicionar cursos para 51/53/55 em usuarios_cursos)
+(Sugestao 95/85/85)
+
+Update usuarios
+set usu_tipo = 5
+where usu_cod = 51;
+
+Update usuarios
+set usu_ativo = 0
+where usu_cod = 51;
+
+Update usuarios
+set usu_aprovado = 0
+where usu_cod = 51;
+
+Update usuarios_cursos
+set ucu_aprovado = 0
+where usu_cod = 51;
+
+Update usuarios_cursos
+set ucu_status = 0
+where usu_cod = 51;
+
+Update usuarios_cursos
+set ucu_ativo = 0
+where usu_cod = 51;
+
+//Usuario Pendente Teste
+
+Update usuarios
+set usu_tipo = 4
+where usu_cod = 30;
+
+Update usuarios
+set usu_ativo = 1
+where usu_cod = 30;
+
+Update usuarios
+set usu_aprovado = 0
+where usu_cod = 30;
+
+Update usuarios_cursos
+set ucu_aprovado = 0
+where usu_cod = 30;
+
+Update usuarios_cursos
+set ucu_status = 0
+where usu_cod = 30;
+
+Update usuarios_cursos
+set ucu_ativo = 1
+where usu_cod = 30;

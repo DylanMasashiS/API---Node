@@ -77,7 +77,7 @@ module.exports = {
     
             res.status(200).json({
                 message: 'Reserva confirmada com sucesso!',
-                data: { emp_cod, emp_status: 'Confirmado' }
+                data: { emp_cod, emp_status: 'Reservado' }
             });
         } catch (err) {
             res.status(500).json({ message: 'Erro ao confirmar reserva', error: err });

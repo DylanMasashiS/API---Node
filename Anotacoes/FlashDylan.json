@@ -1,0 +1,66 @@
+{
+    "sucesso": true,
+    "mensagem": "Usuários aprovados encontrados com sucesso.",
+    "dados": [
+        {
+            "usu_cod": 22,
+            "usu_rm": 12345678901,
+            "usu_nome": "Maria Silva",
+            "usu_email": "maria@etec.sp.gov.br",
+            "usu_tipo": 1,
+            "usu_ativo": 1,
+            "usu_aprovado": 1,
+            "ucu_status": 1,
+            "ucu_cod": 16,
+            "ucu_ativo": 1,
+            "ucu_aprovado": 1,
+            "cur_cod": 88,
+            "cur_nome": "Desenho de Construção Civil"
+        },
+        {
+            "usu_cod": 23,
+            "usu_rm": 98765432100,
+            "usu_nome": "João Pereira",
+            "usu_email": "joao@etec.sp.gov.br",
+            "usu_tipo": 1,
+            "usu_ativo": 1,
+            "usu_aprovado": 1,
+            "ucu_status": 1,
+            "ucu_cod": 17,
+            "ucu_ativo": 1,
+            "ucu_aprovado": 1,
+            "cur_cod": 85,
+            "cur_nome": "Administração"
+        },
+        {
+            "usu_cod": 24,
+            "usu_rm": 10293847561,
+            "usu_nome": "Ana Costa",
+            "usu_email": "ana@etec.sp.gov.br",
+            "usu_tipo": 1,
+            "usu_ativo": 1,
+            "usu_aprovado": 1,
+            "ucu_status": 1,
+            "ucu_cod": 30,
+            "ucu_ativo": 1,
+            "ucu_aprovado": 1,
+            "cur_cod": 94,
+            "cur_nome": "Recursos Humanos"
+        },
+        {
+            "usu_cod": 54,
+            "usu_rm": 785426,
+            "usu_nome": "Gabriela Monteiro Oliveira",
+            "usu_email": "Monteiro@gmail.com",
+            "usu_tipo": 1,
+            "usu_ativo": 1,
+            "usu_aprovado": 1,
+            "ucu_status": 1,
+            "ucu_cod": 27,
+            "ucu_ativo": 1,
+            "ucu_aprovado": 1,
+            "cur_cod": 92,
+            "cur_nome": "Informática"
+        }
+    ]
+}
