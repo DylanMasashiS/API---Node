@@ -49,8 +49,8 @@ router.post ('/consulta_exemplares', (exemplaresController.verificarExemplaresRe
 //CADASTRAR e atualização de imagem
 router.post ('/liv_cadastrar', (livrosController.cadastrarLivros));
 router.post ('/usu_cadastrar', (usuariosController.cadastrarUsuarios));
-router.post ('/upload_livro', uploadsL.single('img'), livrosController.cadastrarImagemLivro);
-router.post ('/upload_usuario', uploadsU.single('img'), usuariosController.cadastrarImagemUsuario);
+// router.post ('/upload_livro', uploadsL.single('img'), livrosController.cadastrarImagemLivro);
+// router.post ('/upload_usuario', uploadsU.single('img'), usuariosController.cadastrarImagemUsuario);
 
 // Livros Generos
 router.post ('/gen_Disp/:liv_cod', (livros_generosController.dispGeneros));
