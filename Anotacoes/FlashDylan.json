@@ -1,10 +1,54 @@
 {
     "sucesso": true,
-    "mensagem": "Atualizações de usuários e cursos concluídas.",
-    "dados": {
-        "30": {
-            "usuariosAtualizados": true,
-            "cursosAtualizados": true
+    "mensagem": "Gêneros disponíveis para o livro listados com sucesso.",
+    "dados": [
+        {
+            "gen_cod": 82,
+            "gen_nome": "Alegoria"
+        },
+        {
+            "gen_cod": 80,
+            "gen_nome": "Aventura"
+        },
+        {
+            "gen_cod": 83,
+            "gen_nome": "Comédia"
+        },
+        {
+            "gen_cod": 94,
+            "gen_nome": "ddddddddddd"
+        },
+        {
+            "gen_cod": 96,
+            "gen_nome": "fanfic"
+        },
+        {
+            "gen_cod": 87,
+            "gen_nome": "Fantasia"
+        },
+        {
+            "gen_cod": 85,
+            "gen_nome": "Ficção"
+        },
+        {
+            "gen_cod": 90,
+            "gen_nome": "Sátira"
+        },
+        {
+            "gen_cod": 95,
+            "gen_nome": "sssssssss"
+        },
+        {
+            "gen_cod": 91,
+            "gen_nome": "Suspense"
+        },
+        {
+            "gen_cod": 92,
+            "gen_nome": "Terror"
+        },
+        {
+            "gen_cod": 93,
+            "gen_nome": "Tragédia"
         }
-    }
+    ]
 }
