@@ -9,6 +9,8 @@ Recomendações:
 liv_cod: 66/69/80/69
 usu_cod: 24/23/22/21
 
+ALTER TABLE exemplares ADD COLUMN exe_ativo BIT;
+
 Emprestimos:
 emp_cod: 
 1 - usu_cod: 18, liv_cod: 65, exe_cod: 25
