@@ -79,7 +79,8 @@ module.exports = {
                         INNER JOIN generos gen ON gen.gen_cod = lge.gen_cod 
                         INNER JOIN exemplares exe ON liv.liv_cod = exe.liv_cod
                         ${whereClauses.length > 0 ? 'WHERE ' + whereClauses.join(' AND ') : ''}
-                        AND exe.exe_data_saida IS NULL                        
+                        AND exe.exe_data_saida IS NULL
+                        AND exe.exe_ativo = 1
                         GROUP BY liv.liv_cod, liv.liv_nome, liv.liv_pha_cod, liv.liv_categ_cod,
                                  liv.liv_foto_capa, edt.edt_nome, aut.aut_nome, aut.aut_cod
                         ${havingClauses.length > 0 ? 'HAVING ' + havingClauses.join(' AND ') : ''}
@@ -113,16 +114,15 @@ module.exports = {
     // Método para cadastrar novos livros
     async cadastrarLivros(request, response) {
         try {
-            const { liv_pha_cod, liv_categ_cod, liv_nome, liv_desc, edt_cod, liv_ativo, liv_foto_capa } = request.body;
+            const { liv_pha_cod, liv_categ_cod, liv_nome, liv_desc, edt_cod, liv_ativo } = request.body;
             const livAtivoParsed = parseInt(liv_ativo, 10);
-            // const img = request.file.filename;
-console.log(liv_pha_cod);
+            const img = request.file.filename;
 
             const sql = `INSERT INTO livros
                 (liv_pha_cod, liv_categ_cod, liv_nome, liv_desc, edt_cod, liv_ativo, liv_foto_capa) 
                 VALUES (?, ?, ?, ?, ?, ?, ?);`;
 
-            const values = [liv_pha_cod, liv_categ_cod, liv_nome, liv_desc, edt_cod, liv_ativo, liv_foto_capa];
+            const values = [liv_pha_cod, liv_categ_cod, liv_nome, liv_desc, edt_cod, livAtivoParsed, img];
             const execSql = await db.query(sql, values);
             const liv_cod = execSql[0].insertId;
 
@@ -134,7 +134,7 @@ console.log(liv_pha_cod);
                 liv_desc,
                 edt_cod,
                 liv_ativo: livAtivoParsed,
-                liv_foto_capa: '/public/uploads/CapaLivros/' + liv_foto_capa
+                liv_foto_capa: '/public/uploads/CapaLivros/' + img
             };
 
             return response.status(200).json({
@@ -157,7 +157,7 @@ console.log(liv_pha_cod);
             const sql = `SELECT liv.liv_cod, liv.liv_nome, liv.liv_desc, 
                                 edt.edt_nome, 
                                 liv.liv_foto_capa, 
-                                liv.liv_ativo = 1 AS liv_ativo                                 
+                                liv.liv_ativo 
                          FROM livros liv
                          INNER JOIN editoras edt ON edt.edt_cod = liv.edt_cod`;
 
@@ -170,8 +170,7 @@ console.log(liv_pha_cod);
             return response.status(200).json({
                 sucesso: true,
                 mensagem: 'Lista de todos os livros (ativos e inativos).',
-                dados: resultado, 
-                qtd: resultado.length
+                dados: resultado
             });
         } catch (error) {
             console.error('Erro na requisição:', error);
@@ -278,9 +277,18 @@ console.log(liv_pha_cod);
     // Método para cadastrar a imagem do livro
     async cadastrarImagemLivro(request, response) {
         try {
-            const img = request.file.filename;            
+            const { liv_cod } = request.body;
+            const img = request.file.filename;
 
-            return response.status(200).json({sucesso: true, dados: img});
+            const sql = `UPDATE livros SET liv_foto_capa = ? WHERE liv_cod = ?`;
+            const values = [img, liv_cod];
+            const execSql = await db.query(sql, values);
+
+            return response.status(200).json({
+                sucesso: true,
+                mensagem: `Imagem do livro ${liv_cod} atualizada com sucesso.`,
+                dados: `/public/uploads/CapaLivros/${img}`
+            });
         } catch (error) {
             console.error('Erro na requisição:', error);
             return response.status(500).json({
