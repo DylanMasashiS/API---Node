@@ -1,54 +1,96 @@
 {
     "sucesso": true,
-    "mensagem": "Gêneros disponíveis para o livro listados com sucesso.",
+    "mensagem": "Usuários pendentes recuperados com sucesso",
     "dados": [
         {
-            "gen_cod": 82,
-            "gen_nome": "Alegoria"
+            "usu_cod": 30,
+            "usu_rm": 22334455667,
+            "usu_nome": "Bruno Costa",
+            "usu_email": "bruno@etec.sp.gov.br.com",
+            "usu_tipo": 4,
+            "usu_ativo": 1,
+            "usu_aprovado": 0,
+            "cur_nome": "Design de interiores",
+            "cur_cod": 89,
+            "ucu_status": 0,
+            "ucu_cod": 19,
+            "ucu_ativo": 1,
+            "ucu_aprovado": 0
         },
         {
-            "gen_cod": 80,
-            "gen_nome": "Aventura"
+            "usu_cod": 31,
+            "usu_rm": 33445566778,
+            "usu_nome": "Carla Mendes",
+            "usu_email": "carla@etec.sp.gov.br.com",
+            "usu_tipo": 4,
+            "usu_ativo": 1,
+            "usu_aprovado": 0,
+            "cur_nome": "Enfermagem",
+            "cur_cod": 90,
+            "ucu_status": 0,
+            "ucu_cod": 20,
+            "ucu_ativo": 1,
+            "ucu_aprovado": 0
         },
         {
-            "gen_cod": 83,
-            "gen_nome": "Comédia"
+            "usu_cod": 32,
+            "usu_rm": 44556677889,
+            "usu_nome": "Daniel Oliveira",
+            "usu_email": "daniel@etec.sp.gov.br.com",
+            "usu_tipo": 4,
+            "usu_ativo": 1,
+            "usu_aprovado": 0,
+            "cur_nome": "Comércio",
+            "cur_cod": 86,
+            "ucu_status": 0,
+            "ucu_cod": 21,
+            "ucu_ativo": 1,
+            "ucu_aprovado": 0
         },
         {
-            "gen_cod": 94,
-            "gen_nome": "ddddddddddd"
+            "usu_cod": 33,
+            "usu_rm": 55667788990,
+            "usu_nome": "Elaine Santos",
+            "usu_email": "elaine@etec.sp.gov.br.com",
+            "usu_tipo": 4,
+            "usu_ativo": 1,
+            "usu_aprovado": 0,
+            "cur_nome": "Farmácia",
+            "cur_cod": 91,
+            "ucu_status": 0,
+            "ucu_cod": 22,
+            "ucu_ativo": 1,
+            "ucu_aprovado": 0
         },
         {
-            "gen_cod": 96,
-            "gen_nome": "fanfic"
+            "usu_cod": 34,
+            "usu_rm": 66778899001,
+            "usu_nome": "Fábio Pereira",
+            "usu_email": "fabio@etec.sp.gov.br.com",
+            "usu_tipo": 4,
+            "usu_ativo": 1,
+            "usu_aprovado": 0,
+            "cur_nome": "Recursos Humanos",
+            "cur_cod": 94,
+            "ucu_status": 0,
+            "ucu_cod": 23,
+            "ucu_ativo": 1,
+            "ucu_aprovado": 0
         },
         {
-            "gen_cod": 87,
-            "gen_nome": "Fantasia"
-        },
-        {
-            "gen_cod": 85,
-            "gen_nome": "Ficção"
-        },
-        {
-            "gen_cod": 90,
-            "gen_nome": "Sátira"
-        },
-        {
-            "gen_cod": 95,
-            "gen_nome": "sssssssss"
-        },
-        {
-            "gen_cod": 91,
-            "gen_nome": "Suspense"
-        },
-        {
-            "gen_cod": 92,
-            "gen_nome": "Terror"
-        },
-        {
-            "gen_cod": 93,
-            "gen_nome": "Tragédia"
+            "usu_cod": 58,
+            "usu_rm": 44444444,
+            "usu_nome": "Marcelo Pereira",
+            "usu_email": "marcel@etec.sp.gov.br",
+            "usu_tipo": 4,
+            "usu_ativo": 1,
+            "usu_aprovado": 0,
+            "cur_nome": "Administração",
+            "cur_cod": 85,
+            "ucu_status": 0,
+            "ucu_cod": 39,
+            "ucu_ativo": 1,
+            "ucu_aprovado": 0
         }
     ]
 }

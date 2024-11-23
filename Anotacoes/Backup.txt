@@ -11,6 +11,68 @@ usu_cod: 24/23/22/21
 
 ALTER TABLE exemplares ADD COLUMN exe_ativo BIT;
 
+update exemplares
+set exe_ativo = 1
+where liv_cod IN (65,66,67,68,69,70,71,72,73,75,76,77,78,79,80,81,82,83,84);
+
+update livros
+set liv_foto_capa = 'a culpa e das estrelas.jpg'
+where liv_cod = 74;
+
+update livros
+set liv_foto_capa = 'a revolução dos bichos.jpg'
+where liv_cod = 68;
+
+update livros
+set liv_foto_capa = 'anne frank.jpg'
+where liv_cod = 65;
+
+update livros
+set liv_foto_capa = 'orgulho e preconceito.jpg'
+where liv_cod = 70;
+
+update livros
+set liv_foto_capa = 'a garota do lago.jpg'
+where liv_cod = 75;
+
+update livros
+set liv_foto_capa = 'heartstopper.jpg'
+where liv_cod = 71;
+
+update livros
+set liv_nome = 'Heartstopper'
+where liv_cod = 71;
+
+update livros
+set liv_nome = 'A Revolução dos Bichos'
+where liv_cod = 68;
+
+update livros
+set liv_nome = 'O diário de Anne Frank'
+where liv_cod = 65;
+
+update autores
+set aut_nome = 'Stoker, Bram'
+where aut_cod = 73;
+
+update autores
+set aut_nome = 'Suassuna, Ariano'
+where aut_cod = 75;
+
+update autores
+set aut_nome = 'Bradbury, Ray'
+where aut_cod = 76;
+
+update autores
+set aut_nome = 'Lewis, C.S.'
+where aut_cod = 77;
+
+delete from livros_generos
+where lge_cod IN (25,26,28,29,32);
+
+delete from emprestimos
+where emp_cod IN (29,30,31,32,33,34,35,36,37,38);
+
 Emprestimos:
 emp_cod: 
 1 - usu_cod: 18, liv_cod: 65, exe_cod: 25

@@ -36,7 +36,7 @@ router.post ('/cursos', (cursosController.listarCursos));
 router.post ('/livros', (livrosController.listarLivros));
 router.post ('/usuarios', (usuariosController.listarUsuarios));
 router.post ('/contatos', (contatosController.listarContatos));
-router.post ('/reservas', (reservasController.listarReservas));
+router.post ('/reservas/:usu_cod', (reservasController.listarReservas));
 router.post ('/Aut_disp', (livros_autoresController.dispAutores));
 router.post ('/liv_gerenciar', (livrosController.gerenciarLivros));
 router.post ('/emprestimos', (emprestimosController.listarEmprestimos));
@@ -44,7 +44,7 @@ router.post ('/rec_listar', (recomendacaoController.listarRecomendacao));
 router.post ('/Usuc_disp', (usuarios_cursosController.dispUsucursos));
 router.post ('/usu_aprovados', (solicitacaoController.listarUsuariosAprovados));
 router.post ('/livros_aut', (livros_autoresController.listarLivros_Autores));
-router.post ('/consulta_exemplares', (exemplaresController.verificarExemplaresReserva));
+router.post ('/consulta_exemplares/:liv_cod', (exemplaresController.verificarExemplaresReserva));
 
 //CADASTRAR e atualização de imagem
 router.post ('/liv_cadastrar', (livrosController.cadastrarLivros));

@@ -140,58 +140,52 @@ module.exports = {
     async verificarExemplaresReserva(request, response) {
         try {
             const { liv_cod, dataConsulta } = request.body;
-            // instruções SQL
-                const sql = `SELECT 
-                    exe.exe_cod,
-                    liv.liv_cod,
-                    liv.liv_nome,
-                    liv.liv_foto_capa,
-                    exe.exe_tombo,
-                    DATE_FORMAT(exe.exe_data_aquis, '%d/%m/%Y') AS Aquisição,
-                    DATE_FORMAT(exe.exe_data_saida, '%d/%m/%Y') AS Saída
-                FROM exemplares exe
-                INNER JOIN livros liv ON exe.liv_cod = liv.liv_cod
-                LEFT JOIN emprestimos emp ON emp.exe_cod = exe.exe_cod
-                WHERE liv.liv_cod = ? -- Filtrar pelo livro específico
-                AND (
-                    emp.emp_data_emp IS NULL -- Nunca foi emprestado
-                    OR ? < emp.emp_data_emp -- Data antes do início do empréstimo
-                    OR ? > emp.emp_data_prevista_devol -- Data após o fim do empréstimo
-                );`;
+    
+            // Consulta para verificar exemplares disponíveis
+                const sql = `
+    SELECT 
+    exe.exe_cod,
+    liv.liv_cod,
+    liv.liv_nome,
+    liv.liv_foto_capa,
+    exe.exe_tombo,
+    DATE_FORMAT(exe.exe_data_aquis, '%d/%m/%Y') AS Aquisição
+FROM exemplares exe
+INNER JOIN livros liv ON exe.liv_cod = liv.liv_cod
+WHERE liv.liv_cod = ? -- Filtrar pelo livro específico
+    AND liv.liv_ativo = 1 -- Apenas livros ativos
+    AND exe.exe_ativo = 1 -- Apenas exemplares ativos
+`;
 
+    
             const values = [liv_cod, dataConsulta, dataConsulta];
-            // executa instruções SQL e armazena o resultado na variável usuários
-
+    
+            // Executa a consulta no banco de dados
             const exemplares = await db.query(sql, values);
-            // armazena em uma variável o número de registros retornados
-            
+    
+            // Calcula o número de registros retornados
             const nItens = exemplares[0].length;
-
-            const resultado = exemplares[0].map(exemplares => ({
-                ...exemplares,
-                liv_foto_capa: geraUrl(exemplares.liv_foto_capa)
-
+    
+            // Gera URLs para as fotos de capa e formata os dados de retorno
+            const resultado = exemplares[0].map(exemplar => ({
+                ...exemplar,
+                liv_foto_capa: geraUrl(exemplar.liv_foto_capa)
             }));
-
-            // const resultadoDisp = [];
-            // resultado.map((item) => {
-            //     if (item.status_emprestimo == 0)  {
-            //         resultadoDisp.push(item);
-            //     }
-            // });
-
+    
+            // Retorna a resposta com os dados encontrados
             return response.status(200).json({
                 sucesso: true,
-                mensagem: 'Lista de exemplares.',
+                mensagem: 'Lista de exemplares disponíveis.',
                 dados: resultado,
                 nItens
             });
         } catch (error) {
+            // Trata erros da requisição
             return response.status(500).json({
                 sucesso: false,
                 mensagem: 'Erro na requisição.',
                 dados: error.message
             });
         }
-    },
+    }    
 }
