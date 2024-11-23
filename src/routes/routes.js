@@ -49,7 +49,7 @@ router.post ('/consulta_exemplares', (exemplaresController.verificarExemplaresRe
 //CADASTRAR e atualização de imagem
 router.post ('/liv_cadastrar', (livrosController.cadastrarLivros));
 router.post ('/usu_cadastrar', (usuariosController.cadastrarUsuarios));
-// router.post ('/upload_livro', uploadsL.single('img'), livrosController.cadastrarImagemLivro);
+router.post ('/upload_livro', uploadsL.single('img'), livrosController.cadastrarImagemLivro);
 // router.post ('/upload_usuario', uploadsU.single('img'), usuariosController.cadastrarImagemUsuario);
 
 // Livros Generos
@@ -88,13 +88,13 @@ router.patch ('/livros_autores/:lau_cod', (livros_autoresController.editarLivros
 router.patch ('/usuarios_cursos/:ucu_cod', (usuarios_cursosController.editarUsuarios_Cursos));
 
 //UPDATE Personalizado
-router.patch ('/liv_inativar/:liv_cod', (livrosController.inativarLivros));
-router.patch ('/liv_ativar/:liv_cod', (livrosController.ativarLivros));
+router.post ('/liv_inativar/:liv_cod', (livrosController.inativarLivros));
+router.post ('/liv_ativar/:liv_cod', (livrosController.ativarLivros));
 router.patch ('/res_cancelar/:emp_cod', (reservasController.cancelarReservas));
 router.patch ('/devolver/:emp_cod', (emprestimosController.devolverEmprestimos));
 router.patch ('/emp_renovar/:emp_cod', (emprestimosController.renovarEmprestimos));
 router.patch ('/emp_confirmar/:emp_cod', (emprestimosController.confirmarEmprestimos));
-router.patch ('/usuc_aprovar/:usu_cod', (solicitacaoController.analisarUsuariosCursos));
+router.patch ('/usuc_aprovar', (solicitacaoController.analisarUsuariosCursos));
 router.patch ('/usu_reprovar/:usu_cod', (solicitacaoController.analisarUsuariosReprovados));
 // router.patch ('/emp_confirmar/:emp_cod', (emprestimosController.confirmarRetirada));
 // router.patch ('red_senha', (usuariosController.redSenha));

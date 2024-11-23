@@ -254,7 +254,7 @@ module.exports = {
                 if (usu_tipo === 4) {
                     const sqlUsuarios = `
                         UPDATE usuarios
-                        SET usu_tipo = ?
+                        SET usu_tipo = ?, usu_aprovado = true  
                         WHERE usu_cod = ?;
                     `;
                     const valoresUsuarios = [novoTipo, usu_cod];
