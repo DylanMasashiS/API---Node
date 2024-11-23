@@ -277,18 +277,8 @@ module.exports = {
     // Método para cadastrar a imagem do livro
     async cadastrarImagemLivro(request, response) {
         try {
-            const { liv_cod } = request.body;
             const img = request.file.filename;
-
-            const sql = `UPDATE livros SET liv_foto_capa = ? WHERE liv_cod = ?`;
-            const values = [img, liv_cod];
-            const execSql = await db.query(sql, values);
-
-            return response.status(200).json({
-                sucesso: true,
-                mensagem: `Imagem do livro ${liv_cod} atualizada com sucesso.`,
-                dados: `/public/uploads/CapaLivros/${img}`
-            });
+            return response.status(200).json({ sucesso: true, dados: img });
         } catch (error) {
             console.error('Erro na requisição:', error);
             return response.status(500).json({
