@@ -58,7 +58,7 @@ router.post ('/upload_livro', uploadsL.single('img'), livrosController.cadastrar
 // router.post ('/gen_Disp/:liv_cod', (livros_generosController.dispGeneros));
 router.post ('/liv_generos/:liv_cod', (livros_generosController.listarLivros_Generos));
 router.patch ('/livros_gen/:liv_cod', (livros_generosController.editarLivros_Generos));
-router.delete ('/livros_generos/:liv_cod', (livros_generosController.apagarLivros_Generos));
+// router.delete ('/livros_generos/:liv_cod', (livros_generosController.apagarLivros_Generos));
 
 //CADASTRAR sem imagem
 router.post ('/cursos', (cursosController.cadastrarCursos));
@@ -74,6 +74,7 @@ router.post ('/recomendacao', (recomendacaoController.cadastrarRecomendacao));
 router.post ('/usu_pendentes', (solicitacaoController.listarUsuariosPendentes));
 router.post ('/usu_reprovados', (solicitacaoController.listarUsuariosReprovados));
 router.post ('/livros_autores', (livros_autoresController.cadastrarLivros_Autores));
+router.post ('/livros_generos', (livros_generosController.cadastrarLivros_Generos));
 router.post ('/usuarios_cursos', (usuarios_cursosController.cadastrarUsuarios_Cursos));
 
 //UPDATE normal

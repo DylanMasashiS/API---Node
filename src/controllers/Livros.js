@@ -114,15 +114,16 @@ module.exports = {
     // Método para cadastrar novos livros
     async cadastrarLivros(request, response) {
         try {
-            const { liv_pha_cod, liv_categ_cod, liv_nome, liv_desc, edt_cod, liv_ativo } = request.body;
+            const { liv_pha_cod, liv_categ_cod, liv_nome, liv_desc, edt_cod, liv_ativo, liv_foto_capa } = request.body;
             const livAtivoParsed = parseInt(liv_ativo, 10);
-            const img = request.file.filename;
+            // const img = request.file.filename;
+            console.log(liv_foto_capa)
 
             const sql = `INSERT INTO livros
                 (liv_pha_cod, liv_categ_cod, liv_nome, liv_desc, edt_cod, liv_ativo, liv_foto_capa) 
                 VALUES (?, ?, ?, ?, ?, ?, ?);`;
 
-            const values = [liv_pha_cod, liv_categ_cod, liv_nome, liv_desc, edt_cod, livAtivoParsed, img];
+            const values = [liv_pha_cod, liv_categ_cod, liv_nome, liv_desc, edt_cod, livAtivoParsed, liv_foto_capa];
             const execSql = await db.query(sql, values);
             const liv_cod = execSql[0].insertId;
 
@@ -134,13 +135,15 @@ module.exports = {
                 liv_desc,
                 edt_cod,
                 liv_ativo: livAtivoParsed,
-                liv_foto_capa: '/public/uploads/CapaLivros/' + img
+                liv_foto_capa: '/public/uploads/CapaLivros/' + liv_foto_capa
             };
 
             return response.status(200).json({
                 sucesso: true,
                 mensagem: `Cadastro do livro ${liv_cod} efetuado com sucesso.`,
-                dados
+                dados: {
+                    liv_cod: liv_cod
+                }
             });
         } catch (error) {
             return response.status(500).json({
