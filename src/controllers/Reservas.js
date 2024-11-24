@@ -30,6 +30,7 @@ module.exports = {
                         INNER JOIN livros_generos lge ON lge.liv_cod = liv.liv_cod
                         INNER JOIN generos gen ON gen.gen_cod = lge.gen_cod
                         WHERE usu.usu_cod = ? AND usu_ativo = 1
+                        AND emp_reserva = 1
                         ORDER BY emp.emp_data_emp`;
 
             const values = [usu_cod];
@@ -63,15 +64,19 @@ module.exports = {
         const { emp_cod } = req.params;
     
         try {
-            const [emprestimo] = await db.query('SELECT * FROM emprestimos WHERE emp_cod = ? AND emp_status = "Pendente"', [emp_cod]);
+            const [emprestimo] = await db.query(
+                'SELECT * FROM emprestimos WHERE emp_cod = ? AND emp_status = "Pendente"',
+                [emp_cod]
+            );
     
             if (!emprestimo) {
                 return res.status(404).json({ message: 'Reserva não encontrada ou já confirmada/cancelada.' });
             }
     
+            // Atualiza o status do empréstimo e emp_reserva
             await db.query(
                 `UPDATE emprestimos 
-                 SET emp_status = "Cancelado" 
+                 SET emp_status = "Cancelado", emp_reserva = 0 
                  WHERE emp_cod = ?`,
                 [emp_cod]
             );
@@ -86,11 +91,12 @@ module.exports = {
     
             res.status(200).json({
                 message: 'Reserva cancelada com sucesso!',
-                data: { emp_cod, emp_status: 'Cancelado' }
+                data: { emp_cod, emp_status: 'Cancelado', emp_reserva: 0 }
             });
         } catch (err) {
             res.status(500).json({ message: 'Erro ao cancelar reserva', error: err });
         }
-    }    
+    }
+    
     
 }
