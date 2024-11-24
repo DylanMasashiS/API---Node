@@ -254,8 +254,12 @@ module.exports = {
                 if (usu_tipo === 4) {
                     const sqlUsuarios = `
                         UPDATE usuarios
+<<<<<<< HEAD
                         SET usu_tipo = ?,
                         usu_aprovado = true
+=======
+                        SET usu_tipo = ?
+>>>>>>> parent of 830018c (23/11 - LivGen/LivAut/Solicitacao)
                         WHERE usu_cod = ?;
                     `;
                     const valoresUsuarios = [novoTipo, usu_cod];
