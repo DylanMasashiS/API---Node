@@ -1,15 +1,17 @@
 const express = require ('express');
 const router = express.Router();
 
-//middlewares
+//Middlewares
 const uploadsL = require ('../middlewares/upImgLivros');
 const uploadsU = require ('../middlewares/upImgUsuarios');
 // const uploadsA = require ('../middlewares/upImgAutores');
 // const uploadsG = require ('../middlewares/upImgGeneros');
 // const uploadsE = require ('../middlewares/upImgEditoras');
 
+//CONTROLLERS
 const livrosController = require ('../controllers/Livros');
 const cursosController = require ('../controllers/Cursos');
+const imagensController = require ('../controllers/Imagens');
 const generosController = require ('../controllers/Generos');
 const autoresController = require ('../controllers/Autores');
 const usuariosController = require ('../controllers/Usuarios');
@@ -37,26 +39,27 @@ router.post ('/livros', (livrosController.listarLivros));
 router.post ('/usuarios', (usuariosController.listarUsuarios));
 router.post ('/contatos', (contatosController.listarContatos));
 router.post ('/reservas/:usu_cod', (reservasController.listarReservas));
-router.post ('/Aut_disp', (livros_autoresController.dispAutores));
 router.post ('/liv_gerenciar', (livrosController.gerenciarLivros));
 router.post ('/emprestimos', (emprestimosController.listarEmprestimos));
 router.post ('/rec_listar', (recomendacaoController.listarRecomendacao));
-router.post ('/Usuc_disp', (usuarios_cursosController.dispUsucursos));
+router.post ('/usuc_disp', (usuarios_cursosController.dispUsucursos));
 router.post ('/usu_aprovados', (solicitacaoController.listarUsuariosAprovados));
 router.post ('/livros_aut', (livros_autoresController.listarLivros_Autores));
 router.post ('/consulta_exemplares/:liv_cod', (exemplaresController.verificarExemplaresReserva));
 
 //CADASTRAR e atualização de imagem
+router.post ('/inserir_capa', (imagensController.inserirCapa));
 router.post ('/liv_cadastrar', (livrosController.cadastrarLivros));
 router.post ('/usu_cadastrar', (usuariosController.cadastrarUsuarios));
 // router.post ('/upload_livro', uploadsL.single('img'), livrosController.cadastrarImagemLivro);
 // router.post ('/upload_usuario', uploadsU.single('img'), usuariosController.cadastrarImagemUsuario);
 
-// Livros Generos
-router.post ('/gen_Disp/:liv_cod', (livros_generosController.dispGeneros));
-router.post ('/liv_generos/:liv_cod', (livros_generosController.listarLivrosGeneros));
-router.patch ('/livros_gen/:liv_cod/:gen_cod', (livros_generosController.adicionarLivrosGeneros));
-router.delete ('/livros_generos/:liv_cod/:gen_cod', (livros_generosController.removerLivrosGeneros));
+// Livros Generos e Disps
+// router.post ('/aut_disp', (livros_autoresController.dispAutores));
+// router.post ('/gen_Disp/:liv_cod', (livros_generosController.dispGeneros));
+router.post ('/liv_generos/:liv_cod', (livros_generosController.listarLivros_Generos));
+router.patch ('/livros_gen/:liv_cod', (livros_generosController.editarLivros_Generos));
+router.delete ('/livros_generos/:liv_cod', (livros_generosController.apagarLivros_Generos));
 
 //CADASTRAR sem imagem
 router.post ('/cursos', (cursosController.cadastrarCursos));
