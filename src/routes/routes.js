@@ -97,7 +97,7 @@ router.patch ('/res_cancelar/:emp_cod', (reservasController.cancelarReservas));
 router.patch ('/devolver/:emp_cod', (emprestimosController.devolverEmprestimos));
 router.patch ('/emp_renovar/:emp_cod', (emprestimosController.renovarEmprestimos));
 router.patch ('/emp_confirmar/:emp_cod', (emprestimosController.confirmarEmprestimos));
-router.patch ('/usuc_aprovar', (solicitacaoController.analisarUsuariosCursos));
+router.patch ('/usuc_aprovar/:usu_cod', (solicitacaoController.analisarUsuariosCursos));
 router.patch ('/usu_reprovar/:usu_cod', (solicitacaoController.analisarUsuariosReprovados));
 // router.patch ('/emp_confirmar/:emp_cod', (emprestimosController.confirmarRetirada));
 // router.patch ('red_senha', (usuariosController.redSenha));
