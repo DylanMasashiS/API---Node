@@ -113,6 +113,6 @@ router.delete ('/exemplares/:exe_cod', (exemplaresController.apagarExemplares));
 router.delete ('/emprestimos/:emp_cod', (emprestimosController.apagarEmprestimos));
 router.delete ('/recomendacao/:rcm_cod', (recomendacaoController.apagarRecomendacao));
 router.delete ('/usuarios_cursos/:ucu_cod', (usuarios_cursosController.apagarUsuarios_Cursos));
-router.delete ('/livros_autores/:lau_cod:/:liv_cod', (livros_autoresController.apagarLivros_Autores));
+router.delete ('/livros_autores/:lau_cod', (livros_autoresController.apagarLivros_Autores));
 
 module.exports = router;
