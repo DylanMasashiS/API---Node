@@ -17,7 +17,7 @@ module.exports = {
             const { usu_cod } = request.body;
 
             const sql = `SELECT emp.emp_cod, DATE_FORMAT(emp.emp_data_emp, '%d/%m/%Y') AS Empréstimo, 
-                            DATE_FORMAT(emp.emp_data_devol, '%d/%m/%Y') AS Devolução , liv.liv_nome, 
+                            DATE_FORMAT(emp.emp_data_prevista_devol, '%d/%m/%Y') AS Devolução , liv.liv_nome, 
                             liv.liv_foto_capa, exe.exe_cod, aut.aut_nome, usu.usu_cod, usu.usu_nome,
                             gen.gen_nome, gen.gen_cod,
                             (SELECT usu_nome FROM usuarios WHERE usu_cod = emp.func_cod) as Funcionario

@@ -47,7 +47,9 @@ module.exports = {
 
             const sql = `SELECT liv.liv_cod, liv.liv_nome, liv.liv_pha_cod, liv.liv_categ_cod,
                         liv.liv_foto_capa, liv.liv_desc, 
-                        edt.edt_cod, edt.edt_nome, aut.aut_nome, aut.aut_cod,
+                        edt.edt_cod, edt.edt_nome, 
+                        aut.aut_nome, aut.aut_cod, 
+                        gen.gen_cod,
                         GROUP_CONCAT(DISTINCT gen.gen_nome) AS Generos,
                         COUNT(exe.exe_cod) as exemplares,
                         (SELECT COUNT(*) 
@@ -82,7 +84,7 @@ module.exports = {
                         AND exe.exe_data_saida IS NULL
                         AND exe.exe_ativo = 1
                         GROUP BY liv.liv_cod, liv.liv_nome, liv.liv_pha_cod, liv.liv_categ_cod,
-                                 liv.liv_foto_capa, edt.edt_nome, aut.aut_nome, aut.aut_cod
+                                 liv.liv_foto_capa, edt.edt_nome, aut.aut_nome, aut.aut_cod, gen.gen_nome,gen.gen_cod
                         ${havingClauses.length > 0 ? 'HAVING ' + havingClauses.join(' AND ') : ''}
                         ORDER BY liv.liv_nome ASC`;
 
@@ -188,15 +190,18 @@ module.exports = {
     // Método para editar informações de um livro
     async editarLivros(request, response) {
         try {
-            const { liv_cod, liv_nome, liv_desc, edt_cod } = request.body;
-
-            const sql = `UPDATE livros 
-                         SET liv_nome = ?, liv_desc = ?, edt_cod = ? 
-                         WHERE liv_cod = ?`;
-            const values = [liv_nome, liv_desc, edt_cod, liv_cod];
-
+            const { liv_cod, liv_nome, liv_desc, aut_cod, edt_cod, gen_cod } = request.body;
+    
+            const sql = `UPDATE livros
+                         JOIN livros_autores AS lau ON livros.liv_cod = lau.liv_cod
+                         JOIN livros_generos AS lge ON livros.liv_cod = lge.liv_cod
+                         SET liv_nome = ?, liv_desc = ?, lau.aut_cod = ?, lge.gen_cod = ?, edt_cod = ?
+                         WHERE livros.liv_cod = ?`;
+            const values = [liv_nome, liv_desc, aut_cod, gen_cod, edt_cod, liv_cod];
+    
+            // Executando a consulta
             const execSql = await db.query(sql, values);
-
+    
             return response.status(200).json({
                 sucesso: true,
                 mensagem: `Informações do livro ${liv_cod} atualizadas com sucesso.`,
