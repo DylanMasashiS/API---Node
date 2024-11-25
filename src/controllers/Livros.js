@@ -159,40 +159,40 @@ module.exports = {
         try {
             const sql = `
                     SELECT 
-                        liv.liv_cod, 
-                        liv.liv_nome, 
-                        liv.liv_pha_cod, 
-                        liv.liv_categ_cod,
-                        liv.liv_foto_capa, 
-                        liv.liv_desc, 
-                        liv.liv_ativo, -- Inclui a coluna para diferenciar ativos/inativos
-                        edt.edt_cod, 
-                        edt.edt_nome, 
-                        aut.aut_nome, 
-                        aut.aut_cod, 
-                        gen.gen_cod,
-                        GROUP_CONCAT(DISTINCT gen.gen_nome) AS Generos,
-                        COUNT(exe.exe_cod) as exemplares -- Mantém apenas a contagem total de exemplares
-                        FROM livros liv
-                        INNER JOIN editoras edt ON edt.edt_cod = liv.edt_cod
-                        INNER JOIN livros_autores lau ON lau.liv_cod = liv.liv_cod
-                        INNER JOIN autores aut ON aut.aut_cod = lau.aut_cod
-                        INNER JOIN livros_generos lge ON lge.liv_cod = liv.liv_cod
-                        INNER JOIN generos gen ON gen.gen_cod = lge.gen_cod
-                        LEFT JOIN exemplares exe ON liv.liv_cod = exe.liv_cod -- LEFT JOIN para incluir livros sem exemplares
-                        GROUP BY 
-                            liv.liv_cod, 
-                            liv.liv_nome, 
-                            liv.liv_pha_cod, 
-                            liv.liv_categ_cod,
-                            liv.liv_foto_capa, 
-                            edt.edt_nome, 
-                            aut.aut_nome, 
-                            aut.aut_cod, 
-                            gen.gen_nome, 
-                            gen.gen_cod
-                        ORDER BY 
-                            liv.liv_nome ASC`;
+    liv.liv_cod, 
+    liv.liv_nome, 
+    liv.liv_pha_cod, 
+    liv.liv_categ_cod,
+    liv.liv_foto_capa, 
+    COALESCE(liv.liv_ativo, 0) AS liv_ativo, -- Define valor padrão para liv_ativo
+    edt.edt_cod, 
+    edt.edt_nome, 
+    aut.aut_nome, 
+    aut.aut_cod, 
+    gen.gen_cod,
+    GROUP_CONCAT(DISTINCT gen.gen_nome) AS Generos,
+    COUNT(exe.exe_cod) as exemplares
+FROM livros liv
+INNER JOIN editoras edt ON edt.edt_cod = liv.edt_cod
+INNER JOIN livros_autores lau ON lau.liv_cod = liv.liv_cod
+INNER JOIN autores aut ON aut.aut_cod = lau.aut_cod
+INNER JOIN livros_generos lge ON lge.liv_cod = liv.liv_cod
+INNER JOIN generos gen ON gen.gen_cod = lge.gen_cod
+LEFT JOIN exemplares exe ON liv.liv_cod = exe.liv_cod
+GROUP BY 
+    liv.liv_cod, 
+    liv.liv_nome, 
+    liv.liv_pha_cod, 
+    liv.liv_categ_cod,
+    liv.liv_foto_capa, 
+    edt.edt_nome, 
+    aut.aut_nome, 
+    aut.aut_cod, 
+    gen.gen_nome, 
+    gen.gen_cod
+ORDER BY 
+    liv.liv_nome ASC;
+`;
 
 
             const livros = await db.query(sql);
@@ -200,8 +200,9 @@ module.exports = {
             const resultado = livros[0].map(livro => ({
                 ...livro,
                 liv_foto_capa: geraUrl(livro.liv_foto_capa),
-                liv_ativo: Number(livro.liv_ativo),
+                liv_ativo: Number(livro.liv_ativo || 0), // Converte null para 0
             }));
+            
 
             return response.status(200).json({
                 sucesso: true,
