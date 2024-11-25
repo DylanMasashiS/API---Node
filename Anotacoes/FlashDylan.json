@@ -1,96 +1,864 @@
 {
     "sucesso": true,
-    "mensagem": "Usuários pendentes recuperados com sucesso",
+    "mensagem": "Lista de todos os livros (ativos e inativos).",
     "dados": [
         {
-            "usu_cod": 30,
-            "usu_rm": 22334455667,
-            "usu_nome": "Bruno Costa",
-            "usu_email": "bruno@etec.sp.gov.br.com",
-            "usu_tipo": 4,
-            "usu_ativo": 1,
-            "usu_aprovado": 0,
-            "cur_nome": "Design de interiores",
-            "cur_cod": 89,
-            "ucu_status": 0,
-            "ucu_cod": 19,
-            "ucu_ativo": 1,
-            "ucu_aprovado": 0
+            "liv_cod": 79,
+            "liv_nome": "1984",
+            "liv_pha_cod": "O72r",
+            "liv_categ_cod": "0.820",
+            "liv_foto_capa": "/public/uploads/CapaLivros/1984.jpg",
+            "liv_desc": "1984, Publicada originalmente em 1949, a distopia futurista 1984 é um dos romances mais influentes do século XX, um inquestionável clássico moderno. Lançada poucos meses antes da morte do autor, é uma obra magistral que ainda se impõe como uma poderosa reflexão ficcional sobre a essência nefasta de qualquer forma de poder totalitário.",
+            "edt_cod": 26,
+            "edt_nome": "Companhhia das letras",
+            "aut_nome": "Orwell, George",
+            "aut_cod": 64,
+            "exe_ativo": {
+                "type": "Buffer",
+                "data": [
+                    1
+                ]
+            },
+            "liv_ativo": {
+                "type": "Buffer",
+                "data": [
+                    1
+                ]
+            },
+            "gen_cod": 90,
+            "gen_nome": "Sátira"
         },
         {
-            "usu_cod": 31,
-            "usu_rm": 33445566778,
-            "usu_nome": "Carla Mendes",
-            "usu_email": "carla@etec.sp.gov.br.com",
-            "usu_tipo": 4,
-            "usu_ativo": 1,
-            "usu_aprovado": 0,
-            "cur_nome": "Enfermagem",
-            "cur_cod": 90,
-            "ucu_status": 0,
-            "ucu_cod": 20,
-            "ucu_ativo": 1,
-            "ucu_aprovado": 0
+            "liv_cod": 74,
+            "liv_nome": "A Culpa é das Estrelas",
+            "liv_pha_cod": "G83a",
+            "liv_categ_cod": "0.810",
+            "liv_foto_capa": "/public/uploads/CapaLivros/a culpa e das estrelas.jpg",
+            "liv_desc": "A Culpa é das Estrelas, Com humor, doçura e melancolia, John Green narra o romance de dois adolescentes que se conhecem em um Grupo de Apoio para Crianças com Câncer. Hazel é uma paciente terminal cuja vida vem sendo prolongada por uma nova droga. Augustus foi jogador de basquete até perder uma perna para o osteossarcoma. Como Hazel, Gus gosta de ironizar os clichês do mundo do câncer – sua principal arma para encarar a doença que abrevia seus dias.",
+            "edt_cod": 30,
+            "edt_nome": "Intrínseca",
+            "aut_nome": "Green, John",
+            "aut_cod": 72,
+            "exe_ativo": {
+                "type": "Buffer",
+                "data": [
+                    1
+                ]
+            },
+            "liv_ativo": {
+                "type": "Buffer",
+                "data": [
+                    1
+                ]
+            },
+            "gen_cod": 84,
+            "gen_nome": "Drama"
         },
         {
-            "usu_cod": 32,
-            "usu_rm": 44556677889,
-            "usu_nome": "Daniel Oliveira",
-            "usu_email": "daniel@etec.sp.gov.br.com",
-            "usu_tipo": 4,
-            "usu_ativo": 1,
-            "usu_aprovado": 0,
-            "cur_nome": "Comércio",
-            "cur_cod": 86,
-            "ucu_status": 0,
-            "ucu_cod": 21,
-            "ucu_ativo": 1,
-            "ucu_aprovado": 0
+            "liv_cod": 74,
+            "liv_nome": "A Culpa é das Estrelas",
+            "liv_pha_cod": "G83a",
+            "liv_categ_cod": "0.810",
+            "liv_foto_capa": "/public/uploads/CapaLivros/a culpa e das estrelas.jpg",
+            "liv_desc": "A Culpa é das Estrelas, Com humor, doçura e melancolia, John Green narra o romance de dois adolescentes que se conhecem em um Grupo de Apoio para Crianças com Câncer. Hazel é uma paciente terminal cuja vida vem sendo prolongada por uma nova droga. Augustus foi jogador de basquete até perder uma perna para o osteossarcoma. Como Hazel, Gus gosta de ironizar os clichês do mundo do câncer – sua principal arma para encarar a doença que abrevia seus dias.",
+            "edt_cod": 30,
+            "edt_nome": "Intrínseca",
+            "aut_nome": "Green, John",
+            "aut_cod": 72,
+            "exe_ativo": {
+                "type": "Buffer",
+                "data": [
+                    1
+                ]
+            },
+            "liv_ativo": {
+                "type": "Buffer",
+                "data": [
+                    1
+                ]
+            },
+            "gen_cod": 89,
+            "gen_nome": "Romance"
         },
         {
-            "usu_cod": 33,
-            "usu_rm": 55667788990,
-            "usu_nome": "Elaine Santos",
-            "usu_email": "elaine@etec.sp.gov.br.com",
-            "usu_tipo": 4,
-            "usu_ativo": 1,
-            "usu_aprovado": 0,
-            "cur_nome": "Farmácia",
-            "cur_cod": 91,
-            "ucu_status": 0,
-            "ucu_cod": 22,
-            "ucu_ativo": 1,
-            "ucu_aprovado": 0
+            "liv_cod": 74,
+            "liv_nome": "A Culpa é das Estrelas",
+            "liv_pha_cod": "G83a",
+            "liv_categ_cod": "0.810",
+            "liv_foto_capa": "/public/uploads/CapaLivros/a culpa e das estrelas.jpg",
+            "liv_desc": "A Culpa é das Estrelas, Com humor, doçura e melancolia, John Green narra o romance de dois adolescentes que se conhecem em um Grupo de Apoio para Crianças com Câncer. Hazel é uma paciente terminal cuja vida vem sendo prolongada por uma nova droga. Augustus foi jogador de basquete até perder uma perna para o osteossarcoma. Como Hazel, Gus gosta de ironizar os clichês do mundo do câncer – sua principal arma para encarar a doença que abrevia seus dias.",
+            "edt_cod": 30,
+            "edt_nome": "Intrínseca",
+            "aut_nome": "Green, John",
+            "aut_cod": 72,
+            "exe_ativo": {
+                "type": "Buffer",
+                "data": [
+                    1
+                ]
+            },
+            "liv_ativo": {
+                "type": "Buffer",
+                "data": [
+                    1
+                ]
+            },
+            "gen_cod": 89,
+            "gen_nome": "Romance"
         },
         {
-            "usu_cod": 34,
-            "usu_rm": 66778899001,
-            "usu_nome": "Fábio Pereira",
-            "usu_email": "fabio@etec.sp.gov.br.com",
-            "usu_tipo": 4,
-            "usu_ativo": 1,
-            "usu_aprovado": 0,
-            "cur_nome": "Recursos Humanos",
-            "cur_cod": 94,
-            "ucu_status": 0,
-            "ucu_cod": 23,
-            "ucu_ativo": 1,
-            "ucu_aprovado": 0
+            "liv_cod": 74,
+            "liv_nome": "A Culpa é das Estrelas",
+            "liv_pha_cod": "G83a",
+            "liv_categ_cod": "0.810",
+            "liv_foto_capa": "/public/uploads/CapaLivros/a culpa e das estrelas.jpg",
+            "liv_desc": "A Culpa é das Estrelas, Com humor, doçura e melancolia, John Green narra o romance de dois adolescentes que se conhecem em um Grupo de Apoio para Crianças com Câncer. Hazel é uma paciente terminal cuja vida vem sendo prolongada por uma nova droga. Augustus foi jogador de basquete até perder uma perna para o osteossarcoma. Como Hazel, Gus gosta de ironizar os clichês do mundo do câncer – sua principal arma para encarar a doença que abrevia seus dias.",
+            "edt_cod": 30,
+            "edt_nome": "Intrínseca",
+            "aut_nome": "Green, John",
+            "aut_cod": 72,
+            "exe_ativo": {
+                "type": "Buffer",
+                "data": [
+                    1
+                ]
+            },
+            "liv_ativo": {
+                "type": "Buffer",
+                "data": [
+                    1
+                ]
+            },
+            "gen_cod": 89,
+            "gen_nome": "Romance"
         },
         {
-            "usu_cod": 58,
-            "usu_rm": 44444444,
-            "usu_nome": "Marcelo Pereira",
-            "usu_email": "marcel@etec.sp.gov.br",
-            "usu_tipo": 4,
-            "usu_ativo": 1,
-            "usu_aprovado": 0,
-            "cur_nome": "Administração",
-            "cur_cod": 85,
-            "ucu_status": 0,
-            "ucu_cod": 39,
-            "ucu_ativo": 1,
-            "ucu_aprovado": 0
+            "liv_cod": 74,
+            "liv_nome": "A Culpa é das Estrelas",
+            "liv_pha_cod": "G83a",
+            "liv_categ_cod": "0.810",
+            "liv_foto_capa": "/public/uploads/CapaLivros/a culpa e das estrelas.jpg",
+            "liv_desc": "A Culpa é das Estrelas, Com humor, doçura e melancolia, John Green narra o romance de dois adolescentes que se conhecem em um Grupo de Apoio para Crianças com Câncer. Hazel é uma paciente terminal cuja vida vem sendo prolongada por uma nova droga. Augustus foi jogador de basquete até perder uma perna para o osteossarcoma. Como Hazel, Gus gosta de ironizar os clichês do mundo do câncer – sua principal arma para encarar a doença que abrevia seus dias.",
+            "edt_cod": 30,
+            "edt_nome": "Intrínseca",
+            "aut_nome": "Green, John",
+            "aut_cod": 72,
+            "exe_ativo": {
+                "type": "Buffer",
+                "data": [
+                    1
+                ]
+            },
+            "liv_ativo": {
+                "type": "Buffer",
+                "data": [
+                    1
+                ]
+            },
+            "gen_cod": 89,
+            "gen_nome": "Romance"
+        },
+        {
+            "liv_cod": 74,
+            "liv_nome": "A Culpa é das Estrelas",
+            "liv_pha_cod": "G83a",
+            "liv_categ_cod": "0.810",
+            "liv_foto_capa": "/public/uploads/CapaLivros/a culpa e das estrelas.jpg",
+            "liv_desc": "A Culpa é das Estrelas, Com humor, doçura e melancolia, John Green narra o romance de dois adolescentes que se conhecem em um Grupo de Apoio para Crianças com Câncer. Hazel é uma paciente terminal cuja vida vem sendo prolongada por uma nova droga. Augustus foi jogador de basquete até perder uma perna para o osteossarcoma. Como Hazel, Gus gosta de ironizar os clichês do mundo do câncer – sua principal arma para encarar a doença que abrevia seus dias.",
+            "edt_cod": 30,
+            "edt_nome": "Intrínseca",
+            "aut_nome": "Green, John",
+            "aut_cod": 72,
+            "exe_ativo": {
+                "type": "Buffer",
+                "data": [
+                    1
+                ]
+            },
+            "liv_ativo": {
+                "type": "Buffer",
+                "data": [
+                    1
+                ]
+            },
+            "gen_cod": 84,
+            "gen_nome": "Drama"
+        },
+        {
+            "liv_cod": 74,
+            "liv_nome": "A Culpa é das Estrelas",
+            "liv_pha_cod": "G83a",
+            "liv_categ_cod": "0.810",
+            "liv_foto_capa": "/public/uploads/CapaLivros/a culpa e das estrelas.jpg",
+            "liv_desc": "A Culpa é das Estrelas, Com humor, doçura e melancolia, John Green narra o romance de dois adolescentes que se conhecem em um Grupo de Apoio para Crianças com Câncer. Hazel é uma paciente terminal cuja vida vem sendo prolongada por uma nova droga. Augustus foi jogador de basquete até perder uma perna para o osteossarcoma. Como Hazel, Gus gosta de ironizar os clichês do mundo do câncer – sua principal arma para encarar a doença que abrevia seus dias.",
+            "edt_cod": 30,
+            "edt_nome": "Intrínseca",
+            "aut_nome": "Green, John",
+            "aut_cod": 72,
+            "exe_ativo": {
+                "type": "Buffer",
+                "data": [
+                    1
+                ]
+            },
+            "liv_ativo": {
+                "type": "Buffer",
+                "data": [
+                    1
+                ]
+            },
+            "gen_cod": 84,
+            "gen_nome": "Drama"
+        },
+        {
+            "liv_cod": 74,
+            "liv_nome": "A Culpa é das Estrelas",
+            "liv_pha_cod": "G83a",
+            "liv_categ_cod": "0.810",
+            "liv_foto_capa": "/public/uploads/CapaLivros/a culpa e das estrelas.jpg",
+            "liv_desc": "A Culpa é das Estrelas, Com humor, doçura e melancolia, John Green narra o romance de dois adolescentes que se conhecem em um Grupo de Apoio para Crianças com Câncer. Hazel é uma paciente terminal cuja vida vem sendo prolongada por uma nova droga. Augustus foi jogador de basquete até perder uma perna para o osteossarcoma. Como Hazel, Gus gosta de ironizar os clichês do mundo do câncer – sua principal arma para encarar a doença que abrevia seus dias.",
+            "edt_cod": 30,
+            "edt_nome": "Intrínseca",
+            "aut_nome": "Green, John",
+            "aut_cod": 72,
+            "exe_ativo": {
+                "type": "Buffer",
+                "data": [
+                    1
+                ]
+            },
+            "liv_ativo": {
+                "type": "Buffer",
+                "data": [
+                    1
+                ]
+            },
+            "gen_cod": 84,
+            "gen_nome": "Drama"
+        },
+        {
+            "liv_cod": 75,
+            "liv_nome": "A Garota do Lago",
+            "liv_pha_cod": "D738p",
+            "liv_categ_cod": "0.810",
+            "liv_foto_capa": "/public/uploads/CapaLivros/a garota do lago.jpg",
+            "liv_desc": "A Garota do Lago é um thriller que se passa em uma pequena cidade montanhosa chamada Summit Lake, onde a repórter Kelsey Castle investiga o brutal assassinato da estudante de direito Becca Eckersley. Becca, filha de um advogado influente, foi morta em sua casa, deixando a comunidade em choque. Enquanto Kelsey segue as pistas do caso, ela se conecta intimamente com a vítima e descobre segredos sombrios sobre sua vida. A selvageria do crime e os esforços para abafar o caso indicam que pode não ter sido um ataque aleatório. Conforme Kelsey desvenda os segredos de Becca, ela também confronta seu próprio passado obscuro.",
+            "edt_cod": 27,
+            "edt_nome": "Faro",
+            "aut_nome": "Donlea, Charlie",
+            "aut_cod": 69,
+            "exe_ativo": {
+                "type": "Buffer",
+                "data": [
+                    1
+                ]
+            },
+            "liv_ativo": {
+                "type": "Buffer",
+                "data": [
+                    1
+                ]
+            },
+            "gen_cod": 88,
+            "gen_nome": "Mistério"
+        },
+        {
+            "liv_cod": 75,
+            "liv_nome": "A Garota do Lago",
+            "liv_pha_cod": "D738p",
+            "liv_categ_cod": "0.810",
+            "liv_foto_capa": "/public/uploads/CapaLivros/a garota do lago.jpg",
+            "liv_desc": "A Garota do Lago é um thriller que se passa em uma pequena cidade montanhosa chamada Summit Lake, onde a repórter Kelsey Castle investiga o brutal assassinato da estudante de direito Becca Eckersley. Becca, filha de um advogado influente, foi morta em sua casa, deixando a comunidade em choque. Enquanto Kelsey segue as pistas do caso, ela se conecta intimamente com a vítima e descobre segredos sombrios sobre sua vida. A selvageria do crime e os esforços para abafar o caso indicam que pode não ter sido um ataque aleatório. Conforme Kelsey desvenda os segredos de Becca, ela também confronta seu próprio passado obscuro.",
+            "edt_cod": 27,
+            "edt_nome": "Faro",
+            "aut_nome": "Donlea, Charlie",
+            "aut_cod": 69,
+            "exe_ativo": {
+                "type": "Buffer",
+                "data": [
+                    1
+                ]
+            },
+            "liv_ativo": {
+                "type": "Buffer",
+                "data": [
+                    1
+                ]
+            },
+            "gen_cod": 88,
+            "gen_nome": "Mistério"
+        },
+        {
+            "liv_cod": 68,
+            "liv_nome": "A Revolução dos Bichos",
+            "liv_pha_cod": "O72r",
+            "liv_categ_cod": "0.820",
+            "liv_foto_capa": "/public/uploads/CapaLivros/a revolução dos bichos.jpg",
+            "liv_desc": "A Revolução dos Bichos é uma fábula satírica escrita por George Orwell. A história retrata uma revolta liderada pelos animais de uma fazenda contra seus donos humanos, buscando criar uma sociedade onde todos os animais são iguais. No entanto, ao longo do tempo, os líderes porcos começam a se corromper, espelhando os mesmos vícios e abusos que os humanos praticavam. O livro critica tanto o totalitarismo quanto a corrupção do poder, destacando como até mesmo as melhores intenções podem ser distorcidas quando se obtém controle absoluto.",
+            "edt_cod": 26,
+            "edt_nome": "Companhhia das letras",
+            "aut_nome": "Orwell, George",
+            "aut_cod": 64,
+            "exe_ativo": {
+                "type": "Buffer",
+                "data": [
+                    1
+                ]
+            },
+            "liv_ativo": {
+                "type": "Buffer",
+                "data": [
+                    1
+                ]
+            },
+            "gen_cod": 82,
+            "gen_nome": "Alegoria"
+        },
+        {
+            "liv_cod": 68,
+            "liv_nome": "A Revolução dos Bichos",
+            "liv_pha_cod": "O72r",
+            "liv_categ_cod": "0.820",
+            "liv_foto_capa": "/public/uploads/CapaLivros/a revolução dos bichos.jpg",
+            "liv_desc": "A Revolução dos Bichos é uma fábula satírica escrita por George Orwell. A história retrata uma revolta liderada pelos animais de uma fazenda contra seus donos humanos, buscando criar uma sociedade onde todos os animais são iguais. No entanto, ao longo do tempo, os líderes porcos começam a se corromper, espelhando os mesmos vícios e abusos que os humanos praticavam. O livro critica tanto o totalitarismo quanto a corrupção do poder, destacando como até mesmo as melhores intenções podem ser distorcidas quando se obtém controle absoluto.",
+            "edt_cod": 26,
+            "edt_nome": "Companhhia das letras",
+            "aut_nome": "Orwell, George",
+            "aut_cod": 64,
+            "exe_ativo": {
+                "type": "Buffer",
+                "data": [
+                    1
+                ]
+            },
+            "liv_ativo": {
+                "type": "Buffer",
+                "data": [
+                    1
+                ]
+            },
+            "gen_cod": 82,
+            "gen_nome": "Alegoria"
+        },
+        {
+            "liv_cod": 84,
+            "liv_nome": "As Crônicas de Nárnia",
+            "liv_pha_cod": "L652a",
+            "liv_categ_cod": "0.820",
+            "liv_foto_capa": "/public/uploads/CapaLivros/narnia.jpg",
+            "liv_desc": "Sete romances constituem esta épica saga mundialmente celebrada. As Crônicas de Nárnia foi escrita pelo irlandês C.S. Lewis e, desde o lançamento do primeiro livro, O Leão, A Feiticeira e o Guarda-Roupa (em 1950) ganhou aclamação mundial.\nA série se tornou um clássico da alta fantasia e é considerado um livro perfeito para ler em qualquer idade. Elementos de fantasia e realidade se misturam para esta excelente saga de descobertas, aventuras e redenção.\nAlguns estudiosos fazem paralelos dos livros de Lewis com as histórias encontradas na Bíblia. Apesar das referências nunca terem sido confirmadas, elas agradam também pessoas religiosas de todo o mundo.\nTrês livros da série ganharam adaptações para o cinema: O Leão, A Feiticeira e o Guarda-Roupa (2005), As Crônicas de Nárnia: Príncipe Caspian (2008) e As Crônicas de Nárnia: A Viagem do Peregrino da Alvorada (2010).\n",
+            "edt_cod": 40,
+            "edt_nome": "WMF Martins Fontes",
+            "aut_nome": "Lewis, C.S.",
+            "aut_cod": 77,
+            "exe_ativo": {
+                "type": "Buffer",
+                "data": [
+                    1
+                ]
+            },
+            "liv_ativo": {
+                "type": "Buffer",
+                "data": [
+                    1
+                ]
+            },
+            "gen_cod": 87,
+            "gen_nome": "Fantasia"
+        },
+        {
+            "liv_cod": 82,
+            "liv_nome": "Auto da Compadecida",
+            "liv_pha_cod": "S963a",
+            "liv_categ_cod": "0.869",
+            "liv_foto_capa": "/public/uploads/CapaLivros/auto da compadecida.jpg",
+            "liv_desc": "O Auto da Compadecida é uma peça teatral escrita por Ariano Suassuna em 1955, ambientada no interior do Nordeste brasileiro. A história acompanha as peripécias de João Grilo e Chicó, dois amigos astutos que vivem de trapaças. Com uma mistura peculiar de elementos populares e religiosos, a peça apresenta personagens inspirados em figuras típicas da região, como cangaceiros, padres e prostitutas. O enredo gira em torno das tentativas da dupla de escapar de dívidas e das autoridades locais, sempre utilizando artifícios e golpes. Reconhecida pelo humor irreverente e crítica social, a obra aborda temas como corrupção, hipocrisia religiosa e desigualdades sociais, tornando-se um dos maiores clássicos do teatro brasileiro.\n",
+            "edt_cod": 38,
+            "edt_nome": "Nova Fronteira",
+            "aut_nome": "Suassuna, Ariano",
+            "aut_cod": 75,
+            "exe_ativo": {
+                "type": "Buffer",
+                "data": [
+                    1
+                ]
+            },
+            "liv_ativo": {
+                "type": "Buffer",
+                "data": [
+                    1
+                ]
+            },
+            "gen_cod": 83,
+            "gen_nome": "Comédia"
+        },
+        {
+            "liv_cod": 77,
+            "liv_nome": "Deixada para Trás",
+            "liv_pha_cod": "D738p",
+            "liv_categ_cod": "0.810",
+            "liv_foto_capa": "/public/uploads/CapaLivros/deixada para trás.jpg",
+            "liv_desc": "Deixada para Trás, Nicole e Megan, estudantes do último ano do ensino médio, desaparecem de uma festa em Emerson Bay, Carolina do Norte. Um ano depois, Megan retorna, transformada em uma celebridade após lançar um livro sobre seu sequestro, mas Nicole ainda está desaparecida. Livia, irmã mais velha de Nicole e estudante de patologia forense, aguarda ansiosamente por notícias do corpo de sua irmã. Quando uma pista surge ligando Nicole ao passado de outra vítima encontrada, Livia investiga e descobre uma conexão entre vários desaparecimentos de garotas. Enquanto Livia e Megan se aprofundam na investigação, percebem que o terror verdadeiro pode estar mais próximo do que imaginavam.",
+            "edt_cod": 27,
+            "edt_nome": "Faro",
+            "aut_nome": "Donlea, Charlie",
+            "aut_cod": 69,
+            "exe_ativo": {
+                "type": "Buffer",
+                "data": [
+                    1
+                ]
+            },
+            "liv_ativo": {
+                "type": "Buffer",
+                "data": [
+                    1
+                ]
+            },
+            "gen_cod": 91,
+            "gen_nome": "Suspense"
+        },
+        {
+            "liv_cod": 66,
+            "liv_nome": "Dom Casmurro",
+            "liv_pha_cod": "A865d",
+            "liv_categ_cod": "0.820",
+            "liv_foto_capa": "/public/uploads/CapaLivros/dom casmurro.jpg",
+            "liv_desc": "Dom Casmurro é uma obra clássica do Realismo Brasileiro e uma das mais famosas de Machado de Assis. É o romance mais estudado, comentado e discutido de Machado de Assis – o que significa dizer um dos mais estudados da nossa literatura. Publicado originalmente em 1899, o livro conta a história de Bentinho e Capitu, desde o namoro infantil até o casamento atormentado pelo ciúme e pela dúvida que virou polêmica literária: Capitu traiu o marido com o melhor amigo dele, Escobar? Os fatos são narrados por Bentinho, que relembra, já velho, episódios de sua vida.",
+            "edt_cod": 26,
+            "edt_nome": "Companhhia das letras",
+            "aut_nome": "Assis, Machado",
+            "aut_cod": 62,
+            "exe_ativo": {
+                "type": "Buffer",
+                "data": [
+                    1
+                ]
+            },
+            "liv_ativo": {
+                "type": "Buffer",
+                "data": [
+                    1
+                ]
+            },
+            "gen_cod": 85,
+            "gen_nome": "Ficção"
+        },
+        {
+            "liv_cod": 80,
+            "liv_nome": "Drácula",
+            "liv_pha_cod": "S883d",
+            "liv_categ_cod": "0.839",
+            "liv_foto_capa": "/public/uploads/CapaLivros/dracula.jpg",
+            "liv_desc": "Publicado em 1897, Drácula definiu todo um gênero e popularizou a figura do vampiro na cultura mundial. Neste romance epistolar – construído a partir de cartas, diários e telegramas, o advogado Jonathan Harker viaja até a Transilvânia para tratar de negócios com um conde sinistro e elegante. Em pouco tempo, Harker e seus companheiros percebem que estão em uma cilada empreendida por Drácula, essa terrível criatura que encarcera e seduz suas vítimas para depois lhes sugar o sangue. A história do vampiro mais célebre e aterrorizante do mundo ainda hoje ganha novas adaptações para cinema, quadrinhos, teatro e dança. Aqui em versão integral, o romance original do escritor irlandês inspira-se tanto na história de Vlad Tepes, sanguinário príncipe da Romênia que viveu no século XV, quanto em lendas sobre esse personagem e sobre vampiros.",
+            "edt_cod": 26,
+            "edt_nome": "Companhhia das letras",
+            "aut_nome": "Stoker, Bram",
+            "aut_cod": 73,
+            "exe_ativo": {
+                "type": "Buffer",
+                "data": [
+                    1
+                ]
+            },
+            "liv_ativo": {
+                "type": "Buffer",
+                "data": [
+                    1
+                ]
+            },
+            "gen_cod": 92,
+            "gen_nome": "Terror"
+        },
+        {
+            "liv_cod": 83,
+            "liv_nome": "Farenheit 451",
+            "liv_pha_cod": "B79f",
+            "liv_categ_cod": "0.830",
+            "liv_foto_capa": "/public/uploads/CapaLivros/fahrenheit-451.jpg",
+            "liv_desc": "Esse é um clássico da distopia junto com 1984 de Orwell.\nEscrito originalmente em 1950, ele apresenta um mundo onde os livros são considerados uma ameaça ao sistema, tornando-os proibidos. Quem os tiver será considerado um criminoso e será perseguido.\nNo livro, acompanhamos a história de Guy Montag, um bombeiro. Seu trabalho é queimar livros, o que até então fazia sem pensar duas vezes. Mas com a entrada de uma estranha e imaginativa mulher, ele irá começar a repensar sua profissão.\n",
+            "edt_cod": 39,
+            "edt_nome": "Oficina do Saber",
+            "aut_nome": "Bradbury, Ray",
+            "aut_cod": 76,
+            "exe_ativo": {
+                "type": "Buffer",
+                "data": [
+                    1
+                ]
+            },
+            "liv_ativo": {
+                "type": "Buffer",
+                "data": [
+                    1
+                ]
+            },
+            "gen_cod": 86,
+            "gen_nome": "Ficção Científica"
+        },
+        {
+            "liv_cod": 73,
+            "liv_nome": "Harry Potter e a Pedra filosofal",
+            "liv_pha_cod": "R788h",
+            "liv_categ_cod": "0.028",
+            "liv_foto_capa": "/public/uploads/CapaLivros/harry potter e a pedra filosofal.jpg",
+            "liv_desc": "Harry Potter é uma saga literária que cativa um público diversificado, apesar de ser inicialmente destinada ao público infantojuvenil. A história acompanha Harry Potter, um órfão cujos pais foram assassinados por um poderoso bruxo quando ele era bebê. Criado pelos tios que o tratam mal, Harry descobre, aos 11 anos, que é um bruxo e é convidado a frequentar a Escola de Magia e Bruxaria de Hogwarts. Lá, ele descobre sua verdadeira história e seu destino: enfrentar o bruxo das trevas que matou seus pais. A série, repleta de elementos mágicos como fantasmas, dragões e feitiços, também aborda questões mais profundas, como o conflito entre o bem e o mal, preconceito, divisão de classes, entre outros temas universais, tornando-se uma obra que vai além do entretenimento.",
+            "edt_cod": 28,
+            "edt_nome": "Rocco",
+            "aut_nome": "Rowling, J.K",
+            "aut_cod": 71,
+            "exe_ativo": {
+                "type": "Buffer",
+                "data": [
+                    1
+                ]
+            },
+            "liv_ativo": {
+                "type": "Buffer",
+                "data": [
+                    1
+                ]
+            },
+            "gen_cod": 79,
+            "gen_nome": "Ação"
+        },
+        {
+            "liv_cod": 71,
+            "liv_nome": "Heartstopper",
+            "liv_pha_cod": "S523h",
+            "liv_categ_cod": "0.800",
+            "liv_foto_capa": "/public/uploads/CapaLivros/heartstopper.jpg",
+            "liv_desc": "bbbb5",
+            "edt_cod": 25,
+            "edt_nome": "Record",
+            "aut_nome": "Oseman, Alice",
+            "aut_cod": 67,
+            "exe_ativo": {
+                "type": "Buffer",
+                "data": [
+                    1
+                ]
+            },
+            "liv_ativo": {
+                "type": "Buffer",
+                "data": [
+                    1
+                ]
+            },
+            "gen_cod": 89,
+            "gen_nome": "Romance"
+        },
+        {
+            "liv_cod": 71,
+            "liv_nome": "Heartstopper",
+            "liv_pha_cod": "S523h",
+            "liv_categ_cod": "0.800",
+            "liv_foto_capa": "/public/uploads/CapaLivros/heartstopper.jpg",
+            "liv_desc": "bbbb5",
+            "edt_cod": 25,
+            "edt_nome": "Record",
+            "aut_nome": "Oseman, Alice",
+            "aut_cod": 67,
+            "exe_ativo": {
+                "type": "Buffer",
+                "data": [
+                    1
+                ]
+            },
+            "liv_ativo": {
+                "type": "Buffer",
+                "data": [
+                    1
+                ]
+            },
+            "gen_cod": 89,
+            "gen_nome": "Romance"
+        },
+        {
+            "liv_cod": 65,
+            "liv_nome": "O diário de Anne Frank",
+            "liv_pha_cod": "F91a",
+            "liv_categ_cod": "0.920",
+            "liv_foto_capa": "/public/uploads/CapaLivros/anne frank.jpg",
+            "liv_desc": "O Diário de Anne Frank, O emocionante relato que se tornou um dos livros mais lidos do mundo.\nO diário de Anne Frank foi publicado pela primeira vez em 1947 e faz parte do cânone literário do Holocausto. E agora, pela primeira vez, vem à luz esta edição em quadrinhos. O roteirista e diretor cinematográfico Ari Folman e o ilustrador David Polonsky demonstram com essa adaptação a dimensão e a genialidade literárias da jovem autora. Eles tornam visual o contemporâneo documento histórico de Anne Frank e traduzem o contexto da época no qual foi escrito. Baseada na edição definitiva do diário, autorizada por Otto Frank, pai de Anne – um dos livros mais vendidos do mundo, publicado no Brasil pela Editora Record , esta versão em quadrinhos torna tangível o destino dos oito habitantes do Anexo durante seus dias no esconderijo.",
+            "edt_cod": 25,
+            "edt_nome": "Record",
+            "aut_nome": "Frank, Anne",
+            "aut_cod": 61,
+            "exe_ativo": {
+                "type": "Buffer",
+                "data": [
+                    1
+                ]
+            },
+            "liv_ativo": {
+                "type": "Buffer",
+                "data": [
+                    1
+                ]
+            },
+            "gen_cod": 81,
+            "gen_nome": "Autobiográfico"
+        },
+        {
+            "liv_cod": 65,
+            "liv_nome": "O diário de Anne Frank",
+            "liv_pha_cod": "F91a",
+            "liv_categ_cod": "0.920",
+            "liv_foto_capa": "/public/uploads/CapaLivros/anne frank.jpg",
+            "liv_desc": "O Diário de Anne Frank, O emocionante relato que se tornou um dos livros mais lidos do mundo.\nO diário de Anne Frank foi publicado pela primeira vez em 1947 e faz parte do cânone literário do Holocausto. E agora, pela primeira vez, vem à luz esta edição em quadrinhos. O roteirista e diretor cinematográfico Ari Folman e o ilustrador David Polonsky demonstram com essa adaptação a dimensão e a genialidade literárias da jovem autora. Eles tornam visual o contemporâneo documento histórico de Anne Frank e traduzem o contexto da época no qual foi escrito. Baseada na edição definitiva do diário, autorizada por Otto Frank, pai de Anne – um dos livros mais vendidos do mundo, publicado no Brasil pela Editora Record , esta versão em quadrinhos torna tangível o destino dos oito habitantes do Anexo durante seus dias no esconderijo.",
+            "edt_cod": 25,
+            "edt_nome": "Record",
+            "aut_nome": "Frank, Anne",
+            "aut_cod": 61,
+            "exe_ativo": {
+                "type": "Buffer",
+                "data": [
+                    1
+                ]
+            },
+            "liv_ativo": {
+                "type": "Buffer",
+                "data": [
+                    1
+                ]
+            },
+            "gen_cod": 81,
+            "gen_nome": "Autobiográfico"
+        },
+        {
+            "liv_cod": 65,
+            "liv_nome": "O diário de Anne Frank",
+            "liv_pha_cod": "F91a",
+            "liv_categ_cod": "0.920",
+            "liv_foto_capa": "/public/uploads/CapaLivros/anne frank.jpg",
+            "liv_desc": "O Diário de Anne Frank, O emocionante relato que se tornou um dos livros mais lidos do mundo.\nO diário de Anne Frank foi publicado pela primeira vez em 1947 e faz parte do cânone literário do Holocausto. E agora, pela primeira vez, vem à luz esta edição em quadrinhos. O roteirista e diretor cinematográfico Ari Folman e o ilustrador David Polonsky demonstram com essa adaptação a dimensão e a genialidade literárias da jovem autora. Eles tornam visual o contemporâneo documento histórico de Anne Frank e traduzem o contexto da época no qual foi escrito. Baseada na edição definitiva do diário, autorizada por Otto Frank, pai de Anne – um dos livros mais vendidos do mundo, publicado no Brasil pela Editora Record , esta versão em quadrinhos torna tangível o destino dos oito habitantes do Anexo durante seus dias no esconderijo.",
+            "edt_cod": 25,
+            "edt_nome": "Record",
+            "aut_nome": "Frank, Anne",
+            "aut_cod": 61,
+            "exe_ativo": {
+                "type": "Buffer",
+                "data": [
+                    1
+                ]
+            },
+            "liv_ativo": {
+                "type": "Buffer",
+                "data": [
+                    1
+                ]
+            },
+            "gen_cod": 81,
+            "gen_nome": "Autobiográfico"
+        },
+        {
+            "liv_cod": 81,
+            "liv_nome": "O Guia do Mochileiro Das Galáxias",
+            "liv_pha_cod": "A176o",
+            "liv_categ_cod": "0.810",
+            "liv_foto_capa": "/public/uploads/CapaLivros/mochileiro das galaxias.jpg",
+            "liv_desc": "É hilário, é frenético, é um clássico da ficção científica intergaláctica. O inglês Arthur Dent e seu Ford Prefect tem que partir em uma viagem pela galáxia quando Artur tem seu planeta e casa destruídos logo no início do livro. Uma aventura que tornou-se obra-prima e criou tantas referências no mundo nerd que merece ser lembrada. Sente-se confortavelmente, pegue sua toalha e divirta-se.\n",
+            "edt_cod": 37,
+            "edt_nome": "Livraria Catavento",
+            "aut_nome": "Adams, Douglas",
+            "aut_cod": 74,
+            "exe_ativo": {
+                "type": "Buffer",
+                "data": [
+                    1
+                ]
+            },
+            "liv_ativo": {
+                "type": "Buffer",
+                "data": [
+                    1
+                ]
+            },
+            "gen_cod": 80,
+            "gen_nome": "Aventura"
+        },
+        {
+            "liv_cod": 70,
+            "liv_nome": "Orgulho e Preconceito",
+            "liv_pha_cod": "A95o",
+            "liv_categ_cod": "0.028",
+            "liv_foto_capa": "/public/uploads/CapaLivros/orgulho e preconceito.jpg",
+            "liv_desc": "Orgulho e Preconceito, de Jane Austen, narra uma história de amor improvável em uma época em que sentimentos poderiam não ser suficientes. Quando Elizabeth Bennet conhece Fitzwilliam Darcy, o considera arrogante e presunçoso. No entanto, uma reviravolta surpreendente pode mostrar que as primeiras impressões nem sempre são definitivas. Com sua escrita ácida e inteligente, Austen encanta leitores de todas as gerações, mantendo seu posto como uma das escritoras mais amadas da literatura mundial.",
+            "edt_cod": 25,
+            "edt_nome": "Record",
+            "aut_nome": "Austen, Jane",
+            "aut_cod": 66,
+            "exe_ativo": {
+                "type": "Buffer",
+                "data": [
+                    1
+                ]
+            },
+            "liv_ativo": {
+                "type": "Buffer",
+                "data": [
+                    1
+                ]
+            },
+            "gen_cod": 85,
+            "gen_nome": "Ficção"
+        },
+        {
+            "liv_cod": 69,
+            "liv_nome": "Os Miseráveis",
+            "liv_pha_cod": "H8890",
+            "liv_categ_cod": "0.840",
+            "liv_foto_capa": "/public/uploads/CapaLivros/os miseráveis.jpg",
+            "liv_desc": "Em Os Miseráveis, o maior clássico do Romantismo francês, Victor Hugo desenvolve a trama a partir dos conflitos entre dois antagonistas: Jean Valjean e Javert. Com críticas à sociedade da época, esta adaptação trabalha temáticas universais, como a desigualdade social e os dilemas morais que cada indivíduo precisa enfrenta.",
+            "edt_cod": 26,
+            "edt_nome": "Companhhia das letras",
+            "aut_nome": "Hugo, Vitor",
+            "aut_cod": 65,
+            "exe_ativo": {
+                "type": "Buffer",
+                "data": [
+                    1
+                ]
+            },
+            "liv_ativo": {
+                "type": "Buffer",
+                "data": [
+                    1
+                ]
+            },
+            "gen_cod": 85,
+            "gen_nome": "Ficção"
+        },
+        {
+            "liv_cod": 78,
+            "liv_nome": "Os Sete Maridos de Evelyn Hugo",
+            "liv_pha_cod": "R284o",
+            "liv_categ_cod": "0.810",
+            "liv_foto_capa": "/public/uploads/CapaLivros/os sete maridos de evelyn hugo.jpg",
+            "liv_desc": "Os Sete Maridos de Evelyn Hugo, Com todo o esplendor que só a Hollywood do século passado pode oferecer, esta é uma narrativa inesquecível sobre os sacrifícios que fazemos por amor, o perigo dos segredos e o preço da fama.\nLendária estrela de Hollywood, Evelyn Hugo sempre esteve sob os holofotes seja estrelando uma produção vencedora do Oscar, protagonizando algum escândalo ou aparecendo com um novo marido... pela sétima vez. Agora, prestes a completar oitenta anos e reclusa em seu apartamento no Upper East Side, a famigerada atriz decide contar a própria história ou sua verdadeira história, mas com uma condição, que Monique Grant, jornalista iniciante e até então desconhecida, seja a entrevistadora. Ao embarcar nessa misteriosa empreitada, a jovem repórter começa a se dar conta de que nada é por acaso e que suas trajetórias podem estar profunda e irreversivelmente conectadas.",
+            "edt_cod": 29,
+            "edt_nome": "Aleph",
+            "aut_nome": "Reid, Jenkins",
+            "aut_cod": 68,
+            "exe_ativo": {
+                "type": "Buffer",
+                "data": [
+                    1
+                ]
+            },
+            "liv_ativo": {
+                "type": "Buffer",
+                "data": [
+                    1
+                ]
+            },
+            "gen_cod": 85,
+            "gen_nome": "Ficção"
+        },
+        {
+            "liv_cod": 76,
+            "liv_nome": "Procure nas Cinzas",
+            "liv_pha_cod": "D738p",
+            "liv_categ_cod": "0.810",
+            "liv_foto_capa": "/public/uploads/CapaLivros/procure nas cinzas.jpg",
+            "liv_desc": "Procure nas Cinzas, Victoria Ford estava tendo um caso extraconjugal com um escritor de sucesso quando ele é encontrado morto de modo tão espetacular que a notícia ocupou os telejornais por várias semanas. Na cena do crime, havia vestígios do DNA de Victoria por toda parte. Mas ela jurava à irmã, Emma, que não cometeu o crime.\nDuas décadas depois, Emma já não tem mais esperanças de provar a inocência de Victoria. Até que, com o seu DNA identificado entre as cinzas do WTC, Avery Mason, que comanda o programa de investigação de maior audiência da TV, a procura atrás de respostas e decide ajudar Emma a tentar provar a inocência da irmã morta.\nMas a jornada pela verdade não será tão simples. Há diversos mistérios encobertos que muitos queriam que permanecessem enterrados naquele 11 de setembro de 2001",
+            "edt_cod": 27,
+            "edt_nome": "Faro",
+            "aut_nome": "Donlea, Charlie",
+            "aut_cod": 69,
+            "exe_ativo": {
+                "type": "Buffer",
+                "data": [
+                    1
+                ]
+            },
+            "liv_ativo": {
+                "type": "Buffer",
+                "data": [
+                    1
+                ]
+            },
+            "gen_cod": 91,
+            "gen_nome": "Suspense"
+        },
+        {
+            "liv_cod": 76,
+            "liv_nome": "Procure nas Cinzas",
+            "liv_pha_cod": "D738p",
+            "liv_categ_cod": "0.810",
+            "liv_foto_capa": "/public/uploads/CapaLivros/procure nas cinzas.jpg",
+            "liv_desc": "Procure nas Cinzas, Victoria Ford estava tendo um caso extraconjugal com um escritor de sucesso quando ele é encontrado morto de modo tão espetacular que a notícia ocupou os telejornais por várias semanas. Na cena do crime, havia vestígios do DNA de Victoria por toda parte. Mas ela jurava à irmã, Emma, que não cometeu o crime.\nDuas décadas depois, Emma já não tem mais esperanças de provar a inocência de Victoria. Até que, com o seu DNA identificado entre as cinzas do WTC, Avery Mason, que comanda o programa de investigação de maior audiência da TV, a procura atrás de respostas e decide ajudar Emma a tentar provar a inocência da irmã morta.\nMas a jornada pela verdade não será tão simples. Há diversos mistérios encobertos que muitos queriam que permanecessem enterrados naquele 11 de setembro de 2001",
+            "edt_cod": 27,
+            "edt_nome": "Faro",
+            "aut_nome": "Donlea, Charlie",
+            "aut_cod": 69,
+            "exe_ativo": {
+                "type": "Buffer",
+                "data": [
+                    1
+                ]
+            },
+            "liv_ativo": {
+                "type": "Buffer",
+                "data": [
+                    1
+                ]
+            },
+            "gen_cod": 91,
+            "gen_nome": "Suspense"
+        },
+        {
+            "liv_cod": 67,
+            "liv_nome": "Romeu e Julieta",
+            "liv_pha_cod": "S539r",
+            "liv_categ_cod": "0.820",
+            "liv_foto_capa": "/public/uploads/CapaLivros/romeu e julieta.jpg",
+            "liv_desc": "Romeu e Julieta, Há muito tempo duas famílias banham em sangue as ruas de Verona. Enquanto isso, na penumbra das madrugadas, ardem as brasas de um amor secreto. Romeu, filho dos Montéquio, e Julieta, herdeira dos Capuleto, desafiam a rixa familiar e sonham com um impossível futuro, longe da violência e da loucura. Romeu e Julieta é a primeira das grandes tragédias de William Shakespeare, e esta nova tradução de José Francisco Botelho recria com maestria o ritmo ao mesmo tempo frenético e melancólico do texto shakespeariano. Contando também com um excelente ensaio introdutório do especialista Adrian Poole, esta edição traz nova vida a uma das mais emocionantes histórias de amor já contadas",
+            "edt_cod": 26,
+            "edt_nome": "Companhhia das letras",
+            "aut_nome": "Shakespeare, William",
+            "aut_cod": 63,
+            "exe_ativo": {
+                "type": "Buffer",
+                "data": [
+                    1
+                ]
+            },
+            "liv_ativo": {
+                "type": "Buffer",
+                "data": [
+                    1
+                ]
+            },
+            "gen_cod": 93,
+            "gen_nome": "Tragédia"
+        },
+        {
+            "liv_cod": 72,
+            "liv_nome": "Verity",
+            "liv_pha_cod": "H759v",
+            "liv_categ_cod": "0.810",
+            "liv_foto_capa": "/public/uploads/CapaLivros/verity.jpg",
+            "liv_desc": "Verity é um romance finalista do prêmio Goodreads de 2019 que mergulha no suspense psicológico. Lowen Ashleigh, uma escritora à beira da falência, é contratada para concluir uma série de sucesso após um acidente deixar a autora original, Verity Crawford, incapacitada. Ao investigar os escritos de Verity, Lowen descobre uma autobiografia perturbadora que revela segredos sombrios sobre o casamento de Verity e seu marido Jeremy, incluindo eventos trágicos envolvendo suas filhas. Enquanto mergulha mais fundo na vida de Verity, Lowen se vê envolvida em uma rede de mentiras e segredos, questionando-se sobre o que revelar e o que esconder. Colleen Hoover surpreende seus leitores com este suspense intenso que explora o lado mais obscuro das relações humanas.",
+            "edt_cod": 26,
+            "edt_nome": "Companhhia das letras",
+            "aut_nome": "Hoover, Collen",
+            "aut_cod": 70,
+            "exe_ativo": {
+                "type": "Buffer",
+                "data": [
+                    1
+                ]
+            },
+            "liv_ativo": {
+                "type": "Buffer",
+                "data": [
+                    1
+                ]
+            },
+            "gen_cod": 88,
+            "gen_nome": "Mistério"
         }
     ]
 }

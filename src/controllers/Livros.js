@@ -6,11 +6,7 @@ const router = express.Router();
 
 // Função para gerar URL da capa do livro
 function geraUrl(liv_foto_capa) {
-    let img = liv_foto_capa ? liv_foto_capa : 'default.jpg';
-    if (!fs.existsSync('./public/uploads/CapaLivros/' + img)) {
-        img = 'livros.jpg';
-    }
-    return '/public/uploads/CapaLivros/' + img;
+    return liv_foto_capa ? '/public/uploads/CapaLivros/' + liv_foto_capa : null;
 }
 
 // Exportação dos métodos
@@ -46,47 +42,49 @@ module.exports = {
             }
 
             const sql = `SELECT liv.liv_cod, liv.liv_nome, liv.liv_pha_cod, liv.liv_categ_cod,
-                        liv.liv_foto_capa, liv.liv_desc, 
-                        edt.edt_cod, edt.edt_nome, 
-                        aut.aut_nome, aut.aut_cod, 
-                        gen.gen_cod,
-                        GROUP_CONCAT(DISTINCT gen.gen_nome) AS Generos,
-                        COUNT(exe.exe_cod) as exemplares,
-                        (SELECT COUNT(*) 
-                         FROM emprestimos emp 
-                         INNER JOIN exemplares subexe ON emp.exe_cod = subexe.exe_cod            
-                         WHERE subexe.liv_cod = liv.liv_cod
-                         AND emp.emp_devolvido = 0
-                         AND subexe.exe_ativo = 1) as emprestados,
-                        CASE 
-                        WHEN (COUNT(exe.exe_cod) - (SELECT COUNT(*) 
-                        FROM emprestimos emp 
-                        INNER JOIN exemplares subexe ON emp.exe_cod = subexe.exe_cod            
-                        WHERE subexe.liv_cod = liv.liv_cod
-                        AND emp.emp_devolvido = 0
-                        AND subexe.exe_ativo = 1)) > 0 
-                        THEN (COUNT(exe.exe_cod) - (SELECT COUNT(*) 
-                        FROM emprestimos emp 
-                        INNER JOIN exemplares subexe ON emp.exe_cod = subexe.exe_cod            
-                        WHERE subexe.liv_cod = liv.liv_cod
-                        AND emp.emp_devolvido = 0
-                        AND subexe.exe_ativo = 1))
-                        ELSE 0
-                        END AS disponivel
-                        FROM livros liv
-                        INNER JOIN editoras edt ON edt.edt_cod = liv.edt_cod
-                        INNER JOIN livros_autores lau ON lau.liv_cod = liv.liv_cod
-                        INNER JOIN autores aut ON aut.aut_cod = lau.aut_cod
-                        INNER JOIN livros_generos lge ON lge.liv_cod = liv.liv_cod
-                        INNER JOIN generos gen ON gen.gen_cod = lge.gen_cod 
-                        INNER JOIN exemplares exe ON liv.liv_cod = exe.liv_cod
-                        ${whereClauses.length > 0 ? 'WHERE ' + whereClauses.join(' AND ') : ''}
-                        AND exe.exe_data_saida IS NULL
-                        AND exe.exe_ativo = 1
-                        GROUP BY liv.liv_cod, liv.liv_nome, liv.liv_pha_cod, liv.liv_categ_cod,
-                                 liv.liv_foto_capa, edt.edt_nome, aut.aut_nome, aut.aut_cod, gen.gen_nome,gen.gen_cod
-                        ${havingClauses.length > 0 ? 'HAVING ' + havingClauses.join(' AND ') : ''}
-                        ORDER BY liv.liv_nome ASC`;
+                    liv.liv_foto_capa, liv.liv_desc, 
+                    edt.edt_cod, edt.edt_nome, 
+                    aut.aut_nome, aut.aut_cod, 
+                    gen.gen_cod,
+                    GROUP_CONCAT(DISTINCT gen.gen_nome) AS Generos,
+                    COUNT(exe.exe_cod) as exemplares,
+                    (SELECT COUNT(*) 
+                     FROM emprestimos emp 
+                     INNER JOIN exemplares subexe ON emp.exe_cod = subexe.exe_cod            
+                     WHERE subexe.liv_cod = liv.liv_cod
+                     AND emp.emp_devolvido = 0
+                     AND subexe.exe_ativo = 1) as emprestados,
+                    CASE 
+                    WHEN (COUNT(exe.exe_cod) - (SELECT COUNT(*) 
+                    FROM emprestimos emp 
+                    INNER JOIN exemplares subexe ON emp.exe_cod = subexe.exe_cod            
+                    WHERE subexe.liv_cod = liv.liv_cod
+                    AND emp.emp_devolvido = 0
+                    AND subexe.exe_ativo = 1)) > 0 
+                    THEN (COUNT(exe.exe_cod) - (SELECT COUNT(*) 
+                    FROM emprestimos emp 
+                    INNER JOIN exemplares subexe ON emp.exe_cod = subexe.exe_cod            
+                    WHERE subexe.liv_cod = liv.liv_cod
+                    AND emp.emp_devolvido = 0
+                    AND subexe.exe_ativo = 1))
+                    ELSE 0
+                    END AS disponivel
+                    FROM livros liv
+                    INNER JOIN editoras edt ON edt.edt_cod = liv.edt_cod
+                    INNER JOIN livros_autores lau ON lau.liv_cod = liv.liv_cod
+                    INNER JOIN autores aut ON aut.aut_cod = lau.aut_cod
+                    INNER JOIN livros_generos lge ON lge.liv_cod = liv.liv_cod
+                    INNER JOIN generos gen ON gen.gen_cod = lge.gen_cod 
+                    INNER JOIN exemplares exe ON liv.liv_cod = exe.liv_cod
+                    ${whereClauses.length > 0 ? 'WHERE ' + whereClauses.join(' AND ') : ''}
+                    AND exe.exe_data_saida IS NULL
+                    AND exe.exe_ativo = 1
+                    AND liv.liv_ativo = 1
+                    GROUP BY liv.liv_cod, liv.liv_nome, liv.liv_pha_cod, liv.liv_categ_cod,
+                             liv.liv_foto_capa, edt.edt_nome, aut.aut_nome, aut.aut_cod, gen.gen_nome, gen.gen_cod
+                    ${havingClauses.length > 0 ? 'HAVING ' + havingClauses.join(' AND ') : ''}
+                    ORDER BY liv.liv_nome ASC`;
+
 
             const livros = await db.query(sql, params);
             const nItens = livros[0].length;
@@ -159,12 +157,19 @@ module.exports = {
     // Método para gerenciar livros (mostra todos os livros, incluindo os inativos)
     async gerenciarLivros(request, response) {
         try {
-            const sql = `SELECT liv.liv_cod, liv.liv_nome, liv.liv_desc, 
-                                edt.edt_nome, 
-                                liv.liv_foto_capa, 
-                                liv.liv_ativo 
-                         FROM livros liv
-                         INNER JOIN editoras edt ON edt.edt_cod = liv.edt_cod`;
+            const sql = `SELECT liv.liv_cod, liv.liv_nome, liv.liv_pha_cod, liv.liv_categ_cod,
+            liv.liv_foto_capa, liv.liv_desc, 
+            edt.edt_cod, edt.edt_nome, 
+            aut.aut_nome, aut.aut_cod, exe.exe_ativo, liv.liv_ativo,
+            gen.gen_cod, gen.gen_nome
+            FROM livros liv
+            INNER JOIN editoras edt ON edt.edt_cod = liv.edt_cod
+            INNER JOIN livros_autores lau ON lau.liv_cod = liv.liv_cod
+            INNER JOIN autores aut ON aut.aut_cod = lau.aut_cod
+            INNER JOIN livros_generos lge ON lge.liv_cod = liv.liv_cod
+            INNER JOIN generos gen ON gen.gen_cod = lge.gen_cod 
+            INNER JOIN exemplares exe ON liv.liv_cod = exe.liv_cod
+            ORDER BY liv.liv_nome ASC`;
 
             const livros = await db.query(sql);
             const resultado = livros[0].map(livro => ({
@@ -218,47 +223,33 @@ module.exports = {
     },
 
     // Método para inativar livros
-    async inativarLivros(request, response) {
-        const { liv_cod } = request.body; // O código do livro
-
+    async statusLivros(request, response) {
+        const { liv_cod, currentStatus } = request.body; // Código do livro e o status atual (1 para ativo, 0 para inativo)
+        
         try {
-            // Atualiza o status do livro para inativo
-            await db.query('UPDATE livros SET liv_ativo = 0 WHERE liv_cod = ?', [liv_cod]);
-
-            // Atualiza os exemplares relacionados ao livro para inativo
-            await db.query('UPDATE exemplares SET exe_ativo = 0 WHERE liv_cod = ?', [liv_cod]);
-
-            // Resposta de sucesso
-            return response.json({
-                message: "Livro e exemplares inativados com sucesso!",
-                livroId: liv_cod
-            });
+            // Se o currentStatus for 1 (ativo), definimos como 0 (inativo) e vice-versa
+            const novoStatusLivro = currentStatus === 0 ? 1 : 0;
+            const novoStatusExemplar = currentStatus === 0 ? 1 : 0;
+            
+            // Atualiza o status do livro
+            const query = `UPDATE livros SET liv_ativo = ? WHERE liv_cod = ?`;
+            const [result] = await db.query(query, [novoStatusLivro, liv_cod]);
+            
+            // Verifica se a atualização do livro foi realizada
+            if (result.affectedRows === 0) {
+                return response.status(404).json({ error: "Livro não encontrado." });
+            }
+    
+            // Atualiza o status dos exemplares relacionados
+            const updateExemplaresQuery = `UPDATE exemplares SET exe_ativo = ? WHERE liv_cod = ?`;
+            await db.query(updateExemplaresQuery, [novoStatusExemplar, liv_cod]);
+            
+            return response.json({ message: "Status do livro e exemplares alterados com sucesso!" });
         } catch (error) {
             console.error(error);
-            return response.status(500).json({ error: "Erro ao inativar livro e exemplares." });
+            return response.status(500).json({ error: "Erro ao alterar o status." });
         }
-    },
-
-    async ativarLivros(request, response) {
-        const { liv_cod } = request.body; // O código do livro
-
-        try {
-            // Atualiza o status do livro para inativo
-            await db.query('UPDATE livros SET liv_ativo = 1 WHERE liv_cod = ?', [liv_cod]);
-
-            // Atualiza os exemplares relacionados ao livro para inativo
-            await db.query('UPDATE exemplares SET exe_ativo = 1 WHERE liv_cod = ?', [liv_cod]);
-
-            // Resposta de sucesso
-            return response.json({
-                message: "Livro e exemplares ativados com sucesso!",
-                livroId: liv_cod
-            });
-        } catch (error) {
-            console.error(error);
-            return response.status(500).json({ error: "Erro ao ativar livro e exemplares." });
-        }
-    },
+    },     
 
     // Método para apagar livros
     async apagarLivros(request, response) {
