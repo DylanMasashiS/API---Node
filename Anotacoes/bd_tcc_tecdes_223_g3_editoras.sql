@@ -16,28 +16,28 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `cursos`
+-- Table structure for table `editoras`
 --
 
-DROP TABLE IF EXISTS `cursos`;
+DROP TABLE IF EXISTS `editoras`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `cursos` (
-  `cur_cod` smallint NOT NULL AUTO_INCREMENT,
-  `cur_nome` varchar(50) NOT NULL,
-  `cur_ativo` bit(1) NOT NULL,
-  PRIMARY KEY (`cur_cod`)
-) ENGINE=InnoDB AUTO_INCREMENT=101 DEFAULT CHARSET=utf8mb3;
+CREATE TABLE `editoras` (
+  `edt_cod` smallint NOT NULL AUTO_INCREMENT,
+  `edt_nome` varchar(50) NOT NULL,
+  PRIMARY KEY (`edt_cod`),
+  UNIQUE KEY `edt_cod` (`edt_cod`)
+) ENGINE=InnoDB AUTO_INCREMENT=44 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `cursos`
+-- Dumping data for table `editoras`
 --
 
-LOCK TABLES `cursos` WRITE;
-/*!40000 ALTER TABLE `cursos` DISABLE KEYS */;
-INSERT INTO `cursos` VALUES (85,'Administração',_binary ''),(86,'Comércio',_binary ''),(87,'Contabilidade',_binary ''),(88,'Desenho de Construção Civil',_binary ''),(89,'Design de interiores',_binary ''),(90,'Enfermagem',_binary ''),(91,'Farmácia',_binary ''),(92,'Informática',_binary ''),(93,'Análise e Desenvolvimento de Sistemas',_binary ''),(94,'Recursos Humanos',_binary ''),(95,'Redes de Computadores',_binary ''),(96,'Marketing',_binary '\0'),(97,'Itinerário de Ciências Biológicas',_binary ''),(98,'Itinerário de Ciências Exatas ',_binary ''),(99,'Itinerário de Ciências Humanas',_binary ''),(100,'Ensino Técnico Integrado ao Médio',_binary '');
-/*!40000 ALTER TABLE `cursos` ENABLE KEYS */;
+LOCK TABLES `editoras` WRITE;
+/*!40000 ALTER TABLE `editoras` DISABLE KEYS */;
+INSERT INTO `editoras` VALUES (25,'Record'),(26,'Companhhia das letras'),(27,'Faro'),(28,'Rocco'),(29,'Aleph'),(30,'Intrínseca'),(37,'Livraria Catavento'),(38,'Nova Fronteira'),(39,'Oficina do Saber'),(40,'WMF Martins Fontes'),(41,'ffffffffffff'),(42,'ssssss'),(43,'Companhia das Letras');
+/*!40000 ALTER TABLE `editoras` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -49,4 +49,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-11-23  5:23:41
+-- Dump completed on 2024-11-25 17:55:41

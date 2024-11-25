@@ -16,27 +16,27 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `generos`
+-- Table structure for table `autores`
 --
 
-DROP TABLE IF EXISTS `generos`;
+DROP TABLE IF EXISTS `autores`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `generos` (
-  `gen_cod` tinyint NOT NULL AUTO_INCREMENT,
-  `gen_nome` varchar(20) NOT NULL,
-  PRIMARY KEY (`gen_cod`)
-) ENGINE=InnoDB AUTO_INCREMENT=97 DEFAULT CHARSET=utf8mb3;
+CREATE TABLE `autores` (
+  `aut_cod` smallint NOT NULL AUTO_INCREMENT,
+  `aut_nome` varchar(50) NOT NULL,
+  PRIMARY KEY (`aut_cod`)
+) ENGINE=InnoDB AUTO_INCREMENT=80 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `generos`
+-- Dumping data for table `autores`
 --
 
-LOCK TABLES `generos` WRITE;
-/*!40000 ALTER TABLE `generos` DISABLE KEYS */;
-INSERT INTO `generos` VALUES (79,'Ação'),(80,'Aventura'),(81,'Autobiográfico'),(82,'Alegoria'),(83,'Comédia'),(84,'Drama'),(85,'Ficção'),(86,'Ficção Científica'),(87,'Fantasia'),(88,'Mistério'),(89,'Romance'),(90,'Sátira'),(91,'Suspense'),(92,'Terror'),(93,'Tragédia'),(94,'ddddddddddd'),(95,'sssssssss'),(96,'fanfic');
-/*!40000 ALTER TABLE `generos` ENABLE KEYS */;
+LOCK TABLES `autores` WRITE;
+/*!40000 ALTER TABLE `autores` DISABLE KEYS */;
+INSERT INTO `autores` VALUES (61,'Frank, Anne'),(62,'Assis, Machado'),(63,'Shakespeare, William'),(64,'Orwell, George'),(65,'Hugo, Vitor'),(66,'Austen, Jane'),(67,'Oseman, Alice'),(68,'Reid, Jenkins'),(69,'Donlea, Charlie'),(70,'Hoover, Collen'),(71,'Rowling, J.K'),(72,'Green, John'),(73,'Stoker, Bram'),(74,'Adams, Douglas'),(75,'Suassuna, Ariano'),(76,'Bradbury, Ray'),(77,'Lewis, C.S.'),(78,'ddddddd'),(79,'sssssss');
+/*!40000 ALTER TABLE `autores` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -48,4 +48,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-11-23  5:23:41
+-- Dump completed on 2024-11-25 17:55:43

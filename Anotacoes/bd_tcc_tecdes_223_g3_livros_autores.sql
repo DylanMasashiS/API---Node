@@ -16,27 +16,33 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `autores`
+-- Table structure for table `livros_autores`
 --
 
-DROP TABLE IF EXISTS `autores`;
+DROP TABLE IF EXISTS `livros_autores`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `autores` (
-  `aut_cod` smallint NOT NULL AUTO_INCREMENT,
-  `aut_nome` varchar(50) NOT NULL,
-  PRIMARY KEY (`aut_cod`)
-) ENGINE=InnoDB AUTO_INCREMENT=80 DEFAULT CHARSET=utf8mb3;
+CREATE TABLE `livros_autores` (
+  `lau_cod` int NOT NULL AUTO_INCREMENT,
+  `aut_cod` smallint NOT NULL,
+  `liv_cod` int NOT NULL,
+  PRIMARY KEY (`lau_cod`),
+  KEY `liv_cod` (`liv_cod`),
+  KEY `fk_livros_autores_autores` (`aut_cod`),
+  CONSTRAINT `fk_livros_autores_autores` FOREIGN KEY (`aut_cod`) REFERENCES `autores` (`aut_cod`),
+  CONSTRAINT `livros_autores_ibfk_1` FOREIGN KEY (`aut_cod`) REFERENCES `autores` (`aut_cod`),
+  CONSTRAINT `livros_autores_ibfk_2` FOREIGN KEY (`liv_cod`) REFERENCES `livros` (`liv_cod`)
+) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `autores`
+-- Dumping data for table `livros_autores`
 --
 
-LOCK TABLES `autores` WRITE;
-/*!40000 ALTER TABLE `autores` DISABLE KEYS */;
-INSERT INTO `autores` VALUES (61,'Frank, Anne'),(62,'Assis, Machado'),(63,'Shakespeare, William'),(64,'Orwell, George'),(65,'Hugo, Vitor'),(66,'Austen, Jane'),(67,'Oseman, Alice'),(68,'Reid, Jenkins'),(69,'Donlea, Charlie'),(70,'Hoover, Collen'),(71,'Rowling, J.K'),(72,'Green, John'),(73,'Stoker, Bram'),(74,'Adams, Douglas'),(75,'Suassuna, Ariano'),(76,'Bradbury, Ray'),(77,'Lewis, C.S.'),(78,'ddddddd'),(79,'sssssss');
-/*!40000 ALTER TABLE `autores` ENABLE KEYS */;
+LOCK TABLES `livros_autores` WRITE;
+/*!40000 ALTER TABLE `livros_autores` DISABLE KEYS */;
+INSERT INTO `livros_autores` VALUES (1,61,65),(2,62,66),(3,63,67),(4,64,68),(5,65,69),(6,66,70),(7,67,71),(8,70,72),(9,71,73),(10,72,74),(11,69,75),(12,69,76),(13,69,77),(14,68,78),(15,64,79),(16,73,80),(17,74,81),(18,75,82),(19,76,83),(20,77,84);
+/*!40000 ALTER TABLE `livros_autores` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -48,4 +54,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-11-23  5:23:39
+-- Dump completed on 2024-11-25 17:55:43

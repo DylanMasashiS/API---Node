@@ -16,39 +16,27 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `recomendacao`
+-- Table structure for table `generos`
 --
 
-DROP TABLE IF EXISTS `recomendacao`;
+DROP TABLE IF EXISTS `generos`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `recomendacao` (
-  `rcm_cod` int NOT NULL AUTO_INCREMENT,
-  `cur_cod` smallint NOT NULL,
-  `liv_cod` int NOT NULL,
-  `usu_cod` int NOT NULL,
-  `rcm_mod1` bit(1) NOT NULL,
-  `rcm_mod2` bit(1) NOT NULL,
-  `rcm_mod3` bit(1) NOT NULL,
-  `rcm_mod4` bit(1) NOT NULL,
-  PRIMARY KEY (`rcm_cod`),
-  KEY `cur_cod` (`cur_cod`),
-  KEY `liv_cod` (`liv_cod`),
-  KEY `usu_cod` (`usu_cod`),
-  CONSTRAINT `recomendacao_ibfk_1` FOREIGN KEY (`cur_cod`) REFERENCES `cursos` (`cur_cod`),
-  CONSTRAINT `recomendacao_ibfk_2` FOREIGN KEY (`liv_cod`) REFERENCES `livros` (`liv_cod`),
-  CONSTRAINT `recomendacao_ibfk_3` FOREIGN KEY (`usu_cod`) REFERENCES `usuarios` (`usu_cod`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb3;
+CREATE TABLE `generos` (
+  `gen_cod` tinyint NOT NULL AUTO_INCREMENT,
+  `gen_nome` varchar(20) NOT NULL,
+  PRIMARY KEY (`gen_cod`)
+) ENGINE=InnoDB AUTO_INCREMENT=98 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `recomendacao`
+-- Dumping data for table `generos`
 --
 
-LOCK TABLES `recomendacao` WRITE;
-/*!40000 ALTER TABLE `recomendacao` DISABLE KEYS */;
-INSERT INTO `recomendacao` VALUES (1,94,66,24,_binary '',_binary '\0',_binary '\0',_binary '\0'),(2,85,69,23,_binary '\0',_binary '',_binary '\0',_binary '\0'),(3,88,80,22,_binary '\0',_binary '\0',_binary '',_binary '\0'),(4,92,84,21,_binary '\0',_binary '\0',_binary '\0',_binary '');
-/*!40000 ALTER TABLE `recomendacao` ENABLE KEYS */;
+LOCK TABLES `generos` WRITE;
+/*!40000 ALTER TABLE `generos` DISABLE KEYS */;
+INSERT INTO `generos` VALUES (79,'Ação'),(80,'Aventura'),(81,'Autobiográfico'),(82,'Alegoria'),(83,'Comédia'),(84,'Drama'),(85,'Ficção'),(86,'Ficção Científica'),(87,'Fantasia'),(88,'Mistério'),(89,'Romance'),(90,'Sátira'),(91,'Suspense'),(92,'Terror'),(93,'Tragédia'),(94,'ddddddddddd'),(95,'sssssssss'),(96,'fanfic'),(97,'Comédia');
+/*!40000 ALTER TABLE `generos` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -60,4 +48,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-11-23  5:23:42
+-- Dump completed on 2024-11-25 17:55:44

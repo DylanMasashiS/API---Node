@@ -34,7 +34,7 @@ CREATE TABLE `usuarios_cursos` (
   KEY `usu_cod` (`usu_cod`),
   CONSTRAINT `usuarios_cursos_ibfk_1` FOREIGN KEY (`cur_cod`) REFERENCES `cursos` (`cur_cod`),
   CONSTRAINT `usuarios_cursos_ibfk_2` FOREIGN KEY (`usu_cod`) REFERENCES `usuarios` (`usu_cod`)
-) ENGINE=InnoDB AUTO_INCREMENT=40 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=41 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -56,4 +56,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-11-23  5:23:40
+-- Dump completed on 2024-11-25 17:55:41

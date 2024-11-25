@@ -47,7 +47,7 @@ CREATE TABLE `emprestimos` (
   CONSTRAINT `fk_emprestimos_funcionarios` FOREIGN KEY (`func_cod`) REFERENCES `usuarios` (`usu_cod`),
   CONSTRAINT `fk_emprestimos_usuarios` FOREIGN KEY (`usu_cod`) REFERENCES `usuarios` (`usu_cod`),
   CONSTRAINT `fk_func_cod` FOREIGN KEY (`func_cod`) REFERENCES `usuarios` (`usu_cod`)
-) ENGINE=InnoDB AUTO_INCREMENT=39 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=40 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -56,7 +56,7 @@ CREATE TABLE `emprestimos` (
 
 LOCK TABLES `emprestimos` WRITE;
 /*!40000 ALTER TABLE `emprestimos` DISABLE KEYS */;
-INSERT INTO `emprestimos` VALUES (1,18,25,'2024-02-07','2024-02-21',1,NULL,NULL,49,NULL,NULL,NULL,_binary '','Reservado'),(12,21,26,'2024-04-10',NULL,0,NULL,NULL,49,NULL,'2024-04-13','2024-04-27',_binary '\0','Cancelado'),(22,21,48,'2024-05-29','2024-06-13',1,_binary '','2024-06-13',49,NULL,'2024-06-16','2024-06-30',_binary '','Reservado'),(26,19,29,'2024-11-21',NULL,0,NULL,NULL,49,'2024-11-21','2024-11-24','2024-12-08',_binary '\0','Devolvido'),(27,19,30,'2024-11-21',NULL,0,NULL,NULL,49,NULL,'2024-11-24','2024-12-08',_binary '','Pendente'),(28,19,29,'2024-11-21',NULL,0,NULL,NULL,49,NULL,'2024-11-24','2024-12-08',_binary '','Pendente');
+INSERT INTO `emprestimos` VALUES (1,18,25,'2024-02-07','2024-02-21',1,NULL,NULL,49,NULL,NULL,NULL,_binary '','Reservado'),(12,21,26,'2024-04-10',NULL,0,NULL,NULL,49,NULL,'2024-04-13','2024-04-27',_binary '\0','Cancelado'),(22,21,48,'2024-05-29','2024-06-13',1,_binary '','2024-06-13',49,NULL,'2024-06-16','2024-06-30',_binary '','Reservado'),(26,19,29,'2024-11-21',NULL,0,NULL,NULL,49,'2024-11-21','2024-11-24','2024-12-08',_binary '\0','Devolvido'),(27,19,30,'2024-11-21',NULL,0,NULL,NULL,49,NULL,'2024-11-24','2024-12-08',_binary '','Pendente'),(28,19,29,'2024-11-21',NULL,0,NULL,NULL,49,NULL,'2024-11-24','2024-12-08',_binary '','Pendente'),(39,19,52,'2024-11-23',NULL,0,NULL,NULL,49,NULL,'2024-11-26','2024-12-10',_binary '','Pendente');
 /*!40000 ALTER TABLE `emprestimos` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -69,4 +69,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-11-23  5:23:39
+-- Dump completed on 2024-11-25 17:55:42

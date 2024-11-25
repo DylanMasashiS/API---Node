@@ -16,28 +16,31 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `editoras`
+-- Table structure for table `contatos`
 --
 
-DROP TABLE IF EXISTS `editoras`;
+DROP TABLE IF EXISTS `contatos`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `editoras` (
-  `edt_cod` smallint NOT NULL AUTO_INCREMENT,
-  `edt_nome` varchar(50) NOT NULL,
-  PRIMARY KEY (`edt_cod`),
-  UNIQUE KEY `edt_cod` (`edt_cod`)
-) ENGINE=InnoDB AUTO_INCREMENT=43 DEFAULT CHARSET=utf8mb3;
+CREATE TABLE `contatos` (
+  `cont_cod` int NOT NULL,
+  `esc_nome` varchar(50) DEFAULT NULL,
+  `esc_endereco` varchar(50) DEFAULT NULL,
+  `esc_tel` varchar(15) DEFAULT NULL,
+  `esc_cel` varchar(15) DEFAULT NULL,
+  `esc_email` varchar(50) DEFAULT NULL,
+  PRIMARY KEY (`cont_cod`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `editoras`
+-- Dumping data for table `contatos`
 --
 
-LOCK TABLES `editoras` WRITE;
-/*!40000 ALTER TABLE `editoras` DISABLE KEYS */;
-INSERT INTO `editoras` VALUES (25,'Record'),(26,'Companhhia das letras'),(27,'Faro'),(28,'Rocco'),(29,'Aleph'),(30,'Intrínseca'),(37,'Livraria Catavento'),(38,'Nova Fronteira'),(39,'Oficina do Saber'),(40,'WMF Martins Fontes'),(41,'ffffffffffff'),(42,'ssssss');
-/*!40000 ALTER TABLE `editoras` ENABLE KEYS */;
+LOCK TABLES `contatos` WRITE;
+/*!40000 ALTER TABLE `contatos` DISABLE KEYS */;
+INSERT INTO `contatos` VALUES (1,'ETEC Prof. Massuyuki Kawano','Rua Bezerra de Menezes, 215 - Vila Independência','(14)3496-1520','(14)3496-1520','etecbiblioteca@gmail.com');
+/*!40000 ALTER TABLE `contatos` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -49,4 +52,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-11-23  5:23:40
+-- Dump completed on 2024-11-25 17:55:41

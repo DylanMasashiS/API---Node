@@ -16,33 +16,28 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `livros_autores`
+-- Table structure for table `cursos`
 --
 
-DROP TABLE IF EXISTS `livros_autores`;
+DROP TABLE IF EXISTS `cursos`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `livros_autores` (
-  `lau_cod` int NOT NULL AUTO_INCREMENT,
-  `aut_cod` smallint NOT NULL,
-  `liv_cod` int NOT NULL,
-  PRIMARY KEY (`lau_cod`),
-  KEY `liv_cod` (`liv_cod`),
-  KEY `fk_livros_autores_autores` (`aut_cod`),
-  CONSTRAINT `fk_livros_autores_autores` FOREIGN KEY (`aut_cod`) REFERENCES `autores` (`aut_cod`),
-  CONSTRAINT `livros_autores_ibfk_1` FOREIGN KEY (`aut_cod`) REFERENCES `autores` (`aut_cod`),
-  CONSTRAINT `livros_autores_ibfk_2` FOREIGN KEY (`liv_cod`) REFERENCES `livros` (`liv_cod`)
-) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8mb3;
+CREATE TABLE `cursos` (
+  `cur_cod` smallint NOT NULL AUTO_INCREMENT,
+  `cur_nome` varchar(50) NOT NULL,
+  `cur_ativo` bit(1) NOT NULL,
+  PRIMARY KEY (`cur_cod`)
+) ENGINE=InnoDB AUTO_INCREMENT=101 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `livros_autores`
+-- Dumping data for table `cursos`
 --
 
-LOCK TABLES `livros_autores` WRITE;
-/*!40000 ALTER TABLE `livros_autores` DISABLE KEYS */;
-INSERT INTO `livros_autores` VALUES (1,61,65),(2,62,66),(3,63,67),(4,64,68),(5,65,69),(6,66,70),(7,67,71),(8,70,72),(9,71,73),(10,72,74),(11,69,75),(12,69,76),(13,69,77),(14,68,78),(15,64,79),(16,73,80),(17,74,81),(18,75,82),(19,76,83),(20,77,84);
-/*!40000 ALTER TABLE `livros_autores` ENABLE KEYS */;
+LOCK TABLES `cursos` WRITE;
+/*!40000 ALTER TABLE `cursos` DISABLE KEYS */;
+INSERT INTO `cursos` VALUES (85,'Administração',_binary ''),(86,'Comércio',_binary ''),(87,'Contabilidade',_binary ''),(88,'Desenho de Construção Civil',_binary ''),(89,'Design de interiores',_binary ''),(90,'Enfermagem',_binary ''),(91,'Farmácia',_binary ''),(92,'Informática',_binary ''),(93,'Análise e Desenvolvimento de Sistemas',_binary ''),(94,'Recursos Humanos',_binary ''),(95,'Redes de Computadores',_binary ''),(96,'Marketing',_binary '\0'),(97,'Itinerário de Ciências Biológicas',_binary ''),(98,'Itinerário de Ciências Exatas ',_binary ''),(99,'Itinerário de Ciências Humanas',_binary ''),(100,'Ensino Técnico Integrado ao Médio',_binary '');
+/*!40000 ALTER TABLE `cursos` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -54,4 +49,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-11-23  5:23:41
+-- Dump completed on 2024-11-25 17:55:43

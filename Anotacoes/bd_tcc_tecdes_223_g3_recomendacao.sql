@@ -16,31 +16,39 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `contatos`
+-- Table structure for table `recomendacao`
 --
 
-DROP TABLE IF EXISTS `contatos`;
+DROP TABLE IF EXISTS `recomendacao`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `contatos` (
-  `cont_cod` int NOT NULL,
-  `esc_nome` varchar(50) DEFAULT NULL,
-  `esc_endereco` varchar(50) DEFAULT NULL,
-  `esc_tel` varchar(15) DEFAULT NULL,
-  `esc_cel` varchar(15) DEFAULT NULL,
-  `esc_email` varchar(50) DEFAULT NULL,
-  PRIMARY KEY (`cont_cod`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+CREATE TABLE `recomendacao` (
+  `rcm_cod` int NOT NULL AUTO_INCREMENT,
+  `cur_cod` smallint NOT NULL,
+  `liv_cod` int NOT NULL,
+  `usu_cod` int NOT NULL,
+  `rcm_mod1` bit(1) NOT NULL,
+  `rcm_mod2` bit(1) NOT NULL,
+  `rcm_mod3` bit(1) NOT NULL,
+  `rcm_mod4` bit(1) NOT NULL,
+  PRIMARY KEY (`rcm_cod`),
+  KEY `cur_cod` (`cur_cod`),
+  KEY `liv_cod` (`liv_cod`),
+  KEY `usu_cod` (`usu_cod`),
+  CONSTRAINT `recomendacao_ibfk_1` FOREIGN KEY (`cur_cod`) REFERENCES `cursos` (`cur_cod`),
+  CONSTRAINT `recomendacao_ibfk_2` FOREIGN KEY (`liv_cod`) REFERENCES `livros` (`liv_cod`),
+  CONSTRAINT `recomendacao_ibfk_3` FOREIGN KEY (`usu_cod`) REFERENCES `usuarios` (`usu_cod`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `contatos`
+-- Dumping data for table `recomendacao`
 --
 
-LOCK TABLES `contatos` WRITE;
-/*!40000 ALTER TABLE `contatos` DISABLE KEYS */;
-INSERT INTO `contatos` VALUES (1,'ETEC Prof. Massuyuki Kawano','Rua Bezerra de Menezes, 215 - Vila Independência','(14)3496-1520','(14)3496-1520','etecbiblioteca@gmail.com');
-/*!40000 ALTER TABLE `contatos` ENABLE KEYS */;
+LOCK TABLES `recomendacao` WRITE;
+/*!40000 ALTER TABLE `recomendacao` DISABLE KEYS */;
+INSERT INTO `recomendacao` VALUES (1,94,66,24,_binary '',_binary '\0',_binary '\0',_binary '\0'),(2,85,69,23,_binary '\0',_binary '',_binary '\0',_binary '\0'),(3,88,80,22,_binary '\0',_binary '\0',_binary '',_binary '\0'),(4,92,84,21,_binary '\0',_binary '\0',_binary '\0',_binary '');
+/*!40000 ALTER TABLE `recomendacao` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -52,4 +60,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-11-23  5:23:41
+-- Dump completed on 2024-11-25 17:55:42
