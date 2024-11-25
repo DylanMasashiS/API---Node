@@ -157,24 +157,50 @@ module.exports = {
     // Método para gerenciar livros (mostra todos os livros, incluindo os inativos)
     async gerenciarLivros(request, response) {
         try {
-            const sql = `SELECT liv.liv_cod, liv.liv_nome, liv.liv_pha_cod, liv.liv_categ_cod,
-            liv.liv_foto_capa, liv.liv_desc, 
-            edt.edt_cod, edt.edt_nome, 
-            aut.aut_nome, aut.aut_cod, exe.exe_ativo, liv.liv_ativo,
-            gen.gen_cod, gen.gen_nome
-            FROM livros liv
-            INNER JOIN editoras edt ON edt.edt_cod = liv.edt_cod
-            INNER JOIN livros_autores lau ON lau.liv_cod = liv.liv_cod
-            INNER JOIN autores aut ON aut.aut_cod = lau.aut_cod
-            INNER JOIN livros_generos lge ON lge.liv_cod = liv.liv_cod
-            INNER JOIN generos gen ON gen.gen_cod = lge.gen_cod 
-            INNER JOIN exemplares exe ON liv.liv_cod = exe.liv_cod
-            ORDER BY liv.liv_nome ASC`;
+            const sql = `
+                    SELECT 
+                        liv.liv_cod, 
+                        liv.liv_nome, 
+                        liv.liv_pha_cod, 
+                        liv.liv_categ_cod,
+                        liv.liv_foto_capa, 
+                        liv.liv_desc, 
+                        liv.liv_ativo, -- Inclui a coluna para diferenciar ativos/inativos
+                        edt.edt_cod, 
+                        edt.edt_nome, 
+                        aut.aut_nome, 
+                        aut.aut_cod, 
+                        gen.gen_cod,
+                        GROUP_CONCAT(DISTINCT gen.gen_nome) AS Generos,
+                        COUNT(exe.exe_cod) as exemplares -- Mantém apenas a contagem total de exemplares
+                        FROM livros liv
+                        INNER JOIN editoras edt ON edt.edt_cod = liv.edt_cod
+                        INNER JOIN livros_autores lau ON lau.liv_cod = liv.liv_cod
+                        INNER JOIN autores aut ON aut.aut_cod = lau.aut_cod
+                        INNER JOIN livros_generos lge ON lge.liv_cod = liv.liv_cod
+                        INNER JOIN generos gen ON gen.gen_cod = lge.gen_cod
+                        LEFT JOIN exemplares exe ON liv.liv_cod = exe.liv_cod -- LEFT JOIN para incluir livros sem exemplares
+                        GROUP BY 
+                            liv.liv_cod, 
+                            liv.liv_nome, 
+                            liv.liv_pha_cod, 
+                            liv.liv_categ_cod,
+                            liv.liv_foto_capa, 
+                            edt.edt_nome, 
+                            aut.aut_nome, 
+                            aut.aut_cod, 
+                            gen.gen_nome, 
+                            gen.gen_cod
+                        ORDER BY 
+                            liv.liv_nome ASC`;
+
 
             const livros = await db.query(sql);
+
             const resultado = livros[0].map(livro => ({
                 ...livro,
-                liv_foto_capa: geraUrl(livro.liv_foto_capa)
+                liv_foto_capa: geraUrl(livro.liv_foto_capa),
+                liv_ativo: Number(livro.liv_ativo),
             }));
 
             return response.status(200).json({
@@ -196,17 +222,17 @@ module.exports = {
     async editarLivros(request, response) {
         try {
             const { liv_cod, liv_nome, liv_desc, aut_cod, edt_cod, gen_cod } = request.body;
-    
+
             const sql = `UPDATE livros
                          JOIN livros_autores AS lau ON livros.liv_cod = lau.liv_cod
                          JOIN livros_generos AS lge ON livros.liv_cod = lge.liv_cod
                          SET liv_nome = ?, liv_desc = ?, lau.aut_cod = ?, lge.gen_cod = ?, edt_cod = ?
                          WHERE livros.liv_cod = ?`;
             const values = [liv_nome, liv_desc, aut_cod, gen_cod, edt_cod, liv_cod];
-    
+
             // Executando a consulta
             const execSql = await db.query(sql, values);
-    
+
             return response.status(200).json({
                 sucesso: true,
                 mensagem: `Informações do livro ${liv_cod} atualizadas com sucesso.`,
@@ -223,33 +249,47 @@ module.exports = {
     },
 
     // Método para inativar livros
-    async statusLivros(request, response) {
-        const { liv_cod, currentStatus } = request.body; // Código do livro e o status atual (1 para ativo, 0 para inativo)
-        
+    async inativarLivros(request, response) {
+        const { liv_cod } = request.body; // O código do livro
+
         try {
-            // Se o currentStatus for 1 (ativo), definimos como 0 (inativo) e vice-versa
-            const novoStatusLivro = currentStatus === 0 ? 1 : 0;
-            const novoStatusExemplar = currentStatus === 0 ? 1 : 0;
-            
-            // Atualiza o status do livro
-            const query = `UPDATE livros SET liv_ativo = ? WHERE liv_cod = ?`;
-            const [result] = await db.query(query, [novoStatusLivro, liv_cod]);
-            
-            // Verifica se a atualização do livro foi realizada
-            if (result.affectedRows === 0) {
-                return response.status(404).json({ error: "Livro não encontrado." });
-            }
-    
-            // Atualiza o status dos exemplares relacionados
-            const updateExemplaresQuery = `UPDATE exemplares SET exe_ativo = ? WHERE liv_cod = ?`;
-            await db.query(updateExemplaresQuery, [novoStatusExemplar, liv_cod]);
-            
-            return response.json({ message: "Status do livro e exemplares alterados com sucesso!" });
+            // Atualiza o status do livro para inativo
+            await db.query('UPDATE livros SET liv_ativo = 0 WHERE liv_cod = ?', [liv_cod]);
+
+            // Atualiza os exemplares relacionados ao livro para inativo
+            await db.query('UPDATE exemplares SET exe_ativo = 0 WHERE liv_cod = ?', [liv_cod]);
+
+            // Resposta de sucesso
+            return response.json({
+                message: "Livro e exemplares inativados com sucesso!",
+                livroId: liv_cod
+            });
         } catch (error) {
             console.error(error);
-            return response.status(500).json({ error: "Erro ao alterar o status." });
+            return response.status(500).json({ error: "Erro ao inativar livro e exemplares." });
         }
-    },     
+    },
+
+    async ativarLivros(request, response) {
+        const { liv_cod } = request.body; // O código do livro
+
+        try {
+            // Atualiza o status do livro para inativo
+            await db.query('UPDATE livros SET liv_ativo = 1 WHERE liv_cod = ?', [liv_cod]);
+
+            // Atualiza os exemplares relacionados ao livro para inativo
+            await db.query('UPDATE exemplares SET exe_ativo = 1 WHERE liv_cod = ?', [liv_cod]);
+
+            // Resposta de sucesso
+            return response.json({
+                message: "Livro e exemplares ativados com sucesso!",
+                livroId: liv_cod
+            });
+        } catch (error) {
+            console.error(error);
+            return response.status(500).json({ error: "Erro ao ativar livro e exemplares." });
+        }
+    },
 
     // Método para apagar livros
     async apagarLivros(request, response) {

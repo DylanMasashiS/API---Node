@@ -92,7 +92,8 @@ router.patch ('/livros_autores/:lau_cod', (livros_autoresController.editarLivros
 router.patch ('/usuarios_cursos/:ucu_cod', (usuarios_cursosController.editarUsuarios_Cursos));
 
 //UPDATE Personalizado
-router.post ('/statusLivros/:liv_cod', (livrosController.statusLivros));
+router.patch ('/liv_ativar/:liv_cod', (livrosController.ativarLivros));
+router.patch ('/liv_inativar/:liv_cod', (livrosController.inativarLivros));
 router.patch ('/res_cancelar/:emp_cod', (reservasController.cancelarReservas));
 router.patch ('/devolver/:emp_cod', (emprestimosController.devolverEmprestimos));
 router.patch ('/emp_renovar/:emp_cod', (emprestimosController.renovarEmprestimos));
